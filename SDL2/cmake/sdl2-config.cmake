@@ -28,6 +28,7 @@ macro(check_required_components _NAME)
     endforeach()
 endmacro()
 
+
 set(SDL2_FOUND TRUE)
 
 if(CMAKE_SIZEOF_VOID_P STREQUAL "4")
