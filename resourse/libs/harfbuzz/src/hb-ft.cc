@@ -29,7 +29,7 @@
 
 #include "hb.hh"
 
-#ifdef HAVE_FREETYPE
+//#ifdef HAVE_FREETYPE
 
 #include "hb-ft.h"
 
@@ -48,7 +48,7 @@
 #include FT_SYNTHESIS_H
 #if (FREETYPE_MAJOR*10000 + FREETYPE_MINOR*100 + FREETYPE_PATCH) >= 21300
 #include FT_COLOR_H
-#endif
+//#endif
 
 
 /**

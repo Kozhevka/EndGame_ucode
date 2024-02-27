@@ -234,7 +234,64 @@
  /usr/include/c++/11/pstl/glue_algorithm_defs.h \
  ../harfbuzz/src/hb-iter.hh ../harfbuzz/src/hb-debug.hh \
  ../harfbuzz/src/hb-array.hh ../harfbuzz/src/hb-vector.hh \
- ../harfbuzz/src/hb-object.hh
+ ../harfbuzz/src/hb-object.hh ../harfbuzz/src/hb-ft.h \
+ ../freetype/include/ft2build.h \
+ ../freetype/include/freetype/config/ftheader.h \
+ ../freetype/include/freetype/freetype.h \
+ ../freetype/include/freetype/config/ftconfig.h \
+ ../freetype/include/freetype/config/ftoption.h \
+ ../freetype/include/freetype/config/ftstdlib.h \
+ /usr/include/c++/11/stdlib.h /usr/include/setjmp.h \
+ /usr/include/x86_64-linux-gnu/bits/setjmp2.h \
+ ../freetype/include/freetype/config/integer-types.h \
+ ../freetype/include/freetype/config/public-macros.h \
+ ../freetype/include/freetype/config/mac-support.h \
+ ../freetype/include/freetype/fttypes.h \
+ ../freetype/include/freetype/ftsystem.h \
+ ../freetype/include/freetype/ftimage.h \
+ ../freetype/include/freetype/fterrors.h \
+ ../freetype/include/freetype/ftmoderr.h \
+ ../freetype/include/freetype/fterrdef.h ../harfbuzz/src/hb-cache.hh \
+ ../harfbuzz/src/hb-draw.hh ../harfbuzz/src/hb-font.hh \
+ ../harfbuzz/src/hb-face.hh ../harfbuzz/src/hb-shaper.hh \
+ ../harfbuzz/src/hb-machinery.hh ../harfbuzz/src/hb-blob.hh \
+ ../harfbuzz/src/hb-dispatch.hh ../harfbuzz/src/hb-sanitize.hh \
+ ../harfbuzz/src/hb-shaper-list.hh ../harfbuzz/src/hb-shape-plan.hh \
+ ../harfbuzz/src/hb-ot-shape.hh ../harfbuzz/src/hb-ot-map.hh \
+ ../harfbuzz/src/hb-buffer.hh ../harfbuzz/src/hb-unicode.hh \
+ ../harfbuzz/src/hb-set-digest.hh ../harfbuzz/src/hb-aat-map.hh \
+ ../harfbuzz/src/hb-ot-face.hh ../harfbuzz/src/hb-ot-face-table-list.hh \
+ ../harfbuzz/src/hb-ot-os2-table.hh ../harfbuzz/src/hb-open-type.hh \
+ ../harfbuzz/src/hb-subset.hh ../harfbuzz/src/hb-subset.h \
+ ../harfbuzz/src/hb-serialize.hh ../harfbuzz/src/hb-map.hh \
+ ../harfbuzz/src/hb-set.hh ../harfbuzz/src/hb-bit-set-invertible.hh \
+ ../harfbuzz/src/hb-bit-set.hh ../harfbuzz/src/hb-bit-page.hh \
+ ../harfbuzz/src/hb-pool.hh ../harfbuzz/src/hb-subset-input.hh \
+ ../harfbuzz/src/hb-subset-instancer-solver.hh \
+ ../harfbuzz/src/hb-subset-plan.hh \
+ ../harfbuzz/src/hb-subset-accelerator.hh ../harfbuzz/src/hb-multimap.hh \
+ ../harfbuzz/src/hb-bimap.hh \
+ ../harfbuzz/src/hb-subset-plan-member-list.hh \
+ ../harfbuzz/src/hb-ot-os2-unicode-ranges.hh \
+ ../harfbuzz/src/hb-ot-var-mvar-table.hh \
+ ../harfbuzz/src/hb-ot-var-common.hh \
+ ../harfbuzz/src/hb-ot-layout-common.hh ../harfbuzz/src/hb-ot-layout.hh \
+ ../harfbuzz/src/OT/Layout/Common/Coverage.hh \
+ ../harfbuzz/src/OT/Layout/Common/../types.hh \
+ ../harfbuzz/src/OT/Layout/Common/CoverageFormat1.hh \
+ ../harfbuzz/src/OT/Layout/Common/CoverageFormat2.hh \
+ ../harfbuzz/src/OT/Layout/Common/RangeRecord.hh \
+ ../harfbuzz/src/OT/Layout/types.hh ../harfbuzz/src/hb-priority-queue.hh \
+ ../harfbuzz/src/hb-subset-instancer-iup.hh \
+ ../harfbuzz/src/hb-ot-shaper-arabic-pua.hh ../harfbuzz/src/hb-paint.hh \
+ ../freetype/include/freetype/ftadvanc.h \
+ ../freetype/include/freetype/ftmm.h \
+ ../freetype/include/freetype/t1tables.h \
+ ../freetype/include/freetype/ftoutln.h \
+ ../freetype/include/freetype/tttables.h \
+ ../freetype/include/freetype/ftsynth.h \
+ ../freetype/include/freetype/ftcolor.h ../harfbuzz/src/hb-ft-colr.hh \
+ ../harfbuzz/src/hb-paint-extents.hh
 /usr/include/stdc-predef.h:
 ../harfbuzz/src/hb.hh:
 ../harfbuzz/src/hb-config.hh:
@@ -540,3 +597,83 @@
 ../harfbuzz/src/hb-array.hh:
 ../harfbuzz/src/hb-vector.hh:
 ../harfbuzz/src/hb-object.hh:
+../harfbuzz/src/hb-ft.h:
+../freetype/include/ft2build.h:
+../freetype/include/freetype/config/ftheader.h:
+../freetype/include/freetype/freetype.h:
+../freetype/include/freetype/config/ftconfig.h:
+../freetype/include/freetype/config/ftoption.h:
+../freetype/include/freetype/config/ftstdlib.h:
+/usr/include/c++/11/stdlib.h:
+/usr/include/setjmp.h:
+/usr/include/x86_64-linux-gnu/bits/setjmp2.h:
+../freetype/include/freetype/config/integer-types.h:
+../freetype/include/freetype/config/public-macros.h:
+../freetype/include/freetype/config/mac-support.h:
+../freetype/include/freetype/fttypes.h:
+../freetype/include/freetype/ftsystem.h:
+../freetype/include/freetype/ftimage.h:
+../freetype/include/freetype/fterrors.h:
+../freetype/include/freetype/ftmoderr.h:
+../freetype/include/freetype/fterrdef.h:
+../harfbuzz/src/hb-cache.hh:
+../harfbuzz/src/hb-draw.hh:
+../harfbuzz/src/hb-font.hh:
+../harfbuzz/src/hb-face.hh:
+../harfbuzz/src/hb-shaper.hh:
+../harfbuzz/src/hb-machinery.hh:
+../harfbuzz/src/hb-blob.hh:
+../harfbuzz/src/hb-dispatch.hh:
+../harfbuzz/src/hb-sanitize.hh:
+../harfbuzz/src/hb-shaper-list.hh:
+../harfbuzz/src/hb-shape-plan.hh:
+../harfbuzz/src/hb-ot-shape.hh:
+../harfbuzz/src/hb-ot-map.hh:
+../harfbuzz/src/hb-buffer.hh:
+../harfbuzz/src/hb-unicode.hh:
+../harfbuzz/src/hb-set-digest.hh:
+../harfbuzz/src/hb-aat-map.hh:
+../harfbuzz/src/hb-ot-face.hh:
+../harfbuzz/src/hb-ot-face-table-list.hh:
+../harfbuzz/src/hb-ot-os2-table.hh:
+../harfbuzz/src/hb-open-type.hh:
+../harfbuzz/src/hb-subset.hh:
+../harfbuzz/src/hb-subset.h:
+../harfbuzz/src/hb-serialize.hh:
+../harfbuzz/src/hb-map.hh:
+../harfbuzz/src/hb-set.hh:
+../harfbuzz/src/hb-bit-set-invertible.hh:
+../harfbuzz/src/hb-bit-set.hh:
+../harfbuzz/src/hb-bit-page.hh:
+../harfbuzz/src/hb-pool.hh:
+../harfbuzz/src/hb-subset-input.hh:
+../harfbuzz/src/hb-subset-instancer-solver.hh:
+../harfbuzz/src/hb-subset-plan.hh:
+../harfbuzz/src/hb-subset-accelerator.hh:
+../harfbuzz/src/hb-multimap.hh:
+../harfbuzz/src/hb-bimap.hh:
+../harfbuzz/src/hb-subset-plan-member-list.hh:
+../harfbuzz/src/hb-ot-os2-unicode-ranges.hh:
+../harfbuzz/src/hb-ot-var-mvar-table.hh:
+../harfbuzz/src/hb-ot-var-common.hh:
+../harfbuzz/src/hb-ot-layout-common.hh:
+../harfbuzz/src/hb-ot-layout.hh:
+../harfbuzz/src/OT/Layout/Common/Coverage.hh:
+../harfbuzz/src/OT/Layout/Common/../types.hh:
+../harfbuzz/src/OT/Layout/Common/CoverageFormat1.hh:
+../harfbuzz/src/OT/Layout/Common/CoverageFormat2.hh:
+../harfbuzz/src/OT/Layout/Common/RangeRecord.hh:
+../harfbuzz/src/OT/Layout/types.hh:
+../harfbuzz/src/hb-priority-queue.hh:
+../harfbuzz/src/hb-subset-instancer-iup.hh:
+../harfbuzz/src/hb-ot-shaper-arabic-pua.hh:
+../harfbuzz/src/hb-paint.hh:
+../freetype/include/freetype/ftadvanc.h:
+../freetype/include/freetype/ftmm.h:
+../freetype/include/freetype/t1tables.h:
+../freetype/include/freetype/ftoutln.h:
+../freetype/include/freetype/tttables.h:
+../freetype/include/freetype/ftsynth.h:
+../freetype/include/freetype/ftcolor.h:
+../harfbuzz/src/hb-ft-colr.hh:
+../harfbuzz/src/hb-paint-extents.hh:

@@ -5,6 +5,7 @@
         "main.h": "c",
         "sdl.h": "c",
         "sdl_ttf.h": "c",
-        "ft-hb.h": "c"
+        "ft-hb.h": "c",
+        "memory_resource": "cpp"
     }
 }

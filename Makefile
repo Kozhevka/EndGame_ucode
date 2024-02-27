@@ -5,7 +5,7 @@ CFLAGS = -Wall -I$(LIBS_PATH)/SDL/include -I$(LIBS_PATH)/SDL_image/include -I$(L
 LDFLAGS = -L$(LIBS_PATH)/SDL/build/.libs/ -L$(LIBS_PATH)/SDL_image/.libs -L$(LIBS_PATH)/SDL_ttf/.libs
 LDLIBS = -lSDL2 -lSDL2_image -lSDL2_ttf
 
-SRC = src/main.c src/status.c
+SRC = src/main.c src/status.c src/menu.c
 OBJ = $(SRC:.c=.o)
 EXECUTABLE = mygame
 

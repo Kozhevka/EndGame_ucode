@@ -1,0 +1,5 @@
+*.so binary merge=ours
+*.a
+resourse filter=lfs diff=lfs merge=lfs -text
+resourse/libs/SDL_ttf/.libs/libSDL2_ttf.a filter=lfs diff=lfs merge=lfs -text
+resourse/libs/SDL_ttf/.libs/libSDL2_ttf.a

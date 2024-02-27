@@ -6,7 +6,6 @@ configure~
 Makefile
 libtool
 .deps
-.libs
 *.lo
 *.o
 *.la

@@ -1,0 +1,9 @@
+/home/kozhevka/downloads/ucode/endgame/EndGame_ucode/resourse/libs/SDL_image/build/CMakeFiles/SDL2_image.dir
+/home/kozhevka/downloads/ucode/endgame/EndGame_ucode/resourse/libs/SDL_image/build/CMakeFiles/showanim.dir
+/home/kozhevka/downloads/ucode/endgame/EndGame_ucode/resourse/libs/SDL_image/build/CMakeFiles/showimage.dir
+/home/kozhevka/downloads/ucode/endgame/EndGame_ucode/resourse/libs/SDL_image/build/CMakeFiles/edit_cache.dir
+/home/kozhevka/downloads/ucode/endgame/EndGame_ucode/resourse/libs/SDL_image/build/CMakeFiles/rebuild_cache.dir
+/home/kozhevka/downloads/ucode/endgame/EndGame_ucode/resourse/libs/SDL_image/build/CMakeFiles/list_install_components.dir
+/home/kozhevka/downloads/ucode/endgame/EndGame_ucode/resourse/libs/SDL_image/build/CMakeFiles/install.dir
+/home/kozhevka/downloads/ucode/endgame/EndGame_ucode/resourse/libs/SDL_image/build/CMakeFiles/install/local.dir
+/home/kozhevka/downloads/ucode/endgame/EndGame_ucode/resourse/libs/SDL_image/build/CMakeFiles/install/strip.dir
