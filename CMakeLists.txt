@@ -19,6 +19,6 @@ if (WIN32)
 elseif(UNIX)
     # For Unix-like systems
     find_package(SDL2 REQUIRED)
-    include_directories(${SDL2_INCLUDE_DIRS})
+    include_directories(${SDL2_INCLUDE_DIRS} src/SDL2/include)
     target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES})
 endif()

@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src/SDL2/SDL_image/Xcode/iOS/SDL2.framework/Headers",
+                "${workspaceFolder}/src/SDL2/include",
+                "${workspaceFolder}/src/SDL2/include",
+                "${workspaceFolder}/src/SDL/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-clang-x64",
+            "configurationProvider": "ms-vscode.makefile-tools"
+        }
+    ],
+    "version": 4
+}
