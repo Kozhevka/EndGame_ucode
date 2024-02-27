@@ -68,6 +68,8 @@ void loadGame(GameState *game)
     if (surface == NULL)
     {
         printf("cannot find grave.png");
+
+        
         SDL_Quit();
         exit(1);
     }
