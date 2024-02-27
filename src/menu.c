@@ -7,6 +7,10 @@ SelectedButtonReference selectedMenuButton;
 CurrentScene *sceneChangerReference;
 int selectedButtonInteger;
 
+int currentMenuCategory;
+
+
+
 void loadMenu(MenuResources *resources)
 {
     SDL_Surface *surface = NULL;
@@ -52,6 +56,7 @@ void init_menu(MenuResources *resources) {
         SDL_DestroyTexture(resources->gameNameText.menuLabel);
         resources->gameNameText.menuLabel = NULL;
     }*/
+    currentMenuCategory = MENU_MAINMENU;
     SetTextParameters(resources, &resources->gameNameText, "Unnamed", 0, 150, MENUBUTTONPURPOSE_UNASSIGNED);
 
     SetTextParameters(resources, &resources->playText, "Play", 0, 400, MENUBUTTONPURPOSE_PLAY);
@@ -65,6 +70,16 @@ void init_menu(MenuResources *resources) {
 
     SetTextParameters(resources, &resources->quitText, "Quit", 0, 700, MENUBUTTONPURPOSE_QUIT);
     menuButtonReferences.quitButton = &resources->quitText;
+
+    SetTextParameters(resources, &resources->developersMenuText, "Developers", 0, 150, MENUBUTTONPURPOSE_UNASSIGNED);
+    SetTextParameters(resources, &resources->andreyKlText, "Andrii   Kalashnikov", 0, 250, MENUBUTTONPURPOSE_UNASSIGNED);
+    SetTextParameters(resources, &resources->bogdanText, "Bohdan   Yakilevskyi", 0, 350, MENUBUTTONPURPOSE_UNASSIGNED);
+    SetTextParameters(resources, &resources->iliaText, "Illia   Kozhevnikov", 0, 450, MENUBUTTONPURPOSE_UNASSIGNED);
+    SetTextParameters(resources, &resources->sergeyText, "Serhii   Ivashchuk", 0, 550, MENUBUTTONPURPOSE_UNASSIGNED);
+    SetTextParameters(resources, &resources->yuriyText, "Yurii   Kryvoruchka", 0, 650, MENUBUTTONPURPOSE_UNASSIGNED);
+    SetTextParameters(resources, &resources->andreyKuText, "Andrii   Kubik", 0, 750, MENUBUTTONPURPOSE_UNASSIGNED);
+    SetTextParameters(resources, &resources->leaveDevelopersMenuText, "Leave", 0, 850, MENUBUTTONPURPOSE_LEAVEDEVELOPERSMENU);
+    menuButtonReferences.leaveDevelopersButton = &resources->leaveDevelopersMenuText;
 
     SetElementSelected(menuButtonReferences.playButton);
 }
@@ -108,11 +123,31 @@ void renderMenu(SDL_Renderer *renderer, MenuResources *resources)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
+    if(currentMenuCategory == MENU_MAINMENU)
+    {
     drawText(renderer, resources, &resources->gameNameText);
     drawText(renderer, resources, &resources->playText);
     drawText(renderer, resources, &resources->settingsText);
     drawText(renderer, resources, &resources->developersText);
     drawText(renderer, resources, &resources->quitText);
+    }
+    else if(currentMenuCategory == MENU_SETTINGS)
+    {
+
+    }
+    else if(currentMenuCategory == MENU_DEVELOPERS)
+    {
+        drawText(renderer, resources, &resources->developersMenuText);
+        drawText(renderer, resources, &resources->andreyKlText);
+        drawText(renderer, resources, &resources->bogdanText);
+        drawText(renderer, resources, &resources->iliaText);
+        drawText(renderer, resources, &resources->sergeyText);
+        drawText(renderer, resources, &resources->yuriyText);
+        drawText(renderer, resources, &resources->andreyKuText);
+        drawText(renderer, resources, &resources->leaveDevelopersMenuText);
+    }
+
+
 
     SDL_RenderPresent(renderer);
 }
@@ -259,32 +294,35 @@ int processInputInMenu(SDL_Window *window, CurrentScene *currentScene) {
 
 void ChangeSelectedButton(bool state)
 {
-    ClearMainMenuButtons();
-    if(state)
+    if(currentMenuCategory == MENU_MAINMENU)
     {
-        selectedButtonInteger++;
-    }
-    else
-    {
-        selectedButtonInteger--;
-    }
-    if(selectedButtonInteger > 3) selectedButtonInteger = 0;
-    if(selectedButtonInteger < 0) selectedButtonInteger = 3;
+        ClearMainMenuButtons();
+        if(state)
+        {
+            selectedButtonInteger++;
+        }
+        else
+        {
+            selectedButtonInteger--;
+        }
+        if(selectedButtonInteger > 3) selectedButtonInteger = 0;
+        if(selectedButtonInteger < 0) selectedButtonInteger = 3;
 
-    switch(selectedButtonInteger)
-    {
-        case 0:
-            SetElementSelected(menuButtonReferences.playButton);
-        break;
-        case 1:
-            SetElementSelected(menuButtonReferences.settingsButton);
-        break;
-        case 2:
-            SetElementSelected(menuButtonReferences.developersButton);
-        break;
-        case 3:
-            SetElementSelected(menuButtonReferences.quitButton);
-        break;
+        switch(selectedButtonInteger)
+        {
+            case 0:
+                SetElementSelected(menuButtonReferences.playButton);
+            break;
+            case 1:
+                SetElementSelected(menuButtonReferences.settingsButton);
+            break;
+            case 2:
+                SetElementSelected(menuButtonReferences.developersButton);
+            break;
+            case 3:
+                SetElementSelected(menuButtonReferences.quitButton);
+            break;
+        }
     }
 }
 
@@ -306,11 +344,18 @@ void OnMenuButtonPressed(MenuTextElement *menuButton)
             sceneChangerReference->sceneInteger = SCENE_GAME;
         break;
         case MENUBUTTONPURPOSE_SETTINGS:
+            //currentMenuCategory = MENU_SETTINGS;
         break;
         case MENUBUTTONPURPOSE_DEVELOPERS:
+            currentMenuCategory = MENU_DEVELOPERS;
+            SetElementSelected(menuButtonReferences.leaveDevelopersButton);
         break;
         case MENUBUTTONPURPOSE_QUIT:
             sceneChangerReference->sceneInteger = QUITGAME;
+        break;
+        case MENUBUTTONPURPOSE_LEAVEDEVELOPERSMENU:
+            currentMenuCategory = MENU_MAINMENU;
+            SetElementSelected(menuButtonReferences.developersButton);
         break;
     }
 }

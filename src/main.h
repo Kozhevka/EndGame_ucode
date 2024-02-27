@@ -89,6 +89,8 @@ typedef struct
     MenuTextElement* developersButton;
     MenuTextElement* quitButton;
 
+    MenuTextElement* leaveDevelopersButton;
+
 }   MainMenuButtonReferences;
 
 typedef struct
@@ -97,11 +99,33 @@ typedef struct
 
     TTF_Font *font;
 
+//==========MAINMENUCATEGORY
+
     MenuTextElement gameNameText;
     MenuTextElement playText;
     MenuTextElement settingsText;
     MenuTextElement developersText;
     MenuTextElement quitText;
+
+//==============================
+
+//==========SETTINGSCATEGORY
+
+//==============================
+
+
+//==========DEVELOPERSCATEGORY
+
+    MenuTextElement developersMenuText;
+    MenuTextElement andreyKlText;
+    MenuTextElement bogdanText;
+    MenuTextElement iliaText;
+    MenuTextElement sergeyText;
+    MenuTextElement yuriyText;
+    MenuTextElement andreyKuText;
+    MenuTextElement leaveDevelopersMenuText;
+
+//==============================
 
     char* menuText;
     SDL_Texture* menuLabel;
@@ -131,6 +155,13 @@ enum {
     MENUBUTTONPURPOSE_SETTINGS,
     MENUBUTTONPURPOSE_DEVELOPERS,
     MENUBUTTONPURPOSE_QUIT,
+    MENUBUTTONPURPOSE_LEAVEDEVELOPERSMENU,
+};
+
+enum {
+    MENU_MAINMENU,
+    MENU_SETTINGS,
+    MENU_DEVELOPERS,
 };
 
 //====================================================================================
