@@ -4,6 +4,7 @@
         "status.h": "c",
         "main.h": "c",
         "sdl.h": "c",
-        "sdl_ttf.h": "c"
+        "sdl_ttf.h": "c",
+        "ft-hb.h": "c"
     }
 }

@@ -1,29 +1,22 @@
-# Directories
-SDL_DIR := resource/libs/SDL
-SDL_IMAGE_DIR := resource/libs/SDL_image
-SDL_TTF_DIR := resource/libs/SDL_ttf
+LIBS_PATH = resourse/libs
 
-# Compiler
-CC := gcc
-CFLAGS := -I$(SDL_DIR)/include -I$(SDL_IMAGE_DIR)/include -I$(SDL_TTF_DIR) -Wall -Wextra -pedantic -O2
+CC = gcc
+CFLAGS = -Wall -I$(LIBS_PATH)/SDL/include -I$(LIBS_PATH)/SDL_image/include -I$(LIBS_PATH)/SDL_ttf
+LDFLAGS = -L$(LIBS_PATH)/SDL/build/.libs/ -L$(LIBS_PATH)/SDL_image/.libs -L$(LIBS_PATH)/SDL_ttf/.libs
+LDLIBS = -lSDL2 -lSDL2_image -lSDL2_ttf
 
-# Linker
-LDFLAGS := -L$(SDL_DIR)/build -L$(SDL_IMAGE_DIR)/.libs -L$(SDL_TTF_DIR)/.libs
-LDLIBS := -lSDL2 -lSDL2_image -lSDL2_ttf
+SRC = src/main.c src/status.c
+OBJ = $(SRC:.c=.o)
+EXECUTABLE = mygame
 
-# Targets
-EXECUTABLE := mygame
-SRCDIR := src
-SRC := $(wildcard $(SRCDIR)/*.c)
-OBJ := $(SRC:.c=.o)
+all: $(EXECUTABLE)
 
-# Build rules
 $(EXECUTABLE): $(OBJ)
 	$(CC) $(OBJ) $(LDFLAGS) $(LDLIBS) -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-.PHONY: clean
 clean:
 	rm -f $(OBJ) $(EXECUTABLE)
+
