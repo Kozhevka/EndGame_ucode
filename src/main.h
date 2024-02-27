@@ -35,6 +35,7 @@ typedef struct
 
 typedef struct
 {
+    int isLoaded;
 
     float scrollX;
 
@@ -61,6 +62,78 @@ typedef struct
     SDL_Renderer *renderer;
 } GameState;
 
+//=================================================================================
+
+typedef struct
+{
+    int isSelected;
+    int purpose;
+    
+    char* menuText;
+    SDL_Texture* menuLabel;
+    int menuLabelW, menuLabelH;
+    int menuX, menuY;
+
+} MenuTextElement;
+
+typedef struct
+{
+    MenuTextElement* selectedButton;
+}   SelectedButtonReference;
+
+typedef struct
+{
+
+    MenuTextElement* playButton;
+    MenuTextElement* settingsButton;
+    MenuTextElement* developersButton;
+    MenuTextElement* quitButton;
+
+}   MainMenuButtonReferences;
+
+typedef struct
+{
+    int isLoaded;
+
+    TTF_Font *font;
+
+    MenuTextElement gameNameText;
+    MenuTextElement playText;
+    MenuTextElement settingsText;
+    MenuTextElement developersText;
+    MenuTextElement quitText;
+
+    char* menuText;
+    SDL_Texture* menuLabel;
+    int menuLabelW, menuLabelH;
+    int menuX, menuY;
+
+    SDL_Renderer *renderer;
+
+} MenuResources;
+
+typedef struct
+{
+    
+    int sceneInteger;
+
+} CurrentScene;
+
+enum {
+    SCENE_MENU,
+    SCENE_GAME,
+    QUITGAME,
+};
+
+enum {
+    MENUBUTTONPURPOSE_UNASSIGNED,
+    MENUBUTTONPURPOSE_PLAY,
+    MENUBUTTONPURPOSE_SETTINGS,
+    MENUBUTTONPURPOSE_DEVELOPERS,
+    MENUBUTTONPURPOSE_QUIT,
+};
+
+//====================================================================================
 
 void doRender(SDL_Renderer *renderer, GameState *game);
 void init_game_over(GameState *game);
