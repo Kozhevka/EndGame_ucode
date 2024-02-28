@@ -412,6 +412,8 @@ int main(int argc, char *argv[])
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     gameState.renderer = renderer;
+    menuResources.renderer = renderer;
+    menuResources.applicationWindow = window;
 
     TTF_Init();
 

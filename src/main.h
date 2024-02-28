@@ -89,6 +89,10 @@ typedef struct
     MenuTextElement* developersButton;
     MenuTextElement* quitButton;
 
+    MenuTextElement* resolutionButton;
+    MenuTextElement* fullscreenButton;
+    MenuTextElement* leaveSettingsButton;
+
     MenuTextElement* leaveDevelopersButton;
 
 }   MainMenuButtonReferences;
@@ -110,6 +114,11 @@ typedef struct
 //==============================
 
 //==========SETTINGSCATEGORY
+    
+    MenuTextElement settingsCaptionText;
+    MenuTextElement resolutionText;
+    MenuTextElement fullscreenText;
+    MenuTextElement leaveSettingsText;
 
 //==============================
 
@@ -132,6 +141,9 @@ typedef struct
     int menuLabelW, menuLabelH;
     int menuX, menuY;
 
+    SDL_Texture *menuBackground;
+
+    SDL_Window *applicationWindow;
     SDL_Renderer *renderer;
 
 } MenuResources;
@@ -156,12 +168,24 @@ enum {
     MENUBUTTONPURPOSE_DEVELOPERS,
     MENUBUTTONPURPOSE_QUIT,
     MENUBUTTONPURPOSE_LEAVEDEVELOPERSMENU,
+    MENUBUTTONPURPOSE_CLOSESETTINGS,
+    MENUBUTTONPURPOSE_TOGGLEFULLSCREEN,
+    MENUBUTTONPURPOSE_TOGGLERESOLUTION,
 };
 
 enum {
     MENU_MAINMENU,
     MENU_SETTINGS,
     MENU_DEVELOPERS,
+};
+
+enum {
+    RESOLUTION_DEFAULT,
+    RESOLUTION_SVGA,
+    RESOLUTION_XGA,
+    RESOLUTION_HD,
+    RESOLUTION_FHD,
+    RESOLUTION_QHD,
 };
 
 //====================================================================================

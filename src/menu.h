@@ -11,12 +11,20 @@ void SetElementSelected(MenuTextElement *targetText);
 int processInputInMenu(SDL_Window *window, CurrentScene *currentScene);
 void renderMenu(SDL_Renderer *renderer, MenuResources *resources);
 void drawText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement *textProperties);
+void drawFullscreenButtonText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement *textProperties);
+void drawResolutionButtonText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement *textProperties);
+char* GetTextForResolutionButton();
 void initResourceManagement(MenuResources *menuResources, GameState *gameResources);
 void unloadMenuResources(MenuResources *resources);
 void unloadGameResources(GameState *resources);
 void ChangeSelectedButton(bool state);
 void ClearMainMenuButtons();
+void ClearSettingsButtons();
 void SetupSceneChanger(CurrentScene *sceneData);
+void SetupWindowReference(SDL_Window *window);
+void ToggleFullscreen();
+void OnResolutionButtonPressed();
+void ChangeResolution();
 void OnMenuButtonPressed(MenuTextElement *menuButton);
 
 #endif

@@ -5,16 +5,21 @@
 MainMenuButtonReferences menuButtonReferences;
 SelectedButtonReference selectedMenuButton;
 CurrentScene *sceneChangerReference;
+SDL_Window *windowRef;
 int selectedButtonInteger;
+int selectedButtonSettingsMenu;
 
 int currentMenuCategory;
+int currentResolutionInteger = 0;
 
+int currentScreenWidth;
+int currentScreenHeight;
+
+SDL_DisplayMode dm;
 
 
 void loadMenu(MenuResources *resources)
 {
-    SDL_Surface *surface = NULL;
-
     resources->font = TTF_OpenFont("assets/fonts/ARCADECLASSIC.TTF", 48);
     if (!resources->font)
     {
@@ -27,50 +32,51 @@ void loadMenu(MenuResources *resources)
 }
 
 void init_menu(MenuResources *resources) {
-    // Загрузка текстур для меню
-    // SDL_Surface *menuBackgroundSurface = IMG_Load("../assets/images/menu_background.png");
-    // if (menuBackgroundSurface == NULL) {
-    //     printf("Cannot find menu_background.png\n");
-    //     SDL_Quit();
-    //     exit(1);
-    // }
+    SetupWindowReference(resources->applicationWindow);  
+    
+    currentResolutionInteger = 0;
+    ChangeResolution();
+    
+    // background texture load
+    SDL_Surface *surface = NULL;
 
-    // game->menuBackground = SDL_CreateTextureFromSurface(game->renderer, menuBackgroundSurface);
-    // SDL_FreeSurface(menuBackgroundSurface);
+    surface = IMG_Load("assets/images/menu_background.png");
+    if (surface == NULL) {
+        printf("Cannot find menu_background.png\n");
+        SDL_Quit();
+        exit(1);
+    }
 
-    // Установка параметров менm
+    resources->menuBackground = SDL_CreateTextureFromSurface(resources->renderer, surface);
+    SDL_FreeSurface(surface);
 
-    /*{
-        resources->gameNameText.menuText = "name of game";
-        SDL_Color white = {255, 255, 255, 255};
-        SDL_Surface *tmp = TTF_RenderText_Blended(resources->font, resources->gameNameText.menuText, white);
-        resources->gameNameText.menuLabel = SDL_CreateTextureFromSurface(resources->renderer, tmp);
-        SDL_FreeSurface(tmp);
-
-        resources->gameNameText.menuLabelW = tmp->w;
-        resources->gameNameText.menuLabelH = tmp->h;
-
-        resources->gameNameText.menuX = (1980 - resources->gameNameText.menuLabelW) / 2;
-        resources->gameNameText.menuY = 150;//starts from up
-
-        SDL_DestroyTexture(resources->gameNameText.menuLabel);
-        resources->gameNameText.menuLabel = NULL;
-    }*/
+    // UI elements setting
+//===================================MAINMENU==================================
     currentMenuCategory = MENU_MAINMENU;
-    SetTextParameters(resources, &resources->gameNameText, "Unnamed", 0, 150, MENUBUTTONPURPOSE_UNASSIGNED);
-
+    SetTextParameters(resources, &resources->gameNameText, "HANNAH   OWO     SIMULATOR", 0, 150, MENUBUTTONPURPOSE_UNASSIGNED);
     SetTextParameters(resources, &resources->playText, "Play", 0, 400, MENUBUTTONPURPOSE_PLAY);
     menuButtonReferences.playButton = &resources->playText;
-
     SetTextParameters(resources, &resources->settingsText, "Settings", 0, 500, MENUBUTTONPURPOSE_SETTINGS);
     menuButtonReferences.settingsButton = &resources->settingsText;
-
     SetTextParameters(resources, &resources->developersText, "Developers", 0, 600, MENUBUTTONPURPOSE_DEVELOPERS);
     menuButtonReferences.developersButton = &resources->developersText;
-
     SetTextParameters(resources, &resources->quitText, "Quit", 0, 700, MENUBUTTONPURPOSE_QUIT);
     menuButtonReferences.quitButton = &resources->quitText;
+//================================================================================
 
+//===============================SETTINGS=======================================
+
+    SetTextParameters(resources, &resources->settingsCaptionText, "Settings", 0, 150, MENUBUTTONPURPOSE_UNASSIGNED);    
+    SetTextParameters(resources, &resources->resolutionText, "Resolution", 0, 300, MENUBUTTONPURPOSE_TOGGLERESOLUTION);
+    menuButtonReferences.resolutionButton = &resources->resolutionText;
+    SetTextParameters(resources, &resources->fullscreenText, "Fullscreen", 0, 400, MENUBUTTONPURPOSE_TOGGLEFULLSCREEN);
+    menuButtonReferences.fullscreenButton = &resources->fullscreenText;
+    SetTextParameters(resources, &resources->leaveSettingsText, "Leave", 0, 500, MENUBUTTONPURPOSE_CLOSESETTINGS);
+    menuButtonReferences.leaveSettingsButton = &resources->leaveSettingsText;
+
+//==============================================================================
+
+//===============================DEVELOPERS==============================
     SetTextParameters(resources, &resources->developersMenuText, "Developers", 0, 150, MENUBUTTONPURPOSE_UNASSIGNED);
     SetTextParameters(resources, &resources->andreyKlText, "Andrii   Kalashnikov", 0, 250, MENUBUTTONPURPOSE_UNASSIGNED);
     SetTextParameters(resources, &resources->bogdanText, "Bohdan   Yakilevskyi", 0, 350, MENUBUTTONPURPOSE_UNASSIGNED);
@@ -80,7 +86,7 @@ void init_menu(MenuResources *resources) {
     SetTextParameters(resources, &resources->andreyKuText, "Andrii   Kubik", 0, 750, MENUBUTTONPURPOSE_UNASSIGNED);
     SetTextParameters(resources, &resources->leaveDevelopersMenuText, "Leave", 0, 850, MENUBUTTONPURPOSE_LEAVEDEVELOPERSMENU);
     menuButtonReferences.leaveDevelopersButton = &resources->leaveDevelopersMenuText;
-
+//========================================================================
     SetElementSelected(menuButtonReferences.playButton);
 }
 
@@ -122,18 +128,22 @@ void renderMenu(SDL_Renderer *renderer, MenuResources *resources)
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
-
+    SDL_RenderCopy(resources->renderer, resources->menuBackground, NULL, NULL);   
+    
     if(currentMenuCategory == MENU_MAINMENU)
     {
-    drawText(renderer, resources, &resources->gameNameText);
-    drawText(renderer, resources, &resources->playText);
-    drawText(renderer, resources, &resources->settingsText);
-    drawText(renderer, resources, &resources->developersText);
-    drawText(renderer, resources, &resources->quitText);
+        drawText(renderer, resources, &resources->gameNameText);
+        drawText(renderer, resources, &resources->playText);
+        drawText(renderer, resources, &resources->settingsText);
+        drawText(renderer, resources, &resources->developersText);
+        drawText(renderer, resources, &resources->quitText);
     }
     else if(currentMenuCategory == MENU_SETTINGS)
     {
-
+        drawText(renderer, resources, &resources->settingsCaptionText);
+        drawResolutionButtonText(renderer, resources, &resources->resolutionText);
+        drawFullscreenButtonText(renderer, resources, &resources->fullscreenText);
+        drawText(renderer, resources, &resources->leaveSettingsText);
     }
     else if(currentMenuCategory == MENU_DEVELOPERS)
     {
@@ -147,8 +157,6 @@ void renderMenu(SDL_Renderer *renderer, MenuResources *resources)
         drawText(renderer, resources, &resources->leaveDevelopersMenuText);
     }
 
-
-
     SDL_RenderPresent(renderer);
 }
 
@@ -158,7 +166,7 @@ void drawText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement 
     if(textProperties->isSelected == 1)
     {
         colorToSet.r = 255;
-        colorToSet.g = 0;
+        colorToSet.g = 255;
         colorToSet.b = 0;
     }
     else
@@ -172,7 +180,7 @@ void drawText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement 
     SDL_Texture *label = SDL_CreateTextureFromSurface(renderer, tmp);
     SDL_FreeSurface(tmp);
 
-    int centerX = 1980 / 2;
+    int centerX = currentScreenWidth;
     int centerY = 1080 / 2;
 
     int textX = textProperties->menuX;
@@ -182,7 +190,7 @@ void drawText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement 
     int textH = textProperties->menuLabelH;
     SDL_QueryTexture(label, NULL, NULL, &textW, &textH);
 
-    SDL_Rect textRect = {textX, textY, textW, textH};
+    SDL_Rect textRect = {(centerX - textW) / 2, textY, textW, textH};
     SDL_RenderCopy(renderer, label, NULL, &textRect);
 
     SDL_DestroyTexture(label);
@@ -190,9 +198,185 @@ void drawText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement 
     
 }
 
+void drawFullscreenButtonText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement *textProperties)
+{
+    SDL_Color colorToSet = {255, 255, 255, 255};
+    if(textProperties->isSelected == 1)
+    {
+        colorToSet.r = 255;
+        colorToSet.g = 255;
+        colorToSet.b = 0;
+    }
+    else
+    {
+        colorToSet.r = 255;
+        colorToSet.g = 255;
+        colorToSet.b = 255;
+    }
+    bool isFullscreen = SDL_GetWindowFlags(windowRef) & SDL_WINDOW_FULLSCREEN;
+    char* textToSet = "null";
+    if(isFullscreen)
+    {
+        textToSet = "Fullscreen   mode      ON";
+    }
+    else
+    {
+        textToSet = "Fullscreen   mode      OFF";
+    }
+    
+
+    SDL_Surface *tmp = TTF_RenderText_Blended(resources->font, textToSet, colorToSet);
+    SDL_Texture *label = SDL_CreateTextureFromSurface(renderer, tmp);
+    SDL_FreeSurface(tmp);
+
+    int centerX = currentScreenWidth;
+    int centerY = 1080 / 2;
+
+    int textX = textProperties->menuX;
+    int textY = textProperties->menuY;
+
+    int textW = textProperties->menuLabelW;
+    int textH = textProperties->menuLabelH;
+    SDL_QueryTexture(label, NULL, NULL, &textW, &textH);
+
+    SDL_Rect textRect = {(centerX - textW) / 2, textY, textW, textH};
+    SDL_RenderCopy(renderer, label, NULL, &textRect);
+
+    SDL_DestroyTexture(label);
+
+    
+}
+
+
+
+void drawResolutionButtonText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement *textProperties)
+{
+    SDL_Color colorToSet = {255, 255, 255, 255};
+    if(textProperties->isSelected == 1)
+    {
+        colorToSet.r = 255;
+        colorToSet.g = 255;
+        colorToSet.b = 0;
+    }
+    else
+    {
+        colorToSet.r = 255;
+        colorToSet.g = 255;
+        colorToSet.b = 255;
+    }
+    bool isFullscreen = SDL_GetWindowFlags(windowRef) & SDL_WINDOW_FULLSCREEN;
+    char* textToSet = GetTextForResolutionButton();
+
+    SDL_Surface *tmp = TTF_RenderText_Blended(resources->font, textToSet, colorToSet);
+    SDL_Texture *label = SDL_CreateTextureFromSurface(renderer, tmp);
+    SDL_FreeSurface(tmp);
+
+    int centerX = currentScreenWidth;
+    int centerY = 1080 / 2;
+
+    int textX = textProperties->menuX;
+    int textY = textProperties->menuY;
+
+    int textW = textProperties->menuLabelW;
+    int textH = textProperties->menuLabelH;
+    SDL_QueryTexture(label, NULL, NULL, &textW, &textH);
+
+    SDL_Rect textRect = {(centerX - textW) / 2, textY, textW, textH};
+    SDL_RenderCopy(renderer, label, NULL, &textRect);
+
+    SDL_DestroyTexture(label);
+
+    
+}
+
+char* GetTextForResolutionButton()
+{
+    switch(currentResolutionInteger)
+    {
+        case 0:
+            return "Resolution             Default";
+            break;
+        case 1:
+            return "Resolution             800x600";
+            break;
+        case 2:
+            return "Resolution             1280x720";
+            break;
+        case 3:
+            return "Resolution             1360x768";
+            break;
+        case 4:
+            return "Resolution             1920x1080";
+            break;
+        case 5:
+            return "Resolution             2560x1440";
+            break;
+        default:
+            return "Resolution             Default";
+            break;
+    }
+}
+
 void SetupSceneChanger(CurrentScene *sceneData)
 {
     sceneChangerReference = sceneData;
+}
+
+void SetupWindowReference(SDL_Window *window)
+{
+    windowRef = window;
+}
+
+void ToggleFullscreen()
+{
+    if(windowRef == NULL) return;
+
+    bool isFullscreen = SDL_GetWindowFlags(windowRef) & SDL_WINDOW_FULLSCREEN;
+    SDL_SetWindowFullscreen(windowRef, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN);  
+    SDL_SetWindowSize(windowRef, 1920, 1080);
+    SDL_ShowCursor(isFullscreen);
+}
+
+void OnResolutionButtonPressed()
+{
+    currentResolutionInteger++;
+    if(currentResolutionInteger > 5) currentResolutionInteger = 0;
+    ChangeResolution();
+}
+
+void ChangeResolution()
+{
+    if(windowRef == NULL) return;
+    switch(currentResolutionInteger)
+    {
+        case 0:           
+            if(SDL_GetDesktopDisplayMode(0, &dm) != 0)
+            {
+                return;
+            }
+            int w, h;
+            w = dm.w;
+            h = dm.h;
+            SDL_SetWindowSize(windowRef, w, h);
+            break;
+        case 1:
+            SDL_SetWindowSize(windowRef, 800, 600);
+            break;
+        case 2:
+            SDL_SetWindowSize(windowRef, 1280, 720);
+            break;
+        case 3:
+            SDL_SetWindowSize(windowRef, 1360, 768);
+            break;
+        case 4:
+            SDL_SetWindowSize(windowRef, 1920, 1080);
+            break;
+        case 5:
+            SDL_SetWindowSize(windowRef, 2560, 1440);
+            break;
+    }
+
+    SDL_GetWindowSize(windowRef, &currentScreenWidth, &currentScreenHeight);
 }
 
 //==============================RESOURCES===========================
@@ -208,11 +392,26 @@ void unloadMenuResources(MenuResources *resources)
 {
     if(resources->isLoaded == 0) return;
 
-    if(resources->menuLabel != NULL)
-    {
-        SDL_DestroyTexture(resources->menuLabel);
-        TTF_CloseFont(resources->font);
-    }
+    SDL_DestroyTexture(resources->gameNameText.menuLabel);
+    SDL_DestroyTexture(resources->playText.menuLabel);
+    SDL_DestroyTexture(resources->settingsText.menuLabel);
+    SDL_DestroyTexture(resources->developersText.menuLabel);
+    SDL_DestroyTexture(resources->quitText.menuLabel);
+    SDL_DestroyTexture(resources->settingsCaptionText.menuLabel);
+    SDL_DestroyTexture(resources->resolutionText.menuLabel);
+    SDL_DestroyTexture(resources->fullscreenText.menuLabel);
+    SDL_DestroyTexture(resources->leaveSettingsText.menuLabel);
+    SDL_DestroyTexture(resources->developersMenuText.menuLabel);
+    SDL_DestroyTexture(resources->andreyKlText.menuLabel);
+    SDL_DestroyTexture(resources->bogdanText.menuLabel);
+    SDL_DestroyTexture(resources->iliaText.menuLabel);
+    SDL_DestroyTexture(resources->sergeyText.menuLabel);
+    SDL_DestroyTexture(resources->yuriyText.menuLabel);
+    SDL_DestroyTexture(resources->andreyKuText.menuLabel);
+    SDL_DestroyTexture(resources->leaveDevelopersMenuText.menuLabel);
+    SDL_DestroyTexture(resources->menuBackground);
+
+    TTF_CloseFont(resources->font);
 }
 
 void unloadGameResources(GameState *resources)
@@ -324,6 +523,33 @@ void ChangeSelectedButton(bool state)
             break;
         }
     }
+    else if(currentMenuCategory == MENU_SETTINGS)
+    {
+        ClearSettingsButtons();
+        if(state)
+        {
+            selectedButtonSettingsMenu++;
+        }
+        else
+        {
+            selectedButtonSettingsMenu--;
+        }
+        if(selectedButtonSettingsMenu > 2) selectedButtonSettingsMenu = 0;
+        if(selectedButtonSettingsMenu < 0) selectedButtonSettingsMenu = 2;
+
+        switch(selectedButtonSettingsMenu)
+        {
+            case 0:
+                SetElementSelected(menuButtonReferences.resolutionButton);
+                break;
+            case 1:
+                SetElementSelected(menuButtonReferences.fullscreenButton);
+                break;
+            case 2:
+                SetElementSelected(menuButtonReferences.leaveSettingsButton);
+                break;
+        }
+    }
 }
 
 void ClearMainMenuButtons()
@@ -334,6 +560,13 @@ void ClearMainMenuButtons()
     menuButtonReferences.quitButton->isSelected = 0;
 }
 
+void ClearSettingsButtons()
+{
+    menuButtonReferences.resolutionButton->isSelected = 0;
+    menuButtonReferences.fullscreenButton->isSelected = 0;
+    menuButtonReferences.leaveSettingsButton->isSelected = 0;
+}
+
 void OnMenuButtonPressed(MenuTextElement *menuButton)
 {
     if(menuButton->purpose == MENUBUTTONPURPOSE_UNASSIGNED) return;
@@ -342,21 +575,33 @@ void OnMenuButtonPressed(MenuTextElement *menuButton)
     {
         case MENUBUTTONPURPOSE_PLAY:
             sceneChangerReference->sceneInteger = SCENE_GAME;
-        break;
+            break;
         case MENUBUTTONPURPOSE_SETTINGS:
-            //currentMenuCategory = MENU_SETTINGS;
-        break;
+            selectedButtonSettingsMenu = 2;
+            currentMenuCategory = MENU_SETTINGS;
+            SetElementSelected(menuButtonReferences.leaveSettingsButton);
+            break;
         case MENUBUTTONPURPOSE_DEVELOPERS:
             currentMenuCategory = MENU_DEVELOPERS;
             SetElementSelected(menuButtonReferences.leaveDevelopersButton);
-        break;
+            break;
         case MENUBUTTONPURPOSE_QUIT:
             sceneChangerReference->sceneInteger = QUITGAME;
-        break;
+            break;
         case MENUBUTTONPURPOSE_LEAVEDEVELOPERSMENU:
             currentMenuCategory = MENU_MAINMENU;
             SetElementSelected(menuButtonReferences.developersButton);
-        break;
+            break;
+        case MENUBUTTONPURPOSE_CLOSESETTINGS:
+            currentMenuCategory = MENU_MAINMENU;
+            SetElementSelected(menuButtonReferences.settingsButton);
+            break;
+        case MENUBUTTONPURPOSE_TOGGLERESOLUTION:
+            OnResolutionButtonPressed();
+            break;
+        case MENUBUTTONPURPOSE_TOGGLEFULLSCREEN:
+            ToggleFullscreen();
+            break;
     }
 }
 
