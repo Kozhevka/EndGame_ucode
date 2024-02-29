@@ -1,5 +1,5 @@
-#ifndef sdl2_game_map_h
-#define sdl2_game_map_h
+#ifndef sdl2_game_interface_h
+#define sdl2_game_interface_h
 
 #include "main.h"
 

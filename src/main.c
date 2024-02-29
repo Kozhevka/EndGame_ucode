@@ -352,6 +352,7 @@ void doRender(SDL_Renderer *renderer, GameState *game)
 
         renderMap(renderer, game);
         
+        renderHealth(game);
 
         SDL_Rect rect = {game->scrollX + game->man.x, game->man.y, 80 * scaleX, 120 * scaleY};
         SDL_RenderCopyEx(renderer, game->manFrames[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
@@ -361,7 +362,6 @@ void doRender(SDL_Renderer *renderer, GameState *game)
             SDL_Rect rect = {game->scrollX + game->man.x - 24 * scaleX - 18 / 2, game->man.y - 24 * scaleY - 10 / 2, 140 * scaleX, 180 * scaleY};
             SDL_RenderCopyEx(renderer, game->deadEffect, NULL, &rect, 0, NULL, (game->time % 20 == 10));
         }
-        renderHealth(game);
 
     }
     else if (game->statusState == STATUS_STATE_GAMEOVER)
