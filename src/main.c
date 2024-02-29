@@ -1,12 +1,16 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include "SDL.h"
+#include "SDL_image.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include "main.h"
 #include "status.h"
+#include "menu.h"
 
 #define GRAVITY 0.03f
+
+int closeApplication = 0;
 
 void loadGame(GameState *game)
 {
@@ -122,6 +126,8 @@ void loadGame(GameState *game)
     game->ledges[99].x = 400;
     game->ledges[99].y = 500;
     
+
+    game->isLoaded = 1;
 }
 
 
@@ -380,10 +386,18 @@ void doRender(SDL_Renderer *renderer, GameState *game)
     SDL_RenderPresent(renderer);
 }
 
+void changeScene(CurrentScene *currentSceneData, int sceneInt)
+{
+    currentSceneData->sceneInteger = sceneInt;
+}
+
+
+
+
 int main(int argc, char *argv[])
 {
-
     GameState gameState;
+    MenuResources menuResources;
     SDL_Window *window;
     SDL_Renderer *renderer;
 
@@ -396,40 +410,59 @@ int main(int argc, char *argv[])
                               1980,
                               1080,
                               0);
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");                          
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     gameState.renderer = renderer;
 
     TTF_Init();
 
-    loadGame(&gameState);
+    initResourceManagement(&menuResources, &gameState);
+
+    //loadGame(&gameState);
+    loadMenu(&menuResources);
 
     int done = 0;
+    int gameLoaded = 0;
+    CurrentScene currentScene;
+    currentScene.sceneInteger = SCENE_MENU;
+    SetupSceneChanger(&currentScene);
 
-    while (!done)
-    {
+    init_menu(&menuResources);
 
-        done = processEvents(window, &gameState);
+    while (!done) {
+        if (currentScene.sceneInteger == QUITGAME) done = 1;
 
-        process(&gameState);
+        if (currentScene.sceneInteger == SCENE_MENU) {
+            done = processInputInMenu(window, &currentScene);
+            renderMenu(renderer, &menuResources);
+        } else if(currentScene.sceneInteger == SCENE_GAME) {
+            if (gameLoaded == 0) {
+                // Загрузка ресурсов для игры
+                loadGame(&gameState);
+                gameLoaded = 1;
+            }
 
-        colissionDetect(&gameState);
+            // Обработка игровых событий
+            done = processEvents(window, &gameState);
 
-        doRender(renderer, &gameState);
+            // Обновление состояния игры
+            process(&gameState);
+
+            // Детекция коллизий
+            colissionDetect(&gameState);
+
+            // Рендеринг игры
+            doRender(renderer, &gameState);
+        }
     }
 
-    SDL_DestroyTexture(gameState.enemy);
-    SDL_DestroyTexture(gameState.manFrames[0]);
-    SDL_DestroyTexture(gameState.manFrames[1]);
-    SDL_DestroyTexture(gameState.brick);
-
-    if(gameState.label != NULL)
-    SDL_DestroyTexture(gameState.label);
-    TTF_CloseFont(gameState.font);
+    // Очистка ресурсов
+    unloadMenuResources(&menuResources);
+    unloadGameResources(&gameState);
     
+
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
-    
 
     SDL_Quit();
 
