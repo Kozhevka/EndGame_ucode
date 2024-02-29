@@ -5,7 +5,16 @@
 #define STATUS_STATE_GAME 1
 #define STATUS_STATE_GAMEOVER 2
 
-#define NUM_ENEMIES 100
+#define NUM_ENEMIES 30
+#define SCREEN_WIDTH 1360
+#define SCREEN_HEIGHT 768
+
+// 2560 1440
+// 1920 1080
+// 1360 768
+// 1280 720
+// 1024 768
+// 800 600
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
