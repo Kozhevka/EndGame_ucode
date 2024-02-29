@@ -7,8 +7,7 @@
 #include "status.h"
 #include "menu.h"
 #include "map.h"
-
-
+#include "interface.h"
 
 float scaleX = (float)SCREEN_WIDTH / 1980.0f;
 float scaleY = (float)SCREEN_HEIGHT / 1080.0f;
@@ -25,7 +24,7 @@ void loadGame(GameState *game)
 {
     SDL_Surface *surface = NULL;
 
-    surface = IMG_Load("../assets/images/enemy.png");
+    surface = IMG_Load("assets/images/enemy.png");
     if (surface == NULL)
     {
         printf("cannot find enemy.png");
@@ -35,7 +34,7 @@ void loadGame(GameState *game)
     game->enemy = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../assets/images/gg-run.png");
+    surface = IMG_Load("assets/images/gg-run.png");
     if (surface == NULL)
     {
         printf("cannot find gg-stand.png");
@@ -45,7 +44,7 @@ void loadGame(GameState *game)
     game->manFrames[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../assets/images/gg-stand.png");
+    surface = IMG_Load("assets/images/gg-stand.png");
     if (surface == NULL)
     {
         printf("cannot find gg-run.png");
@@ -55,15 +54,15 @@ void loadGame(GameState *game)
     game->manFrames[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../assets/images/brick.png");
+    surface = IMG_Load("assets/images/brick.png");
     game->brick = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../assets/images/dead-effect.png");
+    surface = IMG_Load("assets/images/dead-effect.png");
     game->deadEffect = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    game->font = TTF_OpenFont("../assets/fonts/ARCADECLASSIC.TTF", 48);
+    game->font = TTF_OpenFont("assets/fonts/ARCADECLASSIC.TTF", 48);
     if (!game->font)
     {
         printf("cannot find font\n\n");
@@ -71,7 +70,7 @@ void loadGame(GameState *game)
         exit(1);
     }
 
-    surface = IMG_Load("../assets/images/grave.png");
+    surface = IMG_Load("assets/images/grave.png");
     if (surface == NULL)
     {
         printf("cannot find grave.png");
@@ -93,6 +92,7 @@ void loadGame(GameState *game)
     game->man.slowingDown = 0;
     game->man.lives = 3;
     game->man.isDead = 0;
+    game->man.health = 100;
     game->statusState = STATUS_STATE_LIVES;
 
     init_status_lives(game);
@@ -110,6 +110,10 @@ void process(GameState *game)
 {
     game->time++;
 
+    if (game->man.health < 1)
+    {
+        game->man.isDead = 1;
+    }
     if (game->time > 120)
     {
         shutdown_status_lives(game);
@@ -159,6 +163,7 @@ void process(GameState *game)
         game->time = 0;
 
         game->man.isDead = 0;
+        game->man.health = 100;
         game->man.x = 200 - 40;
         game->man.y = 240 - 40;
         game->man.dx = 0;
@@ -192,10 +197,20 @@ void colissionDetect(GameState *game)
     for (int i = 0; i < NUM_ENEMIES; i++)
     {
 
-        if(collide2d(game->man.x, game->man.y, game->enemies[i].x,game->enemies[i].y, 48, 48, 64, 64)){
-            game->man.isDead = 1;
+        if(collide2d(game->man.x, game->man.y, game->enemies[i].x,game->enemies[i].y, 48, 48, 64, 64))
+        {
+            game->man.health -= 25;
+            if (game->man.x < game->enemies[i].x) {
+                game->man.dx  = -5;
+            } else {
+                game->man.dx = 5;
+            }
+                        if (game->man.y < game->enemies[i].y) {
+                game->man.dy  = -3;
+            } else {
+                game->man.dy = 3;
+            }
         }
-
     }
 
     for (int i = 0; i < 100; i++)
@@ -346,7 +361,7 @@ void doRender(SDL_Renderer *renderer, GameState *game)
             SDL_Rect rect = {game->scrollX + game->man.x - 24 * scaleX - 18 / 2, game->man.y - 24 * scaleY - 10 / 2, 140 * scaleX, 180 * scaleY};
             SDL_RenderCopyEx(renderer, game->deadEffect, NULL, &rect, 0, NULL, (game->time % 20 == 10));
         }
-        
+        renderHealth(game);
 
     }
     else if (game->statusState == STATUS_STATE_GAMEOVER)
