@@ -18,6 +18,13 @@ int currentScreenHeight;
 SDL_DisplayMode dm;
 
 
+int getWidth(){
+    return currentScreenWidth;
+}
+int getHeight(){
+    return currentScreenHeight;
+}
+
 void loadMenu(MenuResources *resources)
 {
     resources->font = TTF_OpenFont("assets/fonts/ARCADECLASSIC.TTF", 48);

@@ -1,4 +1,5 @@
 #include "map.h"
+#include "menu.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -10,7 +11,7 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         game->ledges[i].w = (int)(256 * scaleX);
         game->ledges[i].h = (int)(64 * scaleY);
         game->ledges[i].x = (int)(i * (252) * scaleX); 
-        game->ledges[i].y = SCREEN_HEIGHT - game->ledges[i].h * 3; 
+        game->ledges[i].y = getHeight() - game->ledges[i].h * 3; 
     }
 
     // Пример инициализации врагов
@@ -29,8 +30,6 @@ void initMap(GameState *game, float scaleX, float scaleY) {
 }
 
 void renderMap(SDL_Renderer *renderer, GameState *game) {
-    float scaleX = (float)SCREEN_WIDTH / 1980.0f;
-    float scaleY = (float)SCREEN_HEIGHT / 1080.0f;
 
     // Пример отрисовки блоков
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -42,7 +41,7 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
 
     // Пример отрисовки врагов
     for (int i = 0; i < NUM_ENEMIES; i++) {
-        SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * scaleX, 140 * scaleY};
+        SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getStaleX(), 140 * getStaleY()};
         SDL_RenderCopy(renderer, game->enemy, NULL, &enemyRect);
     }
 }

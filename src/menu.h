@@ -26,5 +26,7 @@ void ToggleFullscreen();
 void OnResolutionButtonPressed();
 void ChangeResolution();
 void OnMenuButtonPressed(MenuTextElement *menuButton);
+int getWidth();
+int getHeight();
 
 #endif

@@ -6,8 +6,8 @@
 #define STATUS_STATE_GAMEOVER 2
 
 #define NUM_ENEMIES 30
-#define SCREEN_WIDTH 1360
-#define SCREEN_HEIGHT 768
+// #define SCREEN_WIDTH 1920
+// #define SCREEN_HEIGHT 1080
 
 // 2560 1440
 // 1920 1080
@@ -201,7 +201,8 @@ enum {
 
 void doRender(SDL_Renderer *renderer, GameState *game);
 void init_game_over(GameState *game);
-
+float getStaleX();
+float getStaleY();
 #endif
 
 
