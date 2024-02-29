@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+void renderMap(SDL_Renderer *renderer, GameState *game);
+
 void initMap(GameState *game, float scaleX, float scaleY) {
     // Пример инициализации блоков
     for (int i = 0; i < 100; i++) {
