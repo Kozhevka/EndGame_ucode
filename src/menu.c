@@ -1,5 +1,6 @@
 #include "menu.h"
 #include "main.h"
+#include "sounds.h"
 #include <stdbool.h>
 
 MainMenuButtonReferences menuButtonReferences;
@@ -45,6 +46,7 @@ void init_menu(MenuResources *resources) {
     
     currentResolutionInteger = 0;
     ChangeResolution();
+    //playMenuMusic();
     
     // background texture load
     SDL_Surface *surface = NULL;
@@ -497,16 +499,20 @@ int processInputInMenu(SDL_Window *window, CurrentScene *currentScene) {
                         done = 1;
                         break;
                     case SDLK_SPACE:
+                    playSound("click.wav");
                         currentScene->sceneInteger = SCENE_GAME;
                         break;
                     case SDLK_UP:
+                    playSound("scroll.wav");
                         ChangeSelectedButton(false);
                     break;
 
                     case SDLK_DOWN:
+                    playSound("scroll.wav");
                         ChangeSelectedButton(true);
                     break;
                     case SDLK_RETURN:
+                    playSound("click.wav");
                         OnMenuButtonPressed(selectedMenuButton.selectedButton);
                     break;
                 }

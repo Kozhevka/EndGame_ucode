@@ -7,6 +7,7 @@
 #include "status.h"
 #include "menu.h"
 #include "map.h"
+#include "sounds.h"
 #include "enemies.h"
 #include "interface.h"
 
@@ -42,6 +43,9 @@ void loadGame(GameState *game)
         SDL_Quit();
         exit(1);
     }
+
+    Mix_Volume(-1, MIX_MAX_VOLUME / 2);
+
     game->enemy = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
@@ -172,6 +176,7 @@ void process(GameState *game)
     if (game->man.health < 1)
     {
         game->man.isDead = 1;
+        playSound("die.wav");
     }
     if (game->time > 120)
     {
@@ -262,6 +267,7 @@ void colissionDetect(GameState *game)
         if(collide2d(game->man.x, game->man.y, game->enemies[i].x,game->enemies[i].y, 48, 48, 64, 64))
         {
             game->man.health -= 25;
+            playSound("damage.wav");
             if (game->man.x < game->enemies[i].x) {
                 game->man.dx  = -5;
             } else {
@@ -410,10 +416,12 @@ int processEvents(SDL_Window *window, GameState *game)
 
         if(state[SDL_SCANCODE_SPACE]){
             game->man.dy -= 0.03f * getStaleY() * addToJump;
+            playSound("jump.wav");
         }
 
         if (state[SDL_SCANCODE_A]) {
         game->man.dx -= 0.1 * speed;
+        playSound("land.wav");
         if (game->man.dx < -3 * speed) {
             game->man.dx = -3 * speed;
         }
@@ -421,6 +429,7 @@ int processEvents(SDL_Window *window, GameState *game)
         game->man.slowingDown = 0;
         } else if (state[SDL_SCANCODE_D]) {
         game->man.dx += 0.1 * speed;
+        playSound("land.wav");
         if (game->man.dx > 3 * speed) {
             game->man.dx = 3 * speed;
         }
@@ -543,6 +552,7 @@ int main(int argc, char *argv[])
     TTF_Init();
 
     initResourceManagement(&menuResources, &gameState);
+    //playSound("menu.wav");
 
     loadMenu(&menuResources);
 
