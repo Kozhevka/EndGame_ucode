@@ -29,6 +29,12 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 
+#include "character.h"
+#include "design.h"
+
+typedef struct Man Man;
+typedef struct AnimationEnemyHolder AnimationEnemyHolder;
+
 typedef struct
 {
     float x, y;
@@ -38,6 +44,7 @@ typedef struct
     int health;
     int onLedge, isDead, isGrounded;
     int animFrame, facingLeft, slowingDown;
+    AnimationMainHeroHolder *animations;
 
 } Man;
 
@@ -56,7 +63,11 @@ typedef struct
     float speed;
     float initialX;
     
+    AnimationEnemyHolder *animations;
+    
 } Enemy;
+
+
 
 enum {
     ENEMY_STATE_IDLE,
@@ -122,23 +133,10 @@ typedef struct
     Chandelier chandeliers[NUM_CHANDELIERS];
     Flag flags[NUM_FLAGS];
 
-    SDL_Texture *flag;
-    SDL_Texture *chandelier;
-    SDL_Texture *scull;
-    SDL_Texture *window;
-    SDL_Texture *door;
-    SDL_Texture *wall;
-    SDL_Texture *enemy;
-    SDL_Texture *manFrames[4];
-    SDL_Texture *brick;
-    SDL_Texture *deadEffect;
+    LocationTextures *locationTextures;
+    ParticlesTextures *particlesTextures;
+
     SDL_Texture *label;
-    SDL_Texture *graveTexture;
-    SDL_Texture *enemyGo;
-    SDL_Texture* enemyAttackStart;
-    SDL_Texture* enemyAttacked;
-    SDL_Texture* enemyAttackedEnd;
-    SDL_Texture* enemyReturn;
     
     int labelW, labelH;
 
@@ -281,8 +279,8 @@ enum {
 
 void doRender(SDL_Renderer *renderer, GameState *game);
 void init_game_over(GameState *game);
-float getStaleX();
-float getStaleY();
+float getScaleX();
+float getScaleY();
 #endif
 
 

@@ -9,13 +9,10 @@
 #include "map.h"
 #include "enemies.h"
 #include "interface.h"
+#include "character.h"
+#include "design.h"
 
 
-// float scaleX = (float)SCREEN_WIDTH / 1980.0f;
-// float scaleY = (float)SCREEN_HEIGHT / 1080.0f;
-
-float scaleX = (float)SCREEN_WIDTH / 1980.0f;
-float scaleY = (float)SCREEN_HEIGHT / 1080.0f;
 
 float gravity = 0.03f;
 float speed = 1;
@@ -26,56 +23,28 @@ int addToJump = 1;
 int closeApplication = 0;
 
 
-float getStaleX(){
+float getScaleX(){
     float scaleX = (float)getWidth() / 1980;
     return scaleX;
 }
-float getStaleY(){
+float getScaleY(){
     float scaleY = (float)getHeight() / 1080;
     return scaleY;
 }
 
 void loadGame(GameState *game)
 {
-    SDL_Surface *surface = NULL;
+    initializeMainHero(game->man.animations, game->renderer);
 
-    surface = IMG_Load("assets/images/enemy.png");
-    if (surface == NULL)
+    for (size_t i = 0; i < NUM_ENEMIES; i++)
     {
-        printf("cannot find enemy.png");
-        SDL_Quit();
-        exit(1);
+        initializeEnemy(game->enemies[i].animations, game-> renderer);
     }
-    game->enemy = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+    
+    initializeLocationTexture(game->locationTextures, game-> renderer);
+    initializeParticleTexture(game->particlesTextures, game-> renderer);
 
-    surface = IMG_Load("assets/images/gg-run.png");
-    if (surface == NULL)
-    {
-        printf("cannot find gg-stand.png");
-        SDL_Quit();
-        exit(1);
-    }
-    game->manFrames[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/gg-stand.png");
-    if (surface == NULL)
-    {
-        printf("cannot find gg-run.png");
-        SDL_Quit();
-        exit(1);
-    }
-    game->manFrames[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/brick.png");
-    game->brick = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/dead-effect.png");
-    game->deadEffect = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
 
     game->font = TTF_OpenFont("assets/fonts/ARCADECLASSIC.TTF", 48);
     if (!game->font)
@@ -84,66 +53,6 @@ void loadGame(GameState *game)
         SDL_Quit();
         exit(1);
     }
-
-    surface = IMG_Load("assets/images/grave.png");
-    if (surface == NULL)
-    {
-        printf("cannot find grave.png");
-        SDL_Quit();
-        exit(1);
-    }
-    game->graveTexture = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/enemy-go.png");
-    if (surface == NULL)
-    {
-        printf("cannot find enemy-go.png");
-        SDL_Quit();
-        exit(1);
-    }
-    game->enemyGo = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/enemy-attack-start.png");
-    game->enemyAttackStart = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/enemy-attacked.png");
-    game->enemyAttacked = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/enemy-attacked-end.png");
-    game->enemyAttackedEnd = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/enemy.png");
-    game->enemyReturn = SDL_CreateTextureFromSurface(game->renderer, surface);
-
-    surface = IMG_Load("assets/images/wall.png");
-    game->wall = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/door.png");
-    game->door = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/window.png");
-    game->window = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/scull.png");
-    game->scull = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/chandelier.png");
-    game->chandelier = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/flag.png");
-    game->flag = SDL_CreateTextureFromSurface(game->renderer, surface);
-
-    SDL_FreeSurface(surface);
 
     game->label = NULL;
 
@@ -198,14 +107,7 @@ void process(GameState *game)
         {
             if (game->time % koff == 0)
             {
-                if (man->animFrame == 0)
-                {
-                    man->animFrame = 1;
-                }
-                else
-                {
-                    man->animFrame = 0;
-                }
+                playerMoveAnimationStep(man);
             }
         }
 
@@ -249,9 +151,6 @@ void process(GameState *game)
     {
         game->scrollX = 0;
     }
-
-
-
 }
 
 int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2){
@@ -412,34 +311,22 @@ int processEvents(SDL_Window *window, GameState *game)
 
     const Uint8 *state = SDL_GetKeyboardState(NULL);
 
-    if(state[SDL_SCANCODE_SPACE]){
-        game->man.dy -= 0.003f * getStaleY() * addToJump;
+    if(state[SDL_SCANCODE_SPACE] && game->man.isGrounded == 1)
+    {
+        playerJump(game->man, addToJump);
     }
 
-    if (state[SDL_SCANCODE_A]) {
-    game->man.dx -= 0.1 * speed;
-    if (game->man.dx < -3 * speed) {
-        game->man.dx = -3 * speed;
-    }
-    game->man.facingLeft = 0;
-    game->man.slowingDown = 0;
-    } else if (state[SDL_SCANCODE_D]) {
-    game->man.dx += 0.1 * speed;
-    if (game->man.dx > 3 * speed) {
-        game->man.dx = 3 * speed;
-    }
-    game->man.facingLeft = 1;
-    game->man.slowingDown = 0;
+    if (state[SDL_SCANCODE_A]) 
+    {
+        playerMove(game->man, speed, -1);
+    } 
+    else if (state[SDL_SCANCODE_D]) 
+    {
+        playerMove(game->man, speed, 1);
     }
     else
     {
-        game->man.animFrame = 0;
-        game->man.dx *= 0.1f * speed;
-        game->man.slowingDown = 1;
-        if (fabsf(game->man.dx) < 0.1f)
-        {
-            game->man.dx = 0;
-        }
+        playerIdle(game->man, speed);
     }
 
     return done;
@@ -463,14 +350,13 @@ void doRender(SDL_Renderer *renderer, GameState *game)
         renderMap(renderer, game);
         
         renderHealth(game);
-
         SDL_Rect rect = {game->scrollX + game->man.x, game->man.y, 80 * getStaleX(), 120 * getStaleY()};
-        SDL_RenderCopyEx(renderer, game->manFrames[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
+        SDL_RenderCopyEx(renderer, game->man.animations->run[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
 
         if (game->man.isDead)
         {
             SDL_Rect rect = {game->scrollX + game->man.x - 24 * getStaleX() - 18 / 2, game->man.y - 24 * getStaleY() - 10 / 2, 140 * getStaleX(), 180 * getStaleY()};
-            SDL_RenderCopyEx(renderer, game->deadEffect, NULL, &rect, 0, NULL, (game->time % 20 == 10));
+            SDL_RenderCopyEx(renderer, game->man.animations->dead, NULL, &rect, 0, NULL, (game->time % 20 == 10));
         }
 
     }
@@ -534,8 +420,8 @@ int main(int argc, char *argv[])
     window = SDL_CreateWindow(GetGameName(),
                           SDL_WINDOWPOS_UNDEFINED,
                           SDL_WINDOWPOS_UNDEFINED,
-                          SCREEN_WIDTH,
-                          SCREEN_HEIGHT,
+                          getStaleX(),
+                          getStaleY(),
                           0);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
