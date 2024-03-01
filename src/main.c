@@ -7,14 +7,14 @@
 #include "status.h"
 #include "menu.h"
 #include "map.h"
-
+#include "enemies.h"
 
 
 // float scaleX = (float)SCREEN_WIDTH / 1980.0f;
 // float scaleY = (float)SCREEN_HEIGHT / 1080.0f;
 
 float gravity = 0.03f;
-float speed = 0;
+float speed = 1;
 int koff = 100;
 int addToJump = 1;
 
@@ -91,6 +91,32 @@ void loadGame(GameState *game)
     game->graveTexture = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
+    surface = IMG_Load("assets/images/enemy-go.png");
+    if (surface == NULL)
+    {
+        printf("cannot find enemy-go.png");
+        SDL_Quit();
+        exit(1);
+    }
+    game->enemyGo = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/enemy-attack-start.png");
+    game->enemyAttackStart = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/enemy-attacked.png");
+    game->enemyAttacked = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/enemy-attacked-end.png");
+    game->enemyAttackedEnd = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/enemy.png");
+    game->enemyReturn = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
     game->label = NULL;
 
     // Адаптация размеров персонажей и объектов под экран
@@ -110,8 +136,6 @@ void loadGame(GameState *game)
     game->time = 0;
     game->scrollX = 0;
     game->deathCountdown = -1;
-
-    
 
     game->isLoaded = 1;
 }
@@ -191,6 +215,9 @@ void process(GameState *game)
     {
         game->scrollX = 0;
     }
+
+
+
 }
 
 int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2){
@@ -416,8 +443,8 @@ int main(int argc, char *argv[])
     srandom((int)time(NULL));
 
     window = SDL_CreateWindow("Game Window",
-                          SDL_WINDOWPOS_UNDEFINED,
-                          SDL_WINDOWPOS_UNDEFINED,
+                          0,
+                          0, 
                           getWidth(),
                           getHeight(),
                           0);
@@ -454,6 +481,7 @@ int main(int argc, char *argv[])
                 // Загрузка ресурсов для игры
                 loadGame(&gameState);
                 initMap(&gameState, getStaleX(), getStaleY());
+                updateEnemies(&gameState);
                 gameLoaded = 1;
             }
 
@@ -462,6 +490,8 @@ int main(int argc, char *argv[])
 
             // Обновление состояния игры
             process(&gameState);
+
+            updateEnemies(&gameState);
 
             // Детекция коллизий
             colissionDetect(&gameState);

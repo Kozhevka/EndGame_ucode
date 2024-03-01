@@ -4,6 +4,9 @@
         "sdl.h": "c",
         "sdl_ttf.h": "c",
         "map.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "main.h": "c",
+        "enemies.h": "c"
     }
 }

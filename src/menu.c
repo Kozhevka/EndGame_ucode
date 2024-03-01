@@ -426,6 +426,7 @@ void unloadGameResources(GameState *resources)
     if(resources->isLoaded == 0) return;
 
     SDL_DestroyTexture(resources->enemy);
+    SDL_DestroyTexture(resources->enemyGo);
     SDL_DestroyTexture(resources->manFrames[0]);
     SDL_DestroyTexture(resources->manFrames[1]);
     SDL_DestroyTexture(resources->brick);

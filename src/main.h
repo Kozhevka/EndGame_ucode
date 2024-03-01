@@ -5,9 +5,11 @@
 #define STATUS_STATE_GAME 1
 #define STATUS_STATE_GAMEOVER 2
 
-#define NUM_ENEMIES 30
+#define NUM_ENEMIES 10
 // #define SCREEN_WIDTH 1920
 // #define SCREEN_HEIGHT 1080
+
+#define ENEMY_STATE_ATTACKING 2
 
 // 2560 1440
 // 1920 1080
@@ -26,7 +28,8 @@ typedef struct
     float dy, dx;
     short lives;
     char *name;
-    int onLedge, isDead;
+    int onLedge, isDead, isGrounded;
+    
 
     int animFrame, facingLeft, slowingDown;
 
@@ -35,7 +38,24 @@ typedef struct
 typedef struct
 {
     int x, y;
+    int animFrame;   // Переменная для хранения текущего кадра анимации
+    int facingLeft;  // Флаг направления врага (0 - вправо, 1 - влево)
+    float distance;  // Переменная для отслеживания расстояния
+    int leftBound, rightBound;
+    int facingLeftTexture; // Флаг направления текстуры (0 - вправо, 1 - влево)
+    int attackState;    // Состояние атаки (0 - нет атаки, 1 - начало атаки, 2 - атака, 3 - конец атаки)
+    int attackTimer;    // Таймер для отслеживания времени атаки
+    float attackTarget; // Координата, куда враг направлен в процессе атаки
+    int state;
+    float speed;
+    float initialX;
+    
 } Enemy;
+
+enum {
+    ENEMY_STATE_IDLE,
+    ENEMY_STATE_WALKING,
+};
 
 typedef struct
 {
@@ -60,6 +80,12 @@ typedef struct
     SDL_Texture *deadEffect;
     SDL_Texture *label;
     SDL_Texture *graveTexture;
+    SDL_Texture *enemyGo;
+    SDL_Texture* enemyAttackStart;
+    SDL_Texture* enemyAttacked;
+    SDL_Texture* enemyAttackedEnd;
+    SDL_Texture* enemyReturn;
+    
     int labelW, labelH;
 
     TTF_Font *font;
