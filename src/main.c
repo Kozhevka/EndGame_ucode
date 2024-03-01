@@ -107,6 +107,10 @@ void loadGame(GameState *game)
     game->scull = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
+    surface = IMG_Load("assets/images/chandelier.png");
+    game->chandelier = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
     game->label = NULL;
 
     // Адаптация размеров персонажей и объектов под экран
@@ -229,6 +233,50 @@ void colissionDetect(GameState *game)
         float mw = 90 * getStaleX(), mh = 108 * getStaleY();
         float mx = game->man.x, my = game->man.y;
         float bx = game->ledges[i].x, by = game->ledges[i].y, bw = game->ledges[i].w, bh = game->ledges[i].h;
+
+        if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw)
+        {
+            if (my < by + bh && my > by && game->man.dy < 0)
+            {
+                game->man.y = by + bh;
+                my = by + bh;
+                game->man.dy = 0;
+                game->man.onLedge = 1;
+            }
+        }
+        if (mx + mw > bx && mx < bx + bw)
+        {
+            if (my + mh > by && my < by && game->man.dy > 0)
+            {
+                game->man.y = by - mh;
+                my = by - mh;
+                game->man.dy = 0;
+                game->man.onLedge = 1;
+            }
+        }
+
+        if (my + mh > by && my < by + bh)
+        {
+            if (mx < bx + bw && mx + mw > bx + bw && game->man.dx < 0)
+            {
+                game->man.x = bx + bw;
+                mx = bx + bw;
+                game->man.dx = 0;
+            }
+            else if (mx + mw > bx && mx < bx && game->man.dx > 0)
+            {
+                game->man.x = bx - mw;
+                mx = bx - mw;
+                game->man.dx = 0;
+            }
+        }
+    }
+
+        for (int i = 0; i < 100; i++)
+    {
+        float mw = 90 * getStaleX(), mh = 108 * getStaleY();
+        float mx = game->man.x, my = game->man.y;
+        float bx = game->ceilings[i].x, by = game->ceilings[i].y, bw = game->ceilings[i].w, bh = game->ceilings[i].h;
 
         if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw)
         {

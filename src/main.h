@@ -9,6 +9,7 @@
 #define NUM_SCULLS 1000
 #define NUM_LADGES 100
 #define NUM_WINDOWS 500
+#define NUM_CHANDELIERS 200
 
 
 // #define SCREEN_WIDTH 1920
@@ -74,6 +75,11 @@ typedef struct
 
 typedef struct
 {
+    int x, y, w, h;
+} Chandelier;
+
+typedef struct
+{
     int isLoaded;
 
     float scrollX;
@@ -88,7 +94,9 @@ typedef struct
     Door doors;
     Window windows[NUM_WINDOWS];
     Scull sculls[NUM_SCULLS];
+    Chandelier chandeliers[NUM_CHANDELIERS];
 
+    SDL_Texture *chandelier;
     SDL_Texture *scull;
     SDL_Texture *window;
     SDL_Texture *door;

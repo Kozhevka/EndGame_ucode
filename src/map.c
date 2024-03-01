@@ -66,6 +66,13 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         }
     }
 
+    for (int i = 0; i < NUM_CHANDELIERS; i++) 
+    {
+        game->chandeliers[i].w = (int)(128 * scaleX);
+        game->chandeliers[i].h = (int)(128 * scaleY);
+        game->chandeliers[i].x = (int)(i * (700) * scaleX); 
+        game->chandeliers[i].y = getHeight() - game->chandeliers[i].h * 4 - 60; 
+    }
 
     // Пример инициализации врагов
     for (int i = 0; i < NUM_ENEMIES; i++) {
@@ -123,6 +130,11 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
         {
             i++;
         }
+    }
+
+    for (int i = 0; i < NUM_CHANDELIERS; i++) {
+        SDL_Rect chandelierRect = {game->scrollX + game->chandeliers[i].x, game->chandeliers[i].y, game->chandeliers[i].w, game->chandeliers[i].h};
+        SDL_RenderCopy(renderer, game->chandelier, NULL, &chandelierRect);
     }
 
     // Пример отрисовки врагов
