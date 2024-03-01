@@ -6,6 +6,11 @@
 #define STATUS_STATE_GAMEOVER 2
 
 #define NUM_ENEMIES 30
+#define NUM_SCULLS 1000
+#define NUM_LADGES 100
+#define NUM_WINDOWS 500
+
+
 // #define SCREEN_WIDTH 1920
 // #define SCREEN_HEIGHT 1080
 
@@ -44,6 +49,31 @@ typedef struct
 
 typedef struct
 {
+    int x, y, w, h;
+} Ceiling;
+
+typedef struct
+{
+    int x, y, w, h;
+} Wall;
+
+typedef struct
+{
+    int x, y, w, h;
+} Door;
+
+typedef struct
+{
+    int x, y, w, h, random;
+} Window;
+
+typedef struct
+{
+    int x, y, w, h, random;
+} Scull;
+
+typedef struct
+{
     int isLoaded;
 
     float scrollX;
@@ -52,8 +82,17 @@ typedef struct
 
     Enemy enemies[NUM_ENEMIES];
 
-    Ledge ledges[100];
+    Ledge ledges[NUM_LADGES];
+    Ceiling ceilings[NUM_LADGES];
+    Wall walls[NUM_LADGES];
+    Door doors;
+    Window windows[NUM_WINDOWS];
+    Scull sculls[NUM_SCULLS];
 
+    SDL_Texture *scull;
+    SDL_Texture *window;
+    SDL_Texture *door;
+    SDL_Texture *wall;
     SDL_Texture *enemy;
     SDL_Texture *manFrames[4];
     SDL_Texture *brick;

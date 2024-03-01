@@ -91,11 +91,27 @@ void loadGame(GameState *game)
     game->graveTexture = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
+    surface = IMG_Load("assets/images/wall.png");
+    game->wall = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/door.png");
+    game->door = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/window.png");
+    game->window = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/scull.png");
+    game->scull = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
     game->label = NULL;
 
     // Адаптация размеров персонажей и объектов под экран
     game->man.x = 200 * getStaleX() - 40;
-    game->man.y = 240 * getStaleY() - 40;
+    game->man.y = 800 * getStaleY() - 40;
     game->man.dy = 0;
     game->man.onLedge = 0;
     game->man.animFrame = 0;
@@ -340,7 +356,7 @@ void doRender(SDL_Renderer *renderer, GameState *game)
 
 
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -390,9 +406,9 @@ int setPhysics(){
         gravity = 0.01f;
         koff = 50;
     }else if(width <= 1920){
-        speed = 0.9;
-        gravity = 0.02f;
-        koff = 30;
+        speed = 2;
+        gravity = 0.06f;
+        koff = 100;
     }else if(width <= 2560 || width >= 2560){
         speed = 2;
         gravity = 0.05f;
