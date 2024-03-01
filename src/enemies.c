@@ -13,11 +13,11 @@ void updateEnemies(GameState *game) {
     for (int i = 0; i < NUM_ENEMIES; i++) {
         // Изменяем координаты врага в зависимости от направления
         if (game->enemies[i].facingLeft) {
-            game->enemies[i].x -= 1 * getStaleX();
+            game->enemies[i].x -= 1 * getScaleX();
             // Устанавливаем facingLeft в 1, чтобы текстура была перевернута
             game->enemies[i].facingLeftTexture = 1;
         } else {
-            game->enemies[i].x += 1 * getStaleX();
+            game->enemies[i].x += 1 * getScaleX();
             // Устанавливаем facingLeft в 0, чтобы текстура не была перевернута
             game->enemies[i].facingLeftTexture = 0;
         }

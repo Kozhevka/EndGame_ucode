@@ -38,7 +38,7 @@ void playerIdle(Man *player, float gameSpeed)
 
 void playerJump(Man *player, float jumpForce)
 {
-    player->dy -= 0.003f * getStaleY() * jumpForce;
+    player->dy -= 0.003f * getScaleY() * jumpForce;
 }
 void playerAttack(Man *player)
 {

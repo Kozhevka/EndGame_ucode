@@ -24,25 +24,25 @@ int closeApplication = 0;
 
 
 float getScaleX(){
-    float scaleX = (float)getWidth() / 1980;
+    float scaleX = (float)getScreenWidht() / 1980;
     return scaleX;
 }
 float getScaleY(){
-    float scaleY = (float)getHeight() / 1080;
+    float scaleY = (float)getScreenHeight() / 1080;
     return scaleY;
 }
 
 void loadGame(GameState *game)
 {
-    initializeMainHero(game->man.animations, game->renderer);
+    initializeMainHeroTextures(&(game->playerAnimations), game->renderer);
 
     for (size_t i = 0; i < NUM_ENEMIES; i++)
     {
-        initializeEnemy(game->enemies[i].animations, game-> renderer);
+        initializeEnemyTextures(&(game->enemyAnimations), game-> renderer);
     }
     
-    initializeLocationTexture(game->locationTextures, game-> renderer);
-    initializeParticleTexture(game->particlesTextures, game-> renderer);
+    initializeLocationTextures(&(game->locationTextures), game-> renderer);
+    initializeParticleTextures(&(game->particlesTextures), game-> renderer);
 
 
 
@@ -57,8 +57,8 @@ void loadGame(GameState *game)
     game->label = NULL;
 
     // Адаптация размеров персонажей и объектов под экран
-    game->man.x = 200 * getStaleX() - 40;
-    game->man.y = 800 * getStaleY() - 40;
+    game->man.x = 200 * getScaleX() - 40;
+    game->man.y = 800 * getScaleY() - 40;
     game->man.dy = 0;
     game->man.onLedge = 0;
     game->man.animFrame = 0;
@@ -154,7 +154,7 @@ void process(GameState *game)
 }
 
 int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2){
-    return !((x1 > (x2 + wt2 * getStaleX())) || (x2 > (x1 + wt1 * getStaleX())) || (y1 > (y2 + ht2 * getStaleY())) || (y2 > (y1 + ht1 * getStaleY())));
+    return !((x1 > (x2 + wt2 * getScaleX())) || (x2 > (x1 + wt1 * getScaleX())) || (y1 > (y2 + ht2 * getScaleY())) || (y2 > (y1 + ht1 * getScaleY())));
 }
 
 void colissionDetect(GameState *game)
@@ -180,7 +180,7 @@ void colissionDetect(GameState *game)
 
     for (int i = 0; i < 100; i++)
     {
-        float mw = 90 * getStaleX(), mh = 108 * getStaleY();
+        float mw = 90 * getScaleX(), mh = 108 * getScaleY();
         float mx = game->man.x, my = game->man.y;
         float bx = game->ledges[i].x, by = game->ledges[i].y, bw = game->ledges[i].w, bh = game->ledges[i].h;
 
@@ -224,7 +224,7 @@ void colissionDetect(GameState *game)
 
         for (int i = 0; i < 100; i++)
     {
-        float mw = 90 * getStaleX(), mh = 108 * getStaleY();
+        float mw = 90 * getScaleX(), mh = 108 * getScaleY();
         float mx = game->man.x, my = game->man.y;
         float bx = game->ceilings[i].x, by = game->ceilings[i].y, bw = game->ceilings[i].w, bh = game->ceilings[i].h;
 
@@ -295,7 +295,7 @@ int processEvents(SDL_Window *window, GameState *game)
             case SDLK_SPACE:
                 if (game->man.dy == game->man.dy)
                 {
-                    game->man.dy = -3 * getStaleY();
+                    game->man.dy = -3 * getScaleY();
                     game->man.onLedge = 0;
                 }
                 break;
@@ -313,20 +313,20 @@ int processEvents(SDL_Window *window, GameState *game)
 
     if(state[SDL_SCANCODE_SPACE] && game->man.isGrounded == 1)
     {
-        playerJump(game->man, addToJump);
+        playerJump(&game->man, addToJump);
     }
 
     if (state[SDL_SCANCODE_A]) 
     {
-        playerMove(game->man, speed, -1);
+        playerMove(&game->man, speed, -1);
     } 
     else if (state[SDL_SCANCODE_D]) 
     {
-        playerMove(game->man, speed, 1);
+        playerMove(&game->man, speed, 1);
     }
     else
     {
-        playerIdle(game->man, speed);
+        playerIdle(&game->man, speed);
     }
 
     return done;
@@ -350,13 +350,13 @@ void doRender(SDL_Renderer *renderer, GameState *game)
         renderMap(renderer, game);
         
         renderHealth(game);
-        SDL_Rect rect = {game->scrollX + game->man.x, game->man.y, 80 * getStaleX(), 120 * getStaleY()};
-        SDL_RenderCopyEx(renderer, game->man.animations->run[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
+        SDL_Rect rect = {game->scrollX + game->man.x, game->man.y, 80 * getScaleX(), 120 * getScaleY()};
+        SDL_RenderCopyEx(renderer, game->playerAnimations->run[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
 
         if (game->man.isDead)
         {
-            SDL_Rect rect = {game->scrollX + game->man.x - 24 * getStaleX() - 18 / 2, game->man.y - 24 * getStaleY() - 10 / 2, 140 * getStaleX(), 180 * getStaleY()};
-            SDL_RenderCopyEx(renderer, game->man.animations->dead, NULL, &rect, 0, NULL, (game->time % 20 == 10));
+            SDL_Rect rect = {game->scrollX + game->man.x - 24 * getScaleX() - 18 / 2, game->man.y - 24 * getScaleY() - 10 / 2, 140 * getScaleX(), 180 * getScaleY()};
+            SDL_RenderCopyEx(renderer, game->playerAnimations->dead, NULL, &rect, 0, NULL, (game->time % 20 == 10));
         }
 
     }
@@ -373,7 +373,7 @@ void changeScene(CurrentScene *currentSceneData, int sceneInt)
 }
 
 int setPhysics(){
-    int width = getWidth();
+    int width = getScreenWidht();
     if(width <= 800){
     speed = 0.06;
     gravity = 0.01f;
@@ -420,8 +420,8 @@ int main(int argc, char *argv[])
     window = SDL_CreateWindow(GetGameName(),
                           SDL_WINDOWPOS_UNDEFINED,
                           SDL_WINDOWPOS_UNDEFINED,
-                          getStaleX(),
-                          getStaleY(),
+                          getScaleX(),
+                          getScaleY(),
                           0);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
@@ -455,7 +455,7 @@ int main(int argc, char *argv[])
                 setPhysics();
                 // Загрузка ресурсов для игры
                 loadGame(&gameState);
-                initMap(&gameState, getStaleX(), getStaleY());
+                initMap(&gameState, getScaleX(), getScaleY());
                 updateEnemies(&gameState);
                 gameLoaded = 1;
             }

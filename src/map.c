@@ -10,27 +10,27 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         game->ledges[i].w = (int)(256 * scaleX);
         game->ledges[i].h = (int)(64 * scaleY);
         game->ledges[i].x = (int)(i * 252 * scaleX);
-        game->ledges[i].y = getHeight() - game->ledges[i].h * 3;
+        game->ledges[i].y = getScreenHeight() - game->ledges[i].h * 3;
     }
 
     for (int i = 0; i < NUM_LADGES; i++) {
         game->ceilings[i].w = (int)(256 * scaleX);
         game->ceilings[i].h = (int)(64 * scaleY);
         game->ceilings[i].x = (int)(i * 252 * scaleX);
-        game->ceilings[i].y = getHeight() - game->ceilings[i].h * 10;
+        game->ceilings[i].y = getScreenHeight() - game->ceilings[i].h * 10;
     }
 
     for (int i = 0; i < NUM_LADGES; i++) {
         game->walls[i].w = (int)(405 * scaleX);
         game->walls[i].h = (int)(395 * scaleY);
         game->walls[i].x = (int)(i * 400 * scaleX);
-        game->walls[i].y = getHeight() - game->ceilings[i].h * 9;
+        game->walls[i].y = getScreenHeight() - game->ceilings[i].h * 9;
     }
 
     game->doors.w = (int)(256 * scaleX);
     game->doors.h = (int)(258 * scaleY);
     game->doors.x = (int)((game->man.x - 210) * scaleX);
-    game->doors.y = getHeight() - game->ledges[1].h * 6 - 12;
+    game->doors.y = getScreenHeight() - game->ledges[1].h * 6 - 12;
 
     for (int i = 1; i < NUM_WINDOWS; i++) {
         if (rand() % 2 == 1) {
@@ -38,7 +38,7 @@ void initMap(GameState *game, float scaleX, float scaleY) {
             game->windows[i].w = (int)(160 * scaleX);
             game->windows[i].h = (int)(160 * scaleY);
             game->windows[i].x = (int)(i * 252 * scaleX);
-            game->windows[i].y = getHeight() - game->ledges[i].h * 6;
+            game->windows[i].y = getScreenHeight() - game->ledges[i].h * 6;
         } else {
             i++;
         }
@@ -50,7 +50,7 @@ void initMap(GameState *game, float scaleX, float scaleY) {
             game->flags[i].w = (int)(200 * scaleX);
             game->flags[i].h = (int)(320 * scaleY);
             game->flags[i].x = (int)(i * 252 * scaleX);
-            game->flags[i].y = getHeight() - game->ledges[i].h * 8;
+            game->flags[i].y = getScreenHeight() - game->ledges[i].h * 8;
         } else {
             i++;
         }
@@ -62,7 +62,7 @@ void initMap(GameState *game, float scaleX, float scaleY) {
             game->sculls[i].w = (int)(100 * scaleX);
             game->sculls[i].h = (int)(100 * scaleY);
             game->sculls[i].x = (int)(i * 70 * scaleX);
-            game->sculls[i].y = getHeight() - game->ledges[i].h * 4;
+            game->sculls[i].y = getScreenHeight() - game->ledges[i].h * 4;
         } else {
             i++;
         }
@@ -72,7 +72,7 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         game->chandeliers[i].w = (int)(128 * scaleX);
         game->chandeliers[i].h = (int)(128 * scaleY);
         game->chandeliers[i].x = (int)(i * 700 * scaleX);
-        game->chandeliers[i].y = getHeight() - game->chandeliers[i].h * 4 - 60;
+        game->chandeliers[i].y = getScreenHeight() - game->chandeliers[i].h * 4 - 60;
     }
 
     for (int i = 0; i < NUM_ENEMIES; i++) {
@@ -95,23 +95,23 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
 
     for (int i = 0; i < NUM_LADGES; i++) {
         SDL_Rect ledgeRect = {game->scrollX + game->ledges[i].x, game->ledges[i].y, game->ledges[i].w, game->ledges[i].h};
-        SDL_RenderCopy(renderer, game->brick, NULL, &ledgeRect);
+        SDL_RenderCopy(renderer, game->locationTextures->brick, NULL, &ledgeRect);
     }
 
     for (int i = 0; i < NUM_LADGES; i++) {
         SDL_Rect ceilingRect = {game->scrollX + game->ceilings[i].x, game->ceilings[i].y, game->ceilings[i].w, game->ceilings[i].h};
-        SDL_RenderCopy(renderer, game->brick, NULL, &ceilingRect);
+        SDL_RenderCopy(renderer, game->locationTextures->brick, NULL, &ceilingRect);
     }
 
     for (int i = 0; i < NUM_LADGES; i++) {
         SDL_Rect wallsRect = {game->scrollX + game->walls[i].x, game->walls[i].y, game->walls[i].w, game->walls[i].h};
-        SDL_RenderCopy(renderer, game->wall, NULL, &wallsRect);
+        SDL_RenderCopy(renderer, game->locationTextures->wall, NULL, &wallsRect);
     }
 
     for (int i = 1; i < NUM_WINDOWS; i++) {
         if (game->windows[i].random == 1) {
             SDL_Rect windowsRect = {game->scrollX + game->windows[i].x, game->windows[i].y, game->windows[i].w, game->windows[i].h};
-            SDL_RenderCopy(renderer, game->window, NULL, &windowsRect);
+            SDL_RenderCopy(renderer, game->locationTextures->window, NULL, &windowsRect);
         } else {
             i++;
         }
@@ -120,7 +120,7 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
     for (int i = 1; i < NUM_FLAGS; i++) {
         if (game->flags[i].random == 1) {
             SDL_Rect flagsRect = {game->scrollX + game->flags[i].x, game->flags[i].y, game->flags[i].w, game->flags[i].h};
-            SDL_RenderCopy(renderer, game->flag, NULL, &flagsRect);
+            SDL_RenderCopy(renderer, game->locationTextures->flag, NULL, &flagsRect);
         } else {
             i++;
         }
@@ -129,7 +129,7 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
     for (int i = 1; i < NUM_SCULLS; i++) {
         if (game->sculls[i].random == 1) {
             SDL_Rect scullsRect = {game->scrollX + game->sculls[i].x, game->sculls[i].y, game->sculls[i].w, game->sculls[i].h};
-            SDL_RenderCopy(renderer, game->scull, NULL, &scullsRect);
+            SDL_RenderCopy(renderer, game->locationTextures->scull, NULL, &scullsRect);
         } else {
             i++;
         }
@@ -137,7 +137,7 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
 
     for (int i = 0; i < NUM_CHANDELIERS; i++) {
         SDL_Rect chandelierRect = {game->scrollX + game->chandeliers[i].x, game->chandeliers[i].y, game->chandeliers[i].w, game->chandeliers[i].h};
-        SDL_RenderCopy(renderer, game->chandelier, NULL, &chandelierRect);
+        SDL_RenderCopy(renderer, game->locationTextures->chandelier, NULL, &chandelierRect);
     }
 
     for (int i = 0; i < NUM_ENEMIES; i++) {
@@ -145,20 +145,20 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
         SDL_Texture *currentEnemyTexture;
 
         if (game->enemies[i].state == ENEMY_STATE_IDLE) {
-            currentEnemyTexture = game->enemy;
+            currentEnemyTexture = game->enemyAnimations->idle;
         } else {
             // Чтобы чередовать между game->enemy и game->enemyGo, используйте game->enemies[i].animFrame
             if (game->enemies[i].animFrame == 0) {
-                currentEnemyTexture = game->enemy;
+                currentEnemyTexture = game->enemyAnimations->idle;
             } else {
-                currentEnemyTexture = game->enemyGo;
+                currentEnemyTexture = game->enemyAnimations->walk;
             }
         }
 
-        SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getStaleX(), 140 * getStaleY()};
+        SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getScaleX(), 140 * getScaleY()};
         SDL_RenderCopyEx(renderer, currentEnemyTexture, NULL, &enemyRect, 0, NULL, flip);
     }
 
     SDL_Rect doorRect = {game->scrollX + game->doors.x, game->doors.y, game->doors.w, game->doors.h};
-    SDL_RenderCopy(renderer, game->door, NULL, &doorRect);
+    SDL_RenderCopy(renderer, game->locationTextures->door, NULL, &doorRect);
 }

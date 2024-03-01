@@ -1,6 +1,7 @@
+#include <stdbool.h>
 #include "menu.h"
 #include "main.h"
-#include <stdbool.h>
+#include "design.h"
 
 MainMenuButtonReferences menuButtonReferences;
 SelectedButtonReference selectedMenuButton;
@@ -19,11 +20,10 @@ SDL_DisplayMode dm;
 
 char* gameName = "HANNAH   OWO     SIMULATOR";
 
-
-int getWidth(){
+int getScreenWidht(){
     return currentScreenWidth;
 }
-int getHeight(){
+int getScreenHeight(){
     return currentScreenHeight;
 }
 
@@ -463,11 +463,11 @@ void unloadGameResources(GameState *resources)
 {
     if(resources->isLoaded == 0) return;
 
-    SDL_DestroyTexture(resources->enemy);
-    SDL_DestroyTexture(resources->enemyGo);
-    SDL_DestroyTexture(resources->manFrames[0]);
-    SDL_DestroyTexture(resources->manFrames[1]);
-    SDL_DestroyTexture(resources->brick);
+    disposeMainHeroTextures(&resources->playerAnimations);
+    disposeEnemyTextures(&resources->enemyAnimations);
+    disposeLocationTextures(&resources->locationTextures);
+    disposeParticleTextures(&resources->particlesTextures);
+    
     SDL_DestroyTexture(resources->label);
     TTF_CloseFont(resources->font);
 

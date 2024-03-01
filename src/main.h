@@ -1,5 +1,5 @@
-#ifndef sdl2_game_main_h
-#define sdl2_game_main_h
+#ifndef MAIN_H
+#define MAIN_H
 
 #define STATUS_STATE_LIVES 0
 #define STATUS_STATE_GAME 1
@@ -29,11 +29,8 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 
-#include "character.h"
-#include "design.h"
+#include "design.h" 
 
-typedef struct Man Man;
-typedef struct AnimationEnemyHolder AnimationEnemyHolder;
 
 typedef struct
 {
@@ -44,8 +41,6 @@ typedef struct
     int health;
     int onLedge, isDead, isGrounded;
     int animFrame, facingLeft, slowingDown;
-    AnimationMainHeroHolder *animations;
-
 } Man;
 
 typedef struct
@@ -62,8 +57,6 @@ typedef struct
     int state;
     float speed;
     float initialX;
-    
-    AnimationEnemyHolder *animations;
     
 } Enemy;
 
@@ -114,7 +107,7 @@ typedef struct
     int x, y, w, h;
 } Chandelier;
 
-typedef struct
+typedef struct 
 {
     int isLoaded;
 
@@ -135,6 +128,8 @@ typedef struct
 
     LocationTextures *locationTextures;
     ParticlesTextures *particlesTextures;
+    AnimationEnemyHolder *enemyAnimations;
+    AnimationMainHeroHolder *playerAnimations;
 
     SDL_Texture *label;
     
@@ -147,7 +142,7 @@ typedef struct
 
 
     SDL_Renderer *renderer;
-} GameState;
+}GameState;
 
 //=================================================================================
 
