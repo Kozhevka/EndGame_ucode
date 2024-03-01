@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 #include "main.h"
 #include "status.h"
 #include "menu.h"
@@ -115,6 +116,7 @@ void loadGame(GameState *game)
 
     surface = IMG_Load("assets/images/enemy.png");
     game->enemyReturn = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
 
     surface = IMG_Load("assets/images/wall.png");
     game->wall = SDL_CreateTextureFromSurface(game->renderer, surface);
@@ -267,7 +269,7 @@ void colissionDetect(GameState *game)
             } else {
                 game->man.dx = 5;
             }
-                        if (game->man.y < game->enemies[i].y) {
+            if (game->man.y < game->enemies[i].y) {
                 game->man.dy  = -3;
             } else {
                 game->man.dy = 3;
@@ -410,6 +412,7 @@ int processEvents(SDL_Window *window, GameState *game)
 
         if(state[SDL_SCANCODE_SPACE]){
             game->man.dy -= 0.03f * getStaleY() * addToJump;
+            
         }
 
         if (state[SDL_SCANCODE_A]) {
@@ -505,7 +508,7 @@ int setPhysics(){
         gravity = 0.02f;
         koff = 30;
     }else if(width <= 2560 || width >= 2560){
-        speed = 3;
+        speed = 10;
         gravity = 0.03f;
         koff = 20;
         addToJump = 20;
@@ -517,7 +520,8 @@ int setPhysics(){
 int main(int argc, char *argv[])
 {
     
-
+    // const long interval_microseconds = 1000000 / 120;
+    
     GameState gameState;
     MenuResources menuResources;
     SDL_Window *window;
@@ -565,8 +569,8 @@ int main(int argc, char *argv[])
                 setPhysics();
                 // Загрузка ресурсов для игры
                 loadGame(&gameState);
+                updateEnemies(&gameState, renderer);
                 initMap(&gameState, getStaleX(), getStaleY());
-                updateEnemies(&gameState);
                 gameLoaded = 1;
             }
 
@@ -576,7 +580,7 @@ int main(int argc, char *argv[])
             // Обновление состояния игры
             process(&gameState);
 
-            updateEnemies(&gameState);
+            updateEnemies(&gameState, renderer);
 
             // Детекция коллизий
             colissionDetect(&gameState);
@@ -584,6 +588,7 @@ int main(int argc, char *argv[])
             // Рендеринг игры
             doRender(renderer, &gameState);
         }
+        // usleep(interval_microseconds);
     }
 
     // Очистка ресурсов

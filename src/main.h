@@ -55,6 +55,7 @@ typedef struct
     int state;
     float speed;
     float initialX;
+    SDL_Texture *texture;
     
 } Enemy;
 
@@ -135,10 +136,10 @@ typedef struct
     SDL_Texture *label;
     SDL_Texture *graveTexture;
     SDL_Texture *enemyGo;
-    SDL_Texture* enemyAttackStart;
-    SDL_Texture* enemyAttacked;
-    SDL_Texture* enemyAttackedEnd;
-    SDL_Texture* enemyReturn;
+    SDL_Texture *enemyAttackStart;
+    SDL_Texture *enemyAttacked;
+    SDL_Texture *enemyAttackedEnd;
+    SDL_Texture *enemyReturn;
     
     int labelW, labelH;
 
