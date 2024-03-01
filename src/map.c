@@ -36,7 +36,7 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         game->doors.x = (int)((game->man.x - 210) * scaleX); 
         game->doors.y = getHeight() - game->ledges[1].h * 6 - 12; 
 
-    for (int i = 1; i < NUM_LADGES; i++) 
+    for (int i = 1; i < NUM_WINDOWS; i++) 
     {
         if(rand() % 2 == 1){
         game->windows[i].random = 1;
@@ -102,7 +102,7 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
         SDL_RenderCopy(renderer, game->wall, NULL, &wallsRect);
     }
 
-    for (int i = 1; i < NUM_LADGES; i++) {
+    for (int i = 1; i < NUM_WINDOWS; i++) {
         if (game->windows[i].random == 1){
         SDL_Rect windowsRect = {game->scrollX + game->windows[i].x, game->windows[i].y, game->windows[i].w, game->windows[i].h};
         SDL_RenderCopy(renderer, game->window, NULL, &windowsRect);
