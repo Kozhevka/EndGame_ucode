@@ -75,13 +75,17 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         game->chandeliers[i].y = getHeight() - game->chandeliers[i].h * 4 - 60;
     }
 
+     // Пример инициализации врагов
     for (int i = 0; i < NUM_ENEMIES; i++) {
         int randomBlock;
         game->enemies[i].speed = 0.2 * scaleX;
         do {
+            // Выбираем случайный блок
             randomBlock = rand() % 100;
+            // Проверяем, что блок не слишком близко к началу
         } while (game->ledges[randomBlock].x < 500 * scaleX);
 
+        // Устанавливаем врага наверху выбранного блока
         game->enemies[i].x = game->ledges[randomBlock].x + game->ledges[randomBlock].w / 2 - 80 * scaleX / 2;
         game->enemies[i].y = game->ledges[randomBlock].y - 140 * scaleY;
         game->enemies[i].animFrame = 0;

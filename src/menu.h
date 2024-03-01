@@ -33,5 +33,7 @@ void OnResolutionButtonPressed();
 void ChangeResolution();
 void OnMenuButtonPressed(MenuTextElement *menuButton);
 char* GetGameName();
+int getWidth();
+int getHeight();
 
 #endif

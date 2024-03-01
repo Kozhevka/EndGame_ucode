@@ -18,8 +18,8 @@ void init_status_lives(GameState *game) {
 }
 void draw_status_lives(GameState *game)
 {
-    float scaleX = (float)SCREEN_WIDTH / 1980.0f;
-    float scaleY = (float)SCREEN_HEIGHT / 1080.0f;
+    float scaleX = (float)getWidth() / 1980.0f;
+    float scaleY = (float)getHeight() / 1080.0f;
     SDL_Renderer *renderer = game->renderer;
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
