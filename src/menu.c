@@ -17,6 +17,8 @@ int currentScreenHeight;
 
 SDL_DisplayMode dm;
 
+char* gameName = "HANNAH   OWO     SIMULATOR";
+
 
 int getWidth(){
     return currentScreenWidth;
@@ -27,7 +29,7 @@ int getHeight(){
 
 void loadMenu(MenuResources *resources)
 {
-    resources->font = TTF_OpenFont("assets/fonts/ARCADECLASSIC.TTF", 48);
+    resources->font = TTF_OpenFont("assets/fonts/menuFont.ttf", 48);
     if (!resources->font)
     {
         printf("cannot find font\n\n");
@@ -60,7 +62,7 @@ void init_menu(MenuResources *resources) {
     // UI elements setting
 //===================================MAINMENU==================================
     currentMenuCategory = MENU_MAINMENU;
-    SetTextParameters(resources, &resources->gameNameText, "HANNAH   OWO     SIMULATOR", 0, 150, MENUBUTTONPURPOSE_UNASSIGNED);
+    SetTextParameters(resources, &resources->gameNameText, GetGameName(), 0, 150, MENUBUTTONPURPOSE_UNASSIGNED);
     SetTextParameters(resources, &resources->playText, "Play", 0, 400, MENUBUTTONPURPOSE_PLAY);
     menuButtonReferences.playButton = &resources->playText;
     SetTextParameters(resources, &resources->settingsText, "Settings", 0, 500, MENUBUTTONPURPOSE_SETTINGS);
@@ -197,7 +199,7 @@ void drawText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement 
     int textH = textProperties->menuLabelH;
     SDL_QueryTexture(label, NULL, NULL, &textW, &textH);
 
-    SDL_Rect textRect = {(centerX - textW) / 2, textY, textW, textH};
+    SDL_Rect textRect = {(centerX - GetRectWidth(textW)) / 2, GetRectYCoordinate(textY), GetRectWidth(textW), GetRectHeight(textH)};
     SDL_RenderCopy(renderer, label, NULL, &textRect);
 
     SDL_DestroyTexture(label);
@@ -246,7 +248,7 @@ void drawFullscreenButtonText(SDL_Renderer *renderer, MenuResources *resources, 
     int textH = textProperties->menuLabelH;
     SDL_QueryTexture(label, NULL, NULL, &textW, &textH);
 
-    SDL_Rect textRect = {(centerX - textW) / 2, textY, textW, textH};
+    SDL_Rect textRect = {(centerX - GetRectWidth(textW)) / 2, GetRectYCoordinate(textY), GetRectWidth(textW), GetRectHeight(textH)};
     SDL_RenderCopy(renderer, label, NULL, &textRect);
 
     SDL_DestroyTexture(label);
@@ -288,7 +290,7 @@ void drawResolutionButtonText(SDL_Renderer *renderer, MenuResources *resources, 
     int textH = textProperties->menuLabelH;
     SDL_QueryTexture(label, NULL, NULL, &textW, &textH);
 
-    SDL_Rect textRect = {(centerX - textW) / 2, textY, textW, textH};
+    SDL_Rect textRect = {(centerX - GetRectWidth(textW)) / 2, GetRectYCoordinate(textY), GetRectWidth(textW), GetRectHeight(textH)};
     SDL_RenderCopy(renderer, label, NULL, &textRect);
 
     SDL_DestroyTexture(label);
@@ -324,6 +326,36 @@ char* GetTextForResolutionButton()
     }
 }
 
+int GetRectYCoordinate(int yCoordinateGlobal)
+{
+    return yCoordinateGlobal * GetScreenSizeMultiplier();
+}
+
+int GetRectWidth(int rectWidth)
+{
+    return rectWidth * GetScreenSizeMultiplier();
+}
+
+int GetRectHeight(int rectHeight)
+{
+    return rectHeight * GetScreenSizeMultiplier();
+}
+
+float GetScreenSizeMultiplier()
+{
+    return ((float)currentScreenHeight / 1080);
+}
+
+int GetCurrentScreenWidth()
+{
+    return currentScreenWidth;
+}
+
+int GetCurrentScreenHeight()
+{
+    return currentScreenHeight;
+}
+
 void SetupSceneChanger(CurrentScene *sceneData)
 {
     sceneChangerReference = sceneData;
@@ -338,9 +370,9 @@ void ToggleFullscreen()
 {
     if(windowRef == NULL) return;
 
-    bool isFullscreen = SDL_GetWindowFlags(windowRef) & SDL_WINDOW_FULLSCREEN;
+    bool isFullscreen = SDL_GetWindowFlags(windowRef) & SDL_WINDOW_FULLSCREEN;  
     SDL_SetWindowFullscreen(windowRef, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN);  
-    SDL_SetWindowSize(windowRef, 1920, 1080);
+    SDL_SetWindowSize(windowRef, currentScreenWidth, currentScreenHeight);
     SDL_ShowCursor(isFullscreen);
 }
 
@@ -379,6 +411,12 @@ void ChangeResolution()
             SDL_SetWindowSize(windowRef, 1920, 1080);
             break;
         case 5:
+            if(dm.w < 2560)
+            {
+                currentResolutionInteger = 0;
+                ChangeResolution();
+                return;
+            }
             SDL_SetWindowSize(windowRef, 2560, 1440);
             break;
     }
@@ -430,8 +468,6 @@ void unloadGameResources(GameState *resources)
     SDL_DestroyTexture(resources->manFrames[0]);
     SDL_DestroyTexture(resources->manFrames[1]);
     SDL_DestroyTexture(resources->brick);
-
-    //if (gameState.label != NULL)
     SDL_DestroyTexture(resources->label);
     TTF_CloseFont(resources->font);
 
@@ -461,7 +497,6 @@ int processInputInMenu(SDL_Window *window, CurrentScene *currentScene) {
                         done = 1;
                         break;
                     case SDLK_SPACE:
-                        // Переключение на игровую сцену
                         currentScene->sceneInteger = SCENE_GAME;
                         break;
                     case SDLK_UP:
@@ -476,24 +511,10 @@ int processInputInMenu(SDL_Window *window, CurrentScene *currentScene) {
                     break;
                 }
                 break;
-
-            
-
             case SDL_QUIT:
                 done = 1;
                 break;
         }
-    }
-
-    const Uint8 *state = SDL_GetKeyboardState(NULL);
-
-    if(state[SDL_SCANCODE_UP]){
-        
-    }
-    if(state[SDL_SCANCODE_DOWN]){
-    }
-    if(state[SDL_SCANCODE_RETURN]){
-        
     }
 
     return done;
@@ -614,3 +635,8 @@ void OnMenuButtonPressed(MenuTextElement *menuButton)
 }
 
 //======================================================================
+
+char* GetGameName()
+{
+    return gameName;
+}

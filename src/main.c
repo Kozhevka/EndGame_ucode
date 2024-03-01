@@ -442,11 +442,12 @@ int main(int argc, char *argv[])
     SDL_Init(SDL_INIT_VIDEO);
     srandom((int)time(NULL));
 
-    window = SDL_CreateWindow("Game Window",
-                          0,
-                          0, 
-                          getWidth(),
-                          getHeight(),
+
+    window = SDL_CreateWindow(GetGameName(),
+                          SDL_WINDOWPOS_UNDEFINED,
+                          SDL_WINDOWPOS_UNDEFINED,
+                          SCREEN_WIDTH,
+                          SCREEN_HEIGHT,
                           0);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
