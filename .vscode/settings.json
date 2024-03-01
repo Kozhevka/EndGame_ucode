@@ -7,6 +7,7 @@
         "stdlib.h": "c",
         "stdio.h": "c",
         "main.h": "c",
-        "enemies.h": "c"
+        "enemies.h": "c",
+        "imagetool.h": "c"
     }
 }

@@ -31,7 +31,7 @@ void draw_status_lives(GameState *game)
     int characterX = centerX - (int)(110 * scaleX) * GetScreenSizeMultiplier();
     int characterY = centerY - (int)(60 * scaleY) * GetScreenSizeMultiplier();
     SDL_Rect rect = {characterX, characterY, (int)(80 * scaleX) * GetScreenSizeMultiplier(), (int)(120 * scaleY) * GetScreenSizeMultiplier()};
-    SDL_RenderCopyEx(renderer, game->manFrames[0], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
+    SDL_RenderCopyEx(renderer, game->manIdle, NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
 
     // Рассчитываем координаты для текста
     int textX = centerX - game->labelW / 2 + 20; // координаты для текста

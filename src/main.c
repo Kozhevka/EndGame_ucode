@@ -46,7 +46,17 @@ void loadGame(GameState *game)
     game->enemy = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/gg-run.png");
+    surface = IMG_Load("assets/images/mainHero/gg_run0.png");
+    if (surface == NULL)
+    {
+        printf("cannot find gg-stand.png");
+        SDL_Quit();
+        exit(1);
+    }
+    game->manFrames[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/mainHero/gg_run1.png");
     if (surface == NULL)
     {
         printf("cannot find gg-stand.png");
@@ -56,14 +66,34 @@ void loadGame(GameState *game)
     game->manFrames[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/gg-stand.png");
+    surface = IMG_Load("assets/images/mainHero/gg_run2.png");
+    if (surface == NULL)
+    {
+        printf("cannot find gg-stand.png");
+        SDL_Quit();
+        exit(1);
+    }
+    game->manFrames[2] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/mainHero/gg_run3.png");
+    if (surface == NULL)
+    {
+        printf("cannot find gg-stand.png");
+        SDL_Quit();
+        exit(1);
+    }
+    game->manFrames[3] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/mainHero/gg_idle.png");
     if (surface == NULL)
     {
         printf("cannot find gg-run.png");
         SDL_Quit();
         exit(1);
     }
-    game->manFrames[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    game->manIdle = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
     surface = IMG_Load("assets/images/brick.png");
@@ -194,13 +224,10 @@ void process(GameState *game)
 
         if (man->dx != 0 && man->onLedge && !man->slowingDown)
         {
-            if (game->time % koff == 0)
+            if (game->time % koff / 5 == 0)
             {
-                if (man->animFrame == 0)
-                {
-                    man->animFrame = 1;
-                }
-                else
+                man->animFrame++;
+                if (man->animFrame > 3)
                 {
                     man->animFrame = 0;
                 }
@@ -416,14 +443,14 @@ int processEvents(SDL_Window *window, GameState *game)
         }
 
         if (state[SDL_SCANCODE_A]) {
-        game->man.dx -= 0.1 * speed;
+        game->man.dx -= 0.2 * speed;
         if (game->man.dx < -3 * speed) {
             game->man.dx = -3 * speed;
         }
         game->man.facingLeft = 0;
         game->man.slowingDown = 0;
         } else if (state[SDL_SCANCODE_D]) {
-        game->man.dx += 0.1 * speed;
+        game->man.dx += 0.2 * speed;
         if (game->man.dx > 3 * speed) {
             game->man.dx = 3 * speed;
         }
@@ -464,8 +491,9 @@ void doRender(SDL_Renderer *renderer, GameState *game)
         renderHealth(game);
 
         SDL_Rect rect = {game->scrollX + game->man.x, game->man.y, 80 * getStaleX(), 120 * getStaleY()};
-        SDL_RenderCopyEx(renderer, game->manFrames[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
 
+        SDL_RenderCopyEx(renderer, game->manFrames[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
+    
         if (game->man.isDead)
         {
             SDL_Rect rect = {game->scrollX + game->man.x - 24 * getStaleX() - 18 / 2, game->man.y - 24 * getStaleY() - 10 / 2, 140 * getStaleX(), 180 * getStaleY()};
@@ -520,7 +548,7 @@ int setPhysics(){
 int main(int argc, char *argv[])
 {
     
-    // const long interval_microseconds = 1000000 / 120;
+    const long interval_microseconds = 1000000 / 80;
     
     GameState gameState;
     MenuResources menuResources;
@@ -588,7 +616,7 @@ int main(int argc, char *argv[])
             // Рендеринг игры
             doRender(renderer, &gameState);
         }
-        // usleep(interval_microseconds);
+        usleep(interval_microseconds);
     }
 
     // Очистка ресурсов

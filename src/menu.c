@@ -465,8 +465,11 @@ void unloadGameResources(GameState *resources)
 
     SDL_DestroyTexture(resources->enemy);
     SDL_DestroyTexture(resources->enemyGo);
+    SDL_DestroyTexture(resources->manIdle);
     SDL_DestroyTexture(resources->manFrames[0]);
     SDL_DestroyTexture(resources->manFrames[1]);
+    SDL_DestroyTexture(resources->manFrames[2]);
+    SDL_DestroyTexture(resources->manFrames[3]);
     SDL_DestroyTexture(resources->brick);
     SDL_DestroyTexture(resources->label);
     TTF_CloseFont(resources->font);

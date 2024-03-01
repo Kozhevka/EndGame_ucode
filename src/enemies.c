@@ -96,19 +96,15 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
             if (game->enemies[i].attackState == 0) {
                 // Начало атаки
                 currentEnemyTexture = game->enemyAttackStart;
-                printf("0\n");
             } else if (game->enemies[i].attackState == 1) {
                 // Атака
                 currentEnemyTexture = game->enemyAttacked;
-                printf("1\n");
             } else if (game->enemies[i].attackState == 2) {
                 // Завершение атаки
                 currentEnemyTexture = game->enemyAttackedEnd;
-                printf("2\n");
             } else {
                 // Исходное положение
                 currentEnemyTexture = game->enemyReturn;
-                printf("3\n");
             }
 
             // Уменьшаем таймер атаки

@@ -130,6 +130,7 @@ typedef struct
     SDL_Texture *door;
     SDL_Texture *wall;
     SDL_Texture *enemy;
+    SDL_Texture *manIdle;
     SDL_Texture *manFrames[4];
     SDL_Texture *brick;
     SDL_Texture *deadEffect;
