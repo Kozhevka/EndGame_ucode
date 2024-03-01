@@ -25,7 +25,7 @@ void loadGame(GameState *game)
 {
     SDL_Surface *surface = NULL;
 
-    surface = IMG_Load("../assets/images/enemy.png");
+    surface = IMG_Load("assets/images/enemy.png");
     if (surface == NULL)
     {
         printf("cannot find enemy.png");
@@ -35,7 +35,7 @@ void loadGame(GameState *game)
     game->enemy = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../assets/images/gg-run.png");
+    surface = IMG_Load("assets/images/gg-run.png");
     if (surface == NULL)
     {
         printf("cannot find gg-stand.png");
@@ -45,7 +45,7 @@ void loadGame(GameState *game)
     game->manFrames[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../assets/images/gg-stand.png");
+    surface = IMG_Load("assets/images/gg-stand.png");
     if (surface == NULL)
     {
         printf("cannot find gg-run.png");
@@ -55,15 +55,15 @@ void loadGame(GameState *game)
     game->manFrames[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../assets/images/brick.png");
+    surface = IMG_Load("assets/images/brick.png");
     game->brick = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../assets/images/dead-effect.png");
+    surface = IMG_Load("assets/images/dead-effect.png");
     game->deadEffect = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    game->font = TTF_OpenFont("../assets/fonts/ARCADECLASSIC.TTF", 48);
+    game->font = TTF_OpenFont("assets/fonts/ARCADECLASSIC.TTF", 48);
     if (!game->font)
     {
         printf("cannot find font\n\n");
@@ -71,7 +71,7 @@ void loadGame(GameState *game)
         exit(1);
     }
 
-    surface = IMG_Load("../assets/images/grave.png");
+    surface = IMG_Load("assets/images/grave.png");
     if (surface == NULL)
     {
         printf("cannot find grave.png");
@@ -401,7 +401,7 @@ int main(int argc, char *argv[])
     SDL_Init(SDL_INIT_VIDEO);
     srandom((int)time(NULL));
 
-    window = SDL_CreateWindow("Game Window",
+    window = SDL_CreateWindow(GetGameName(),
                           SDL_WINDOWPOS_UNDEFINED,
                           SDL_WINDOWPOS_UNDEFINED,
                           SCREEN_WIDTH,

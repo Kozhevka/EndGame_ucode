@@ -14,6 +14,12 @@ void drawText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement 
 void drawFullscreenButtonText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement *textProperties);
 void drawResolutionButtonText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement *textProperties);
 char* GetTextForResolutionButton();
+int GetRectYCoordinate(int yCoordinateGlobal);
+int GetRectWidth(int rectWidth);
+int GetRectHeight(int rectHeight);
+float GetScreenSizeMultiplier();
+int GetCurrentScreenWidth();
+int GetCurrentScreenHeight();
 void initResourceManagement(MenuResources *menuResources, GameState *gameResources);
 void unloadMenuResources(MenuResources *resources);
 void unloadGameResources(GameState *resources);
@@ -26,5 +32,6 @@ void ToggleFullscreen();
 void OnResolutionButtonPressed();
 void ChangeResolution();
 void OnMenuButtonPressed(MenuTextElement *menuButton);
+char* GetGameName();
 
 #endif
