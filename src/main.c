@@ -119,13 +119,37 @@ void loadGame(GameState *game)
 
     surface = IMG_Load("assets/images/enemy.png");
     game->enemyReturn = SDL_CreateTextureFromSurface(game->renderer, surface);
+
+    surface = IMG_Load("assets/images/wall.png");
+    game->wall = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/door.png");
+    game->door = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/window.png");
+    game->window = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/scull.png");
+    game->scull = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/chandelier.png");
+    game->chandelier = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/flag.png");
+    game->flag = SDL_CreateTextureFromSurface(game->renderer, surface);
+
     SDL_FreeSurface(surface);
 
     game->label = NULL;
 
     // Адаптация размеров персонажей и объектов под экран
     game->man.x = 200 * getStaleX() - 40;
-    game->man.y = 240 * getStaleY() - 40;
+    game->man.y = 800 * getStaleY() - 40;
     game->man.dy = 0;
     game->man.onLedge = 0;
     game->man.animFrame = 0;
@@ -298,6 +322,50 @@ void colissionDetect(GameState *game)
             }
         }
     }
+
+        for (int i = 0; i < 100; i++)
+    {
+        float mw = 90 * getStaleX(), mh = 108 * getStaleY();
+        float mx = game->man.x, my = game->man.y;
+        float bx = game->ceilings[i].x, by = game->ceilings[i].y, bw = game->ceilings[i].w, bh = game->ceilings[i].h;
+
+        if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw)
+        {
+            if (my < by + bh && my > by && game->man.dy < 0)
+            {
+                game->man.y = by + bh;
+                my = by + bh;
+                game->man.dy = 0;
+                game->man.onLedge = 1;
+            }
+        }
+        if (mx + mw > bx && mx < bx + bw)
+        {
+            if (my + mh > by && my < by && game->man.dy > 0)
+            {
+                game->man.y = by - mh;
+                my = by - mh;
+                game->man.dy = 0;
+                game->man.onLedge = 1;
+            }
+        }
+
+        if (my + mh > by && my < by + bh)
+        {
+            if (mx < bx + bw && mx + mw > bx + bw && game->man.dx < 0)
+            {
+                game->man.x = bx + bw;
+                mx = bx + bw;
+                game->man.dx = 0;
+            }
+            else if (mx + mw > bx && mx < bx && game->man.dx > 0)
+            {
+                game->man.x = bx - mw;
+                mx = bx - mw;
+                game->man.dx = 0;
+            }
+        }
+    }
 }
 
 int processEvents(SDL_Window *window, GameState *game)
@@ -387,7 +455,7 @@ void doRender(SDL_Renderer *renderer, GameState *game)
 
 
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -437,9 +505,9 @@ int setPhysics(){
         gravity = 0.01f;
         koff = 50;
     }else if(width <= 1920){
-        speed = 0.9;
-        gravity = 0.02f;
-        koff = 30;
+        speed = 2;
+        gravity = 0.06f;
+        koff = 100;
     }else if(width <= 2560 || width >= 2560){
         speed = 2;
         gravity = 0.05f;
