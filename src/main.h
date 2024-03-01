@@ -28,9 +28,8 @@ typedef struct
     float dy, dx;
     short lives;
     char *name;
+    int health;
     int onLedge, isDead, isGrounded;
-    
-
     int animFrame, facingLeft, slowingDown;
 
 } Man;
