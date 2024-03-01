@@ -11,11 +11,7 @@
 #include "interface.h"
 
 
-// float scaleX = (float)SCREEN_WIDTH / 1980.0f;
-// float scaleY = (float)SCREEN_HEIGHT / 1080.0f;
 
-float scaleX = (float)SCREEN_WIDTH / 1980.0f;
-float scaleY = (float)SCREEN_HEIGHT / 1080.0f;
 
 float gravity = 0.03f;
 float speed = 1;
@@ -412,38 +408,38 @@ int processEvents(SDL_Window *window, GameState *game)
 
     const Uint8 *state = SDL_GetKeyboardState(NULL);
 
-    if(state[SDL_SCANCODE_SPACE]){
-        game->man.dy -= 0.003f * getStaleY() * addToJump;
-    }
-
-    if (state[SDL_SCANCODE_A]) {
-    game->man.dx -= 0.1 * speed;
-    if (game->man.dx < -3 * speed) {
-        game->man.dx = -3 * speed;
-    }
-    game->man.facingLeft = 0;
-    game->man.slowingDown = 0;
-    } else if (state[SDL_SCANCODE_D]) {
-    game->man.dx += 0.1 * speed;
-    if (game->man.dx > 3 * speed) {
-        game->man.dx = 3 * speed;
-    }
-    game->man.facingLeft = 1;
-    game->man.slowingDown = 0;
-    }
-    else
-    {
-        game->man.animFrame = 0;
-        game->man.dx *= 0.1f * speed;
-        game->man.slowingDown = 1;
-        if (fabsf(game->man.dx) < 0.1f)
-        {
-            game->man.dx = 0;
+        if(state[SDL_SCANCODE_SPACE]){
+            game->man.dy -= 0.03f * getStaleY() * addToJump;
         }
-    }
 
-    return done;
-}
+        if (state[SDL_SCANCODE_A]) {
+        game->man.dx -= 0.1 * speed;
+        if (game->man.dx < -3 * speed) {
+            game->man.dx = -3 * speed;
+        }
+        game->man.facingLeft = 0;
+        game->man.slowingDown = 0;
+        } else if (state[SDL_SCANCODE_D]) {
+        game->man.dx += 0.1 * speed;
+        if (game->man.dx > 3 * speed) {
+            game->man.dx = 3 * speed;
+        }
+        game->man.facingLeft = 1;
+        game->man.slowingDown = 0;
+        }
+        else
+        {
+            game->man.animFrame = 0;
+            game->man.dx *= 0.1f * speed;
+            game->man.slowingDown = 1;
+            if (fabsf(game->man.dx) < 0.1f)
+            {
+                game->man.dx = 0;
+            }
+        }
+
+        return done;
+    }
 
 void doRender(SDL_Renderer *renderer, GameState *game)
 {
@@ -489,28 +485,28 @@ void changeScene(CurrentScene *currentSceneData, int sceneInt)
 int setPhysics(){
     int width = getWidth();
     if(width <= 800){
-    speed = 0.06;
+    speed = 0.6;
     gravity = 0.01f;
     koff = 100;
     } else if(width <= 1024){
-        speed = 0.1;
+        speed = 0.8;
         gravity = 0.013f;
         koff = 70;
     } else if(width <= 1280){
-        speed = 0.16;
+        speed = 0.8;
         gravity = 0.01f;
         koff = 50;
     } else if(width <= 1360){
-        speed = 0.2;
+        speed = 0.9;
         gravity = 0.01f;
         koff = 50;
     }else if(width <= 1920){
-        speed = 2;
-        gravity = 0.06f;
-        koff = 100;
+        speed = 2.5;
+        gravity = 0.02f;
+        koff = 30;
     }else if(width <= 2560 || width >= 2560){
-        speed = 2;
-        gravity = 0.05f;
+        speed = 3;
+        gravity = 0.03f;
         koff = 20;
         addToJump = 20;
     }
@@ -532,10 +528,10 @@ int main(int argc, char *argv[])
 
 
     window = SDL_CreateWindow(GetGameName(),
-                          SDL_WINDOWPOS_UNDEFINED,
-                          SDL_WINDOWPOS_UNDEFINED,
-                          SCREEN_WIDTH,
-                          SCREEN_HEIGHT,
+                          0,
+                          0,
+                          getWidth(),
+                          getHeight(),
                           0);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
