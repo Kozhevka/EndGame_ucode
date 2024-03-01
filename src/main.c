@@ -100,6 +100,10 @@ void loadGame(GameState *game)
     game->brick = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
+    surface = IMG_Load("assets/images/ceiling.png");
+    game->ceiling = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
     surface = IMG_Load("assets/images/dead-effect.png");
     game->deadEffect = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
@@ -252,8 +256,8 @@ void process(GameState *game)
 
         game->man.isDead = 0;
         game->man.health = 100;
-        game->man.x = 200 - 40;
-        game->man.y = 240 - 40;
+        game->man.x = 200 * getStaleX() - 40;
+        game->man.y = 800 * getStaleY() - 40;
         game->man.dx = 0;
         game->man.dy = 0;
         game->man.onLedge = 0;
@@ -309,6 +313,50 @@ void colissionDetect(GameState *game)
         float mw = 90 * getStaleX(), mh = 108 * getStaleY();
         float mx = game->man.x, my = game->man.y;
         float bx = game->ledges[i].x, by = game->ledges[i].y, bw = game->ledges[i].w, bh = game->ledges[i].h;
+
+        if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw)
+        {
+            if (my < by + bh && my > by && game->man.dy < 0)
+            {
+                game->man.y = by + bh;
+                my = by + bh;
+                game->man.dy = 0;
+                game->man.onLedge = 1;
+            }
+        }
+        if (mx + mw > bx && mx < bx + bw)
+        {
+            if (my + mh > by && my < by && game->man.dy > 0)
+            {
+                game->man.y = by - mh;
+                my = by - mh;
+                game->man.dy = 0;
+                game->man.onLedge = 1;
+            }
+        }
+
+        if (my + mh > by && my < by + bh)
+        {
+            if (mx < bx + bw && mx + mw > bx + bw && game->man.dx < 0)
+            {
+                game->man.x = bx + bw;
+                mx = bx + bw;
+                game->man.dx = 0;
+            }
+            else if (mx + mw > bx && mx < bx && game->man.dx > 0)
+            {
+                game->man.x = bx - mw;
+                mx = bx - mw;
+                game->man.dx = 0;
+            }
+        }
+    }
+
+        for (int i = 0; i < 100; i++)
+    {
+        float mw = 90 * getStaleX(), mh = 108 * getStaleY();
+        float mx = game->man.x, my = game->man.y;
+        float bx = game->bossplatform[i].x, by = game->bossplatform[i].y, bw = game->bossplatform[i].w, bh = game->bossplatform[i].h;
 
         if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw)
         {

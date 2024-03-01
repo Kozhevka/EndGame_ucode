@@ -11,6 +11,8 @@
 #define NUM_WINDOWS 500
 #define NUM_CHANDELIERS 200
 #define NUM_FLAGS 800
+#define NUM_WALLS 68
+#define NUM_BOSSPLATFORM 9
 
 
 // #define SCREEN_WIDTH 1920
@@ -106,6 +108,17 @@ typedef struct
 
 typedef struct
 {
+    int x, y, w, h;
+} Boss_platform;
+
+typedef struct
+{
+    int x, y, w, h;
+} Colona;
+
+
+typedef struct
+{
     int isLoaded;
 
     float scrollX;
@@ -116,13 +129,15 @@ typedef struct
 
     Ledge ledges[NUM_LADGES];
     Ceiling ceilings[NUM_LADGES];
-    Wall walls[NUM_LADGES];
+    Wall walls[NUM_WALLS];
     Door doors;
     Window windows[NUM_WINDOWS];
     Scull sculls[NUM_SCULLS];
     Chandelier chandeliers[NUM_CHANDELIERS];
     Flag flags[NUM_FLAGS];
+    Boss_platform bossplatform[NUM_BOSSPLATFORM];
 
+    SDL_Texture *ceiling;
     SDL_Texture *flag;
     SDL_Texture *chandelier;
     SDL_Texture *scull;
@@ -286,5 +301,3 @@ void init_game_over(GameState *game);
 float getStaleX();
 float getStaleY();
 #endif
-
-
