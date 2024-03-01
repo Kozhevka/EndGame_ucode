@@ -18,8 +18,9 @@ void init_status_lives(GameState *game) {
 }
 void draw_status_lives(GameState *game)
 {
-    float scaleX = getScaleX();
-    float scaleY = getScaleY();
+    float scaleX = (float)getScreenWidth() / 1980.0f;
+    float scaleY = (float)getScreenHeight() / 1080.0f;
+
     SDL_Renderer *renderer = game->renderer;
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
@@ -31,6 +32,7 @@ void draw_status_lives(GameState *game)
     int characterX = centerX - (int)(110 * scaleX) * GetScreenSizeMultiplier();
     int characterY = centerY - (int)(60 * scaleY) * GetScreenSizeMultiplier();
     SDL_Rect rect = {characterX, characterY, (int)(80 * scaleX) * GetScreenSizeMultiplier(), (int)(120 * scaleY) * GetScreenSizeMultiplier()};
+    
     SDL_RenderCopyEx(renderer, game->playerAnimations->run[0], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
 
     // Рассчитываем координаты для текста

@@ -18,7 +18,7 @@ int currentScreenHeight;
 
 SDL_DisplayMode dm;
 
-char* gameName = "HANNAH   OWO     SIMULATOR";
+char* gameName = "SAD_HAMSTER   OWO     SIMULATOR";
 
 int getScreenWidht(){
     return currentScreenWidth;

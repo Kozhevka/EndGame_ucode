@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 #include "main.h"
 #include "status.h"
 #include "menu.h"
@@ -11,8 +12,6 @@
 #include "interface.h"
 #include "character.h"
 #include "design.h"
-
-
 
 float gravity = 0.03f;
 float speed = 1;
@@ -44,8 +43,6 @@ void loadGame(GameState *game)
     initializeLocationTextures(&(game->locationTextures), game-> renderer);
     initializeParticleTextures(&(game->particlesTextures), game-> renderer);
 
-
-
     game->font = TTF_OpenFont("assets/fonts/ARCADECLASSIC.TTF", 48);
     if (!game->font)
     {
@@ -53,7 +50,6 @@ void loadGame(GameState *game)
         SDL_Quit();
         exit(1);
     }
-
     game->label = NULL;
 
     // Адаптация размеров персонажей и объектов под экран
@@ -105,7 +101,7 @@ void process(GameState *game)
 
         if (man->dx != 0 && man->onLedge && !man->slowingDown)
         {
-            if (game->time % koff == 0)
+            if (game->time % koff / 5 == 0)
             {
                 playerMoveAnimationStep(man);
             }
@@ -129,8 +125,8 @@ void process(GameState *game)
 
         game->man.isDead = 0;
         game->man.health = 100;
-        game->man.x = 200 - 40;
-        game->man.y = 240 - 40;
+        game->man.x = 200 * getStaleX() - 40;
+        game->man.y = 800 * getStaleY() - 40;
         game->man.dx = 0;
         game->man.dy = 0;
         game->man.onLedge = 0;
@@ -170,7 +166,7 @@ void colissionDetect(GameState *game)
             } else {
                 game->man.dx = 5;
             }
-                        if (game->man.y < game->enemies[i].y) {
+            if (game->man.y < game->enemies[i].y) {
                 game->man.dy  = -3;
             } else {
                 game->man.dy = 3;
@@ -225,6 +221,50 @@ void colissionDetect(GameState *game)
         for (int i = 0; i < 100; i++)
     {
         float mw = 90 * getScaleX(), mh = 108 * getScaleY();
+        float mx = game->man.x, my = game->man.y;
+        float bx = game->bossplatform[i].x, by = game->bossplatform[i].y, bw = game->bossplatform[i].w, bh = game->bossplatform[i].h;
+
+        if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw)
+        {
+            if (my < by + bh && my > by && game->man.dy < 0)
+            {
+                game->man.y = by + bh;
+                my = by + bh;
+                game->man.dy = 0;
+                game->man.onLedge = 1;
+            }
+        }
+        if (mx + mw > bx && mx < bx + bw)
+        {
+            if (my + mh > by && my < by && game->man.dy > 0)
+            {
+                game->man.y = by - mh;
+                my = by - mh;
+                game->man.dy = 0;
+                game->man.onLedge = 1;
+            }
+        }
+
+        if (my + mh > by && my < by + bh)
+        {
+            if (mx < bx + bw && mx + mw > bx + bw && game->man.dx < 0)
+            {
+                game->man.x = bx + bw;
+                mx = bx + bw;
+                game->man.dx = 0;
+            }
+            else if (mx + mw > bx && mx < bx && game->man.dx > 0)
+            {
+                game->man.x = bx - mw;
+                mx = bx - mw;
+                game->man.dx = 0;
+            }
+        }
+    }
+
+        for (int i = 0; i < 100; i++)
+    {
+        float mw = 90 * getStaleX(), mh = 108 * getStaleY();
         float mx = game->man.x, my = game->man.y;
         float bx = game->ceilings[i].x, by = game->ceilings[i].y, bw = game->ceilings[i].w, bh = game->ceilings[i].h;
 
@@ -311,26 +351,25 @@ int processEvents(SDL_Window *window, GameState *game)
 
     const Uint8 *state = SDL_GetKeyboardState(NULL);
 
-    if(state[SDL_SCANCODE_SPACE] && game->man.isGrounded == 1)
-    {
-        playerJump(&game->man, addToJump);
-    }
+        if(state[SDL_SCANCODE_SPACE] && game->man.isGrounded == 1)
+        {
+            playerJump(&game->man, addToJump);
+        }
 
-    if (state[SDL_SCANCODE_A]) 
-    {
-        playerMove(&game->man, speed, -1);
-    } 
-    else if (state[SDL_SCANCODE_D]) 
-    {
-        playerMove(&game->man, speed, 1);
+        if (state[SDL_SCANCODE_A]) 
+        {
+            playerMove(&game->man, speed, -1);
+        } 
+        else if (state[SDL_SCANCODE_D]) 
+        {
+            playerMove(&game->man, speed, 1);
+        }
+        else
+        {
+            playerIdle(&game->man, speed);
+        }
+        return done;
     }
-    else
-    {
-        playerIdle(&game->man, speed);
-    }
-
-    return done;
-}
 
 void doRender(SDL_Renderer *renderer, GameState *game)
 {
@@ -350,9 +389,12 @@ void doRender(SDL_Renderer *renderer, GameState *game)
         renderMap(renderer, game);
         
         renderHealth(game);
+
         SDL_Rect rect = {game->scrollX + game->man.x, game->man.y, 80 * getScaleX(), 120 * getScaleY()};
         SDL_RenderCopyEx(renderer, game->playerAnimations->run[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
 
+        SDL_RenderCopyEx(renderer, game->manFrames[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
+    
         if (game->man.isDead)
         {
             SDL_Rect rect = {game->scrollX + game->man.x - 24 * getScaleX() - 18 / 2, game->man.y - 24 * getScaleY() - 10 / 2, 140 * getScaleX(), 180 * getScaleY()};
@@ -375,28 +417,28 @@ void changeScene(CurrentScene *currentSceneData, int sceneInt)
 int setPhysics(){
     int width = getScreenWidht();
     if(width <= 800){
-    speed = 0.06;
+    speed = 0.6;
     gravity = 0.01f;
     koff = 100;
     } else if(width <= 1024){
-        speed = 0.1;
+        speed = 0.8;
         gravity = 0.013f;
         koff = 70;
     } else if(width <= 1280){
-        speed = 0.16;
+        speed = 0.8;
         gravity = 0.01f;
         koff = 50;
     } else if(width <= 1360){
-        speed = 0.2;
+        speed = 0.9;
         gravity = 0.01f;
         koff = 50;
     }else if(width <= 1920){
-        speed = 2;
-        gravity = 0.06f;
-        koff = 100;
+        speed = 2.5;
+        gravity = 0.02f;
+        koff = 30;
     }else if(width <= 2560 || width >= 2560){
-        speed = 2;
-        gravity = 0.05f;
+        speed = 10;
+        gravity = 0.03f;
         koff = 20;
         addToJump = 20;
     }
@@ -407,7 +449,8 @@ int setPhysics(){
 int main(int argc, char *argv[])
 {
     
-
+    const long interval_microseconds = 1000000 / 80;
+    
     GameState gameState;
     MenuResources menuResources;
     SDL_Window *window;
@@ -418,10 +461,10 @@ int main(int argc, char *argv[])
 
 
     window = SDL_CreateWindow(GetGameName(),
-                          SDL_WINDOWPOS_UNDEFINED,
-                          SDL_WINDOWPOS_UNDEFINED,
-                          getScaleX(),
-                          getScaleY(),
+                          0,
+                          0,
+                          getWidth(),
+                          getHeight(),
                           0);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
@@ -455,8 +498,8 @@ int main(int argc, char *argv[])
                 setPhysics();
                 // Загрузка ресурсов для игры
                 loadGame(&gameState);
-                initMap(&gameState, getScaleX(), getScaleY());
-                updateEnemies(&gameState);
+                updateEnemies(&gameState, renderer);
+                initMap(&gameState, getStaleX(), getStaleY());
                 gameLoaded = 1;
             }
 
@@ -466,7 +509,7 @@ int main(int argc, char *argv[])
             // Обновление состояния игры
             process(&gameState);
 
-            updateEnemies(&gameState);
+            updateEnemies(&gameState, renderer);
 
             // Детекция коллизий
             colissionDetect(&gameState);
@@ -474,6 +517,7 @@ int main(int argc, char *argv[])
             // Рендеринг игры
             doRender(renderer, &gameState);
         }
+        usleep(interval_microseconds);
     }
 
     // Очистка ресурсов
