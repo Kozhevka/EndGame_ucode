@@ -10,6 +10,7 @@
 #define NUM_LADGES 100
 #define NUM_WINDOWS 500
 #define NUM_CHANDELIERS 200
+#define NUM_FLAGS 800
 
 
 // #define SCREEN_WIDTH 1920
@@ -75,6 +76,11 @@ typedef struct
 
 typedef struct
 {
+    int x, y, w, h, random;
+} Flag;
+
+typedef struct
+{
     int x, y, w, h;
 } Chandelier;
 
@@ -95,7 +101,9 @@ typedef struct
     Window windows[NUM_WINDOWS];
     Scull sculls[NUM_SCULLS];
     Chandelier chandeliers[NUM_CHANDELIERS];
+    Flag flags[NUM_FLAGS];
 
+    SDL_Texture *flag;
     SDL_Texture *chandelier;
     SDL_Texture *scull;
     SDL_Texture *window;

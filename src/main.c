@@ -111,6 +111,10 @@ void loadGame(GameState *game)
     game->chandelier = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
+    surface = IMG_Load("assets/images/flag.png");
+    game->flag = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
     game->label = NULL;
 
     // Адаптация размеров персонажей и объектов под экран
