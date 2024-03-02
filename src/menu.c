@@ -2,6 +2,7 @@
 #include "menu.h"
 #include "main.h"
 #include "design.h"
+#include "resourceTool.h"
 
 MainMenuButtonReferences menuButtonReferences;
 SelectedButtonReference selectedMenuButton;
@@ -29,13 +30,8 @@ int getScreenHeight(){
 
 void loadMenu(MenuResources *resources)
 {
-    resources->font = TTF_OpenFont("assets/fonts/menuFont.ttf", 48);
-    if (!resources->font)
-    {
-        printf("cannot find font\n\n");
-        SDL_Quit();
-        exit(1);
-    }
+    resources->font = GetFont("assets/fonts/", "menuFont.ttf", 48);
+
     resources->isLoaded = 1;
     resources->menuLabel = NULL;
 }
@@ -253,7 +249,6 @@ void drawFullscreenButtonText(SDL_Renderer *renderer, MenuResources *resources, 
 
     SDL_DestroyTexture(label);
 
-    
 }
 
 
@@ -370,8 +365,8 @@ void ToggleFullscreen()
 {
     if(windowRef == NULL) return;
 
-    bool isFullscreen = SDL_GetWindowFlags(windowRef) & SDL_WINDOW_FULLSCREEN;  
-    SDL_SetWindowFullscreen(windowRef, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN);  
+    bool isFullscreen = SDL_GetWindowFlags(windowRef) & SDL_WINDOW_FULLSCREEN; 
+    SDL_SetWindowFullscreen(windowRef, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN);
     SDL_SetWindowSize(windowRef, currentScreenWidth, currentScreenHeight);
     SDL_ShowCursor(isFullscreen);
 }
@@ -455,21 +450,14 @@ void unloadMenuResources(MenuResources *resources)
     SDL_DestroyTexture(resources->andreyKuText.menuLabel);
     SDL_DestroyTexture(resources->leaveDevelopersMenuText.menuLabel);
     SDL_DestroyTexture(resources->menuBackground);
-
-    TTF_CloseFont(resources->font);
 }
 
 void unloadGameResources(GameState *resources)
 {
     if(resources->isLoaded == 0) return;
 
-    disposeMainHeroTextures(&resources->playerAnimations);
-    disposeEnemyTextures(&resources->enemyAnimations);
-    disposeLocationTextures(&resources->locationTextures);
-    disposeParticleTextures(&resources->particlesTextures);
     
     SDL_DestroyTexture(resources->label);
-    TTF_CloseFont(resources->font);
 
 }
 

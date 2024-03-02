@@ -3,6 +3,7 @@
         "character.h": "c",
         "main.h": "c",
         "design.h": "c",
-        "status.h": "c"
+        "status.h": "c",
+        "vector": "c"
     }
 }

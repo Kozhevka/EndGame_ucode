@@ -56,9 +56,4 @@ void initializeEnemyTextures(AnimationEnemyHolder *animationHolder, SDL_Renderer
 void initializeLocationTextures(LocationTextures *locationTextures, SDL_Renderer *renderer);
 void initializeParticleTextures(ParticlesTextures *particleTextures, SDL_Renderer *renderer);
 
-void disposeMainHeroTextures(AnimationMainHeroHolder *animationHolder);
-void disposeEnemyTextures(AnimationEnemyHolder *animationHolder);
-void disposeLocationTextures(LocationTextures *locationTextures);
-void disposeParticleTextures(ParticlesTextures *particleTextures);
-
 #endif // DESIGN_H

@@ -12,6 +12,7 @@
 #include "interface.h"
 #include "character.h"
 #include "design.h"
+#include "resourceTool.h"
 
 float gravity = 0.03f;
 float speed = 1;
@@ -41,6 +42,8 @@ int main(int argc, char *argv[])
     MenuResources menuResources;
     SDL_Window *window;
     SDL_Renderer *renderer;
+
+    InitializeResourceTool();
 
     SDL_Init(SDL_INIT_VIDEO);
     srandom((int)time(NULL));
@@ -107,6 +110,7 @@ int main(int argc, char *argv[])
     }
 
     // Очистка ресурсов
+    DisposeResourceTool();
     unloadMenuResources(&menuResources);
     unloadGameResources(&gameState);
 

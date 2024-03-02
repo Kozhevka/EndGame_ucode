@@ -2,7 +2,7 @@
 #include <SDL2/SDL_image.h>
 
 #include "main.h"
-#include "imageTool.h"
+#include "resourceTool.h"
 
 //void initializeMainHero(AnimationMainHeroHolder *animationHolder, SDL_Renderer *renderer);
 //void initializeEnemy(AnimationEnemyHolder *animationHolder, SDL_Renderer *renderer);
@@ -22,14 +22,14 @@ void initializeLocationTextures(LocationTextures *locationTextures, SDL_Renderer
     const char* wall = "wall.png";
     const char* window = "window.png";
 
-    AssignTexture(&locationTextures->brick, imageLocations, brick, renderer);
-    AssignTexture(&locationTextures->chandelier, imageLocations, chandelier, renderer);
-    AssignTexture(&locationTextures->door, imageLocations, door, renderer);
-    AssignTexture(&locationTextures->flag, imageLocations, flag, renderer);
-    AssignTexture(&locationTextures->grave, imageLocations, grave, renderer);
-    AssignTexture(&locationTextures->scull, imageLocations, scull, renderer);
-    AssignTexture(&locationTextures->wall, imageLocations, wall, renderer);
-    AssignTexture(&locationTextures->window, imageLocations, window, renderer);
+    locationTextures->brick = GetTexture(imageLocations, brick, renderer);
+    locationTextures->chandelier = GetTexture(imageLocations, chandelier, renderer);
+    locationTextures->door = GetTexture(imageLocations, door, renderer);
+    locationTextures->flag = GetTexture(imageLocations, flag, renderer);
+    locationTextures->grave = GetTexture(imageLocations, grave, renderer);
+    locationTextures->scull = GetTexture(imageLocations, scull, renderer);
+    locationTextures->wall = GetTexture(imageLocations, wall, renderer);
+    locationTextures->window = GetTexture(imageLocations, window, renderer);
 }
 
 void initializeParticleTextures(ParticlesTextures *particleTextures, SDL_Renderer *renderer)
@@ -37,7 +37,7 @@ void initializeParticleTextures(ParticlesTextures *particleTextures, SDL_Rendere
     const char* imageLocations = "assets/images/particles/";
 
     const char* blood = "dead-effect.png";
-    AssignTexture(&particleTextures->blood, imageLocations, blood, renderer);
+    particleTextures->blood = GetTexture(imageLocations, blood, renderer);
 }
 
 void initializeMainHeroTextures(AnimationMainHeroHolder *animationHolder, SDL_Renderer *renderer)
@@ -60,18 +60,18 @@ void initializeMainHeroTextures(AnimationMainHeroHolder *animationHolder, SDL_Re
     const char* hit_accumulate_2 = "hit_accumulate_2.png";
     const char* hit_perform = "hit_perform.png";
 
-    AssignTexture(&animationHolder->flyIdle, (char *)imageLocations, flyIdle, renderer);
-    AssignTexture(&animationHolder->gotHit, (char *)imageLocations, gotHit, renderer);
-    AssignTexture(&animationHolder->idle, (char *)imageLocations, idle, renderer);
-    AssignTexture(&animationHolder->jump, (char *)imageLocations, jump, renderer);
-    AssignTexture(&animationHolder->run[0], (char *)imageLocations, runImg0, renderer);
-    AssignTexture(&animationHolder->run[1], (char *)imageLocations, runImg1, renderer);
-    AssignTexture(&animationHolder->run[2], (char *)imageLocations, runImg2, renderer);
-    AssignTexture(&animationHolder->run[3], (char *)imageLocations, runImg3, renderer);
-    AssignTexture(&animationHolder->hit_accumulate_0, (char *)imageLocations, hit_accumulate_0, renderer);
-    AssignTexture(&animationHolder->hit_accumulate_1, (char *)imageLocations, hit_accumulate_1, renderer);
-    AssignTexture(&animationHolder->hit_accumulate_2, (char *)imageLocations, hit_accumulate_2, renderer);
-    AssignTexture(&animationHolder->hit_perform, (char *)imageLocations, hit_perform, renderer);
+    animationHolder->flyIdle = GetTexture(imageLocations, flyIdle, renderer);
+    animationHolder->gotHit = GetTexture(imageLocations, gotHit, renderer);
+    animationHolder->idle = GetTexture(imageLocations, idle, renderer);
+    animationHolder->jump = GetTexture(imageLocations, jump, renderer);
+    animationHolder->run[0] = GetTexture(imageLocations, runImg0, renderer);
+    animationHolder->run[1] = GetTexture(imageLocations, runImg1, renderer);
+    animationHolder->run[2] = GetTexture(imageLocations, runImg2, renderer);
+    animationHolder->run[3] = GetTexture(imageLocations, runImg3, renderer);
+    animationHolder->hit_accumulate_0 = GetTexture(imageLocations, hit_accumulate_0, renderer);
+    animationHolder->hit_accumulate_1 = GetTexture(imageLocations, hit_accumulate_1, renderer);
+    animationHolder->hit_accumulate_2 = GetTexture(imageLocations, hit_accumulate_2, renderer);
+    animationHolder->hit_perform = GetTexture(imageLocations, hit_perform, renderer);
 
 }
 
@@ -85,52 +85,9 @@ void initializeEnemyTextures(AnimationEnemyHolder *animationHolder, SDL_Renderer
     const char* idle = "enemy_idle.png";
     const char* walk = "enemy_walk.png";
 
-    AssignTexture(&animationHolder->attackStart, (char *)imageLocations, attackStart, renderer);
-    AssignTexture(&animationHolder->attackedContinue, (char *)imageLocations, attack, renderer);
-    AssignTexture(&animationHolder->attackedEnd, (char *)imageLocations, attackEnd, renderer);
-    AssignTexture(&animationHolder->idle, (char *)imageLocations, idle, renderer);
-    AssignTexture(&animationHolder->walk, (char *)imageLocations, walk, renderer);
-}
-
-
-void disposeMainHeroTextures(AnimationMainHeroHolder *animationHolder)
-{
-    SDL_DestroyTexture(animationHolder->flyIdle);
-    SDL_DestroyTexture(animationHolder->gotHit);
-    SDL_DestroyTexture(animationHolder->idle);
-    SDL_DestroyTexture(animationHolder->jump);
-    SDL_DestroyTexture(animationHolder->run[0]);
-    SDL_DestroyTexture(animationHolder->run[1]);
-    SDL_DestroyTexture(animationHolder->run[2]);
-    SDL_DestroyTexture(animationHolder->run[3]);
-    SDL_DestroyTexture(animationHolder->hit_accumulate_0);
-    SDL_DestroyTexture(animationHolder->hit_accumulate_1);
-    SDL_DestroyTexture(animationHolder->hit_accumulate_2);
-    SDL_DestroyTexture(animationHolder->hit_perform);
-}
-
-void disposeEnemyTextures(AnimationEnemyHolder *animationHolder)
-{
-    SDL_DestroyTexture(animationHolder->attackStart);
-    SDL_DestroyTexture(animationHolder->attackedContinue);
-    SDL_DestroyTexture(animationHolder->attackedEnd);
-    SDL_DestroyTexture(animationHolder->idle);
-    SDL_DestroyTexture(animationHolder->walk);
-}
-
-void disposeLocationTextures(LocationTextures *locationTextures)
-{
-    SDL_DestroyTexture(locationTextures->brick);
-    SDL_DestroyTexture(locationTextures->chandelier);
-    SDL_DestroyTexture(locationTextures->door);
-    SDL_DestroyTexture(locationTextures->flag);
-    SDL_DestroyTexture(locationTextures->grave);
-    SDL_DestroyTexture(locationTextures->scull);
-    SDL_DestroyTexture(locationTextures->wall);
-    SDL_DestroyTexture(locationTextures->window);
-}
-
-void disposeParticleTextures(ParticlesTextures *particleTextures)
-{
-    SDL_DestroyTexture(particleTextures->blood);
+    animationHolder->attackStart = GetTexture(imageLocations, attackStart, renderer);
+    animationHolder->attackedContinue = GetTexture(imageLocations, attack, renderer);
+    animationHolder->attackedEnd = GetTexture(imageLocations, attackEnd, renderer);
+    animationHolder->idle = GetTexture(imageLocations, idle, renderer);
+    animationHolder->walk = GetTexture(imageLocations, walk, renderer);
 }
