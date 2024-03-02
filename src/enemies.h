@@ -3,11 +3,9 @@
 
 #include "main.h"  
 
-
 #define MOVING_LEFT 0
 #define MOVING_RIGHT 1
 
-
 void updateEnemies(GameState *game, SDL_Renderer *renderer);
-
+void updateBoss(GameState *game, SDL_Renderer *renderer);
 #endif

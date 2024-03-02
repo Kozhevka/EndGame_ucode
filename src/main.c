@@ -11,20 +11,15 @@
 #include "enemies.h"
 #include "interface.h"
 
-
-
-
-float gravity = 0.03f;
+float gravity = 0.07f;
 float speed = 1;
 int koff = 100;
 int addToJump = 1;
 
-
 int closeApplication = 0;
 
-
 float getStaleX(){
-    float scaleX = (float)getWidth() / 1980;
+    float scaleX = (float)getWidth() / 1920;
     return scaleX;
 }
 float getStaleY(){
@@ -100,10 +95,6 @@ void loadGame(GameState *game)
     game->brick = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/ceiling.png");
-    game->ceiling = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
     surface = IMG_Load("assets/images/dead-effect.png");
     game->deadEffect = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
@@ -146,6 +137,18 @@ void loadGame(GameState *game)
 
     surface = IMG_Load("assets/images/enemy-attacked-end.png");
     game->enemyAttackedEnd = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/boss.png");
+    game->bossStand = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/boss-attacked-start.png");
+    game->bossAttackedStart = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/boss-attacked-end.png");
+    game->bossAttackedEnd = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
     surface = IMG_Load("assets/images/enemy.png");
@@ -256,8 +259,8 @@ void process(GameState *game)
 
         game->man.isDead = 0;
         game->man.health = 100;
-        game->man.x = 200 * getStaleX() - 40;
-        game->man.y = 800 * getStaleY() - 40;
+        game->man.x = 200 - 40 * getStaleX(); 
+        game->man.y = 800 - 40 * getStaleY();
         game->man.dx = 0;
         game->man.dy = 0;
         game->man.onLedge = 0;
@@ -289,19 +292,31 @@ int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, floa
 
 void colissionDetect(GameState *game)
 {
-    for (int i = 0; i < NUM_ENEMIES; i++)
-    {
 
-        if(collide2d(game->man.x, game->man.y, game->enemies[i].x,game->enemies[i].y, 48, 48, 64, 64))
-        {
+    if (collide2d(game->man.x, game->man.y, game->boss.x, game->boss.y, 80, 120, BOSS_WIDTH, BOSS_HEIGHT)) {
+        game->man.health -= 25; // Уменьшаем здоровье при коллизии с боссом
+        if (game->man.x < game->boss.x) {
+            game->man.dx = -5;
+        } else {
+            game->man.dx = 5;
+        }
+        if (game->man.y < game->boss.y) {
+            game->man.dy = -3;
+        } else {
+            game->man.dy = 3;
+        }
+    }
+
+    for (int i = 0; i < NUM_ENEMIES; i++) {
+        if (collide2d(game->man.x, game->man.y, game->enemies[i].x, game->enemies[i].y, 48, 48, 64, 64)) {
             game->man.health -= 25;
             if (game->man.x < game->enemies[i].x) {
-                game->man.dx  = -5;
+                game->man.dx = -5;
             } else {
                 game->man.dx = 5;
             }
             if (game->man.y < game->enemies[i].y) {
-                game->man.dy  = -3;
+                game->man.dy = -3;
             } else {
                 game->man.dy = 3;
             }
@@ -313,50 +328,6 @@ void colissionDetect(GameState *game)
         float mw = 90 * getStaleX(), mh = 108 * getStaleY();
         float mx = game->man.x, my = game->man.y;
         float bx = game->ledges[i].x, by = game->ledges[i].y, bw = game->ledges[i].w, bh = game->ledges[i].h;
-
-        if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw)
-        {
-            if (my < by + bh && my > by && game->man.dy < 0)
-            {
-                game->man.y = by + bh;
-                my = by + bh;
-                game->man.dy = 0;
-                game->man.onLedge = 1;
-            }
-        }
-        if (mx + mw > bx && mx < bx + bw)
-        {
-            if (my + mh > by && my < by && game->man.dy > 0)
-            {
-                game->man.y = by - mh;
-                my = by - mh;
-                game->man.dy = 0;
-                game->man.onLedge = 1;
-            }
-        }
-
-        if (my + mh > by && my < by + bh)
-        {
-            if (mx < bx + bw && mx + mw > bx + bw && game->man.dx < 0)
-            {
-                game->man.x = bx + bw;
-                mx = bx + bw;
-                game->man.dx = 0;
-            }
-            else if (mx + mw > bx && mx < bx && game->man.dx > 0)
-            {
-                game->man.x = bx - mw;
-                mx = bx - mw;
-                game->man.dx = 0;
-            }
-        }
-    }
-
-        for (int i = 0; i < 100; i++)
-    {
-        float mw = 90 * getStaleX(), mh = 108 * getStaleY();
-        float mx = game->man.x, my = game->man.y;
-        float bx = game->bossplatform[i].x, by = game->bossplatform[i].y, bw = game->bossplatform[i].w, bh = game->bossplatform[i].h;
 
         if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw)
         {
@@ -467,9 +438,8 @@ int processEvents(SDL_Window *window, GameState *game)
                 done = 1;
                 break;
             case SDLK_SPACE:
-                if (game->man.dy == game->man.dy)
-                {
-                    game->man.dy = -3 * getStaleY();
+                if (game->man.onLedge && game->man.dy == game->man.dy) {
+                    game->man.dy = -6 * getStaleY();
                     game->man.onLedge = 0;
                 }
                 break;
@@ -485,10 +455,12 @@ int processEvents(SDL_Window *window, GameState *game)
 
     const Uint8 *state = SDL_GetKeyboardState(NULL);
 
-        if(state[SDL_SCANCODE_SPACE]){
-            game->man.dy -= 0.03f * getStaleY() * addToJump;
-            
-        }
+        if (state[SDL_SCANCODE_SPACE]) {
+    if (game->man.onLedge) {
+        game->man.dy -= 0.1f * getStaleY() * addToJump;
+        game->man.onLedge = 0;  
+    }
+}
 
         if (state[SDL_SCANCODE_A]) {
         game->man.dx -= 0.2 * speed;
@@ -563,40 +535,39 @@ void changeScene(CurrentScene *currentSceneData, int sceneInt)
 
 int setPhysics(){
     int width = getWidth();
+    gravity *= getStaleX();
     if(width <= 800){
     speed = 0.6;
-    gravity = 0.01f;
+    // gravity = 0.01f;
     koff = 100;
     } else if(width <= 1024){
         speed = 0.8;
-        gravity = 0.013f;
+        // gravity = 0.013f;
         koff = 70;
     } else if(width <= 1280){
         speed = 0.8;
-        gravity = 0.01f;
+        // gravity = 0.01f;
         koff = 50;
     } else if(width <= 1360){
         speed = 0.9;
-        gravity = 0.01f;
+        // gravity = 0.01f;
         koff = 50;
     }else if(width <= 1920){
-        speed = 2.5;
-        gravity = 0.02f;
+        speed = 2.3;
+        // gravity = 0.05f;
         koff = 30;
     }else if(width <= 2560 || width >= 2560){
-        speed = 10;
-        gravity = 0.03f;
+        speed = 3;
+        // gravity = 0.09f;
         koff = 20;
-        addToJump = 20;
     }
-
 }
 
 
 int main(int argc, char *argv[])
 {
     
-    const long interval_microseconds = 1000000 / 80;
+    // const long interval_microseconds = 1000000 / 80;
     
     GameState gameState;
     MenuResources menuResources;
@@ -664,7 +635,7 @@ int main(int argc, char *argv[])
             // Рендеринг игры
             doRender(renderer, &gameState);
         }
-        usleep(interval_microseconds);
+        // usleep(interval_microseconds);
     }
 
     // Очистка ресурсов
