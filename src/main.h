@@ -13,6 +13,7 @@
 #define NUM_FLAGS 800
 #define NUM_WALLS 68
 #define NUM_BOSSPLATFORM 9
+#define NUM_COLONAS 2
 
 
 // #define SCREEN_WIDTH 1920
@@ -113,6 +114,11 @@ typedef struct
 typedef struct
 {
     int x, y, w, h;
+} Bossskeleton;
+
+typedef struct
+{
+    int x, y, w, h;
 } Colona;
 
 
@@ -127,7 +133,7 @@ typedef struct
     Enemy enemies[NUM_ENEMIES];
 
     Ledge ledges[NUM_LADGES];
-    Ceiling ceilings[NUM_LADGES];
+    Ceiling ceilings[NUM_LADGES + NUM_BOSSPLATFORM - 1];
     Wall walls[NUM_WALLS];
     Door doors;
     Window windows[NUM_WINDOWS];
@@ -135,7 +141,10 @@ typedef struct
     Chandelier chandeliers[NUM_CHANDELIERS];
     Flag flags[NUM_FLAGS];
     Boss_platform bossplatform[NUM_BOSSPLATFORM];
+    Colona colonas[NUM_COLONAS];
+    Bossskeleton bossskeletons;
 
+    SDL_Texture *bossskeleton;
     SDL_Texture *ceiling;
     SDL_Texture *flag;
     SDL_Texture *chandelier;

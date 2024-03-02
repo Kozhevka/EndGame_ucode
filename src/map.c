@@ -11,7 +11,7 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         game->ledges[i].y = getHeight() - game->ledges[i].h * 3;
     }
 
-    for (int i = 0; i < NUM_LADGES; i++) {
+    for (int i = 0; i < NUM_LADGES + NUM_BOSSPLATFORM - 1; i++) {
         game->ceilings[i].w = (int)(256 * scaleX);
         game->ceilings[i].h = (int)(64 * scaleY);
         game->ceilings[i].x = (int)(i * 252 * scaleX);
@@ -23,7 +23,7 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         game->bossplatform[i].x = (int)(i * 252 * scaleX + game->ledges[NUM_LADGES-1].x);
         game->bossplatform[i].y = getHeight() - game->bossplatform[i].h * 3;
     }
-    
+
     for (int i = 0; i < NUM_WALLS; i++) {
         game->walls[i].w = (int)(405 * scaleX);
         game->walls[i].h = (int)(395 * scaleY - 10);
@@ -31,10 +31,32 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         game->walls[i].y = getHeight() - game->ceilings[i].h * 9;
     }
 
+    for (int i = 0; i < NUM_COLONAS; i++) {
+        if(i == 0){
+        game->colonas[i].w = (int)(64 * scaleX);
+        game->colonas[i].h = (int)(270 * scaleY);
+        game->colonas[i].x = (int)(i * 300 * scaleX + game->ledges[NUM_LADGES-1].x+247);
+        game->colonas[i].y = getHeight() - game->colonas[i].h * 3 + 160;
+        }
+        else if (i == 1){
+        game->colonas[i].w = (int)(64 * scaleX);
+        game->colonas[i].h = (int)(600 * scaleY);
+        game->colonas[i].x = (int)(i * 300 * scaleX + game->bossplatform[NUM_BOSSPLATFORM-1].x - 100);
+        game->colonas[i].y = getHeight() - game->colonas[i].h * 3 + 1000;
+        }
+    }
+    
+
     game->doors.w = (int)(256 * scaleX);
     game->doors.h = (int)(258 * scaleY);
     game->doors.x = (int)((game->man.x - 210) * scaleX);
     game->doors.y = getHeight() - game->ledges[1].h * 6 - 12;
+
+    game->bossskeletons.w = (int)(128 * scaleX);
+    game->bossskeletons.h = (int)(128 * scaleY);
+    game->bossskeletons.x = (int)(game->bossplatform[3].x);
+    game->bossskeletons.y = getHeight() - game->ledges[1].h * 5 + 15;
+
 
     for (int i = 1; i < NUM_WINDOWS; i++) {
        if ((int)(i * 252 * scaleX) > game->ledges[NUM_LADGES-1].x)
@@ -97,22 +119,22 @@ void initMap(GameState *game, float scaleX, float scaleY) {
     }
 
      // Пример инициализации врагов
-    for (int i = 0; i < NUM_ENEMIES; i++) {
-        int randomBlock;
-        game->enemies[i].speed = 0.2 * scaleX;
-        do {
-            // Выбираем случайный блок
-            randomBlock = rand() % 100;
-            // Проверяем, что блок не слишком близко к началу
-        } while (game->ledges[randomBlock].x < 500 * scaleX);
+    // for (int i = 0; i < NUM_ENEMIES; i++) {
+    //     int randomBlock;
+    //     game->enemies[i].speed = 0.2 * scaleX;
+    //     do {
+    //         // Выбираем случайный блок
+    //         randomBlock = rand() % 100;
+    //         // Проверяем, что блок не слишком близко к началу
+    //     } while (game->ledges[randomBlock].x < 500 * scaleX);
 
-        // Устанавливаем врага наверху выбранного блока
-        game->enemies[i].x = game->ledges[randomBlock].x + game->ledges[randomBlock].w / 2 - 80 * scaleX / 2;
-        game->enemies[i].y = game->ledges[randomBlock].y - 120 * scaleY;
-        game->enemies[i].animFrame = 0;
-        game->enemies[i].facingLeft = 1;
-        game->enemies[i].speed = 0.2 * scaleX;
-    }
+    //     // Устанавливаем врага наверху выбранного блока
+    //     game->enemies[i].x = game->ledges[randomBlock].x + game->ledges[randomBlock].w / 2 - 80 * scaleX / 2;
+    //     game->enemies[i].y = game->ledges[randomBlock].y - 120 * scaleY;
+    //     game->enemies[i].animFrame = 0;
+    //     game->enemies[i].facingLeft = 1;
+    //     game->enemies[i].speed = 0.2 * scaleX;
+    // }
 }
 
 void renderMap(SDL_Renderer *renderer, GameState *game) {
@@ -126,8 +148,7 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
         SDL_Rect bossplatformRect = {game->scrollX + game->bossplatform[i].x, game->bossplatform[i].y, game->bossplatform[i].w, game->bossplatform[i].h};
         SDL_RenderCopy(renderer, game->brick, NULL, &bossplatformRect);
     }
-
-    for (int i = 0; i < NUM_LADGES; i++) {
+    for (int i = 0; i < NUM_LADGES + NUM_BOSSPLATFORM - 1; i++) {
         SDL_Rect ceilingRect = {game->scrollX + game->ceilings[i].x, game->ceilings[i].y, game->ceilings[i].w, game->ceilings[i].h};
         SDL_RenderCopy(renderer, game->ceiling, NULL, &ceilingRect);
     }
@@ -136,6 +157,12 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
         SDL_Rect wallsRect = {game->scrollX + game->walls[i].x, game->walls[i].y, game->walls[i].w, game->walls[i].h};
         SDL_RenderCopy(renderer, game->wall, NULL, &wallsRect);
     }
+
+    for (int i = 0; i < NUM_COLONAS; i++) {
+        SDL_Rect colonaRect = {game->scrollX + game->colonas[i].x, game->colonas[i].y, game->colonas[i].w, game->colonas[i].h};
+        SDL_RenderCopy(renderer, game->brick, NULL, &colonaRect);
+    }
+
 
     for (int i = 1; i < NUM_WINDOWS; i++) {
         if (game->windows[i].random == 1) {
@@ -172,22 +199,25 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
     SDL_Rect doorRect = {game->scrollX + game->doors.x, game->doors.y, game->doors.w, game->doors.h};
     SDL_RenderCopy(renderer, game->door, NULL, &doorRect);
 
-    for (int i = 0; i < NUM_ENEMIES; i++) {
-        SDL_RendererFlip flip = game->enemies[i].facingLeftTexture ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-        SDL_Texture *currentEnemyTexture;
+    SDL_Rect bossskeletonRect = {game->scrollX + game->bossskeletons.x, game->bossskeletons.y, game->bossskeletons.w, game->bossskeletons.h};
+    SDL_RenderCopy(renderer, game->bossskeleton, NULL, &bossskeletonRect);
 
-        if (game->enemies[i].state == ENEMY_STATE_IDLE) {
-            currentEnemyTexture = game->enemy;
-        } else {
-            // Чтобы чередовать между game->enemy и game->enemyGo, используйте game->enemies[i].animFrame
-            if (game->enemies[i].animFrame == 0) {
-                currentEnemyTexture = game->enemy;
-            } else {
-                currentEnemyTexture = game->enemyGo;
-            }
-        }
+    // for (int i = 0; i < NUM_ENEMIES; i++) {
+    //     SDL_RendererFlip flip = game->enemies[i].facingLeftTexture ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+    //     SDL_Texture *currentEnemyTexture;
 
-        SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getStaleX(), 140 * getStaleY()};
-        SDL_RenderCopyEx(renderer, currentEnemyTexture, NULL, &enemyRect, 0, NULL, flip);
-    }
+    //     if (game->enemies[i].state == ENEMY_STATE_IDLE) {
+    //         currentEnemyTexture = game->enemy;
+    //     } else {
+    //         // Чтобы чередовать между game->enemy и game->enemyGo, используйте game->enemies[i].animFrame
+    //         if (game->enemies[i].animFrame == 0) {
+    //             currentEnemyTexture = game->enemy;
+    //         } else {
+    //             currentEnemyTexture = game->enemyGo;
+    //         }
+    //     }
+
+        // SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getStaleX(), 140 * getStaleY()};
+        // SDL_RenderCopyEx(renderer, currentEnemyTexture, NULL, &enemyRect, 0, NULL, flip);
+   // }
 }
