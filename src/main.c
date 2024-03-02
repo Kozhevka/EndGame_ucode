@@ -14,10 +14,13 @@
 #include "design.h"
 #include "resourceTool.h"
 
-float gravity = 0.07f;
+float gravity = 0.20f;
 float speed = 1;
 int koff = 100;
-int addToJump = 1;
+int addToJump = 10;
+
+float movingAnimationTime = 0;
+float movingPerMilisecTime = 10;
 
 int closeApplication = 0;
 
@@ -145,40 +148,26 @@ void loadGame(GameState *game)
     initializeLocationTextures(&game->locationTextures, game-> renderer);
     initializeParticleTextures(&game->particlesTextures, game-> renderer);
 
-    game->font = TTF_OpenFont("assets/fonts/ARCADECLASSIC.TTF", 48);
-    if (!game->font)
-    {
-        printf("cannot find font\n\n");
-        SDL_Quit();
-        exit(1);
-    }
+    game->font = GetFont("assets/fonts/", "ARCADECLASSIC.TTF", 48);
     game->label = NULL;
 
     // Адаптация размеров персонажей и объектов под экран
     game->man.x = 200 * getScaleX() - 40;
     game->man.y = 800 * getScaleY() - 40;
 
-    surface = IMG_Load("assets/images/boss.png");
-    game->bossStand = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/boss-attacked-start.png");
-    game->bossAttackedStart = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+    const char* bossImagePath = "assets/images/";
 
-    surface = IMG_Load("assets/images/boss-attacked-end.png");
-    game->bossAttackedEnd = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("assets/images/boss_a_tam_skeleton.png");
-    game->bossskeleton = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+    game->bossStand = GetTexture(bossImagePath, "boss.png", game->renderer);
+    game->bossAttackedStart = GetTexture(bossImagePath, "boss-attacked-start.png", game->renderer);
+    game->bossAttackedEnd = GetTexture(bossImagePath, "boss-attacked-end.png", game->renderer);
+    game->bossskeleton = GetTexture(bossImagePath, "boss_a_tam_skeleton.png", game->renderer);
 
     game->label = NULL;
 
     // Адаптация размеров персонажей и объектов под экран
-    game->man.x = 300 * getStaleX() - 40;
-    game->man.y = 800 * getStaleY() - 40;
+    game->man.x = 300 * getScaleX() - 40;
+    game->man.y = 800 * getScaleY() - 40;
     game->man.dy = 0;
     game->man.onLedge = 0;
     game->man.animFrame = 0;
@@ -225,8 +214,9 @@ void process(GameState *game)
 
         if (man->dx != 0 && man->onLedge && !man->slowingDown)
         {
-            if (game->time % koff / 5 == 0)
+            if (game->time > movingAnimationTime + movingPerMilisecTime)
             {
+                movingAnimationTime = game->time;
                 playerMoveAnimationStep(man);
             }
         }
@@ -356,7 +346,7 @@ void colissionDetect(GameState *game)
 
     for (int i = 0; i < NUM_LADGES + NUM_BOSSPLATFORM - 1; i++)
     {
-        float mw = 90 * getStaleX(), mh = 108 * getStaleY();
+        float mw = 90 * getScaleX(), mh = 108 * getScaleY();
         float mx = game->man.x, my = game->man.y;
         float bx = game->ceilings[i].x, by = game->ceilings[i].y, bw = game->ceilings[i].w, bh = game->ceilings[i].h;
 
@@ -444,7 +434,7 @@ void colissionDetect(GameState *game)
 
     for (int i = 0; i < NUM_COLONAS; i++)
     {
-    float mw = 90 * getStaleX(), mh = 108 * getStaleY();
+    float mw = 90 * getScaleX(), mh = 108 * getScaleY();
     float mx = game->man.x, my = game->man.y;
     float bx = game->colonas[i].x, by = game->colonas[i].y, bw = game->colonas[i].w, bh = game->colonas[i].h;
 
@@ -578,7 +568,7 @@ void doRender(SDL_Renderer *renderer, GameState *game)
         renderHealth(game);
 
         SDL_Rect rect = {game->scrollX + game->man.x, game->man.y, 80 * getScaleX(), 120 * getScaleY()};
-        SDL_RenderCopyEx(renderer, game->playerAnimations.run[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
+        SDL_RenderCopyEx(renderer, game->playerAnimations.run[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 1));
     
         if (game->man.isDead)
         {
@@ -601,7 +591,7 @@ void changeScene(CurrentScene *currentSceneData, int sceneInt)
 
 int setPhysics(){
     int width = getScreenWidht();
-    gravity *= getStaleX();
+    gravity *= getScaleX();
     if(width <= 800){
     speed = 0.6;
     // gravity = 0.01f;

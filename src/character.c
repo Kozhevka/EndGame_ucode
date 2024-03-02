@@ -6,7 +6,7 @@
 #include "main.h"
 #include "resourceTool.h"
 
-
+const int maxPlayerSpeed = 10;
 
 void playerMove(Man *player, float gameSpeed, int direction)
 {
@@ -19,6 +19,15 @@ void playerMove(Man *player, float gameSpeed, int direction)
         player->dx = directionDelta * gameSpeed;
     }
 
+    
+    if (player->dx > maxPlayerSpeed)
+    {
+        player->dx = maxPlayerSpeed;
+    }
+    else if (player->dx < -maxPlayerSpeed)
+    {
+        player->dx = -maxPlayerSpeed;
+    }
     
     player->facingLeft = direction > 0 ? 0 : 1;
     player->slowingDown = 0;
@@ -38,7 +47,7 @@ void playerIdle(Man *player, float gameSpeed)
 
 void playerJump(Man *player, float jumpForce)
 {
-    player->dy -= 0.003f * getScaleY() * jumpForce;
+    player->dy -= 0.09f * getScaleY() * jumpForce;
 }
 void playerAttack(Man *player)
 {

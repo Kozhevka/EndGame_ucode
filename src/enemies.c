@@ -28,10 +28,10 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
     // Обновляем положение и анимацию врагов в соответствии с их направлением
     for (int i = 0; i < NUM_ENEMIES; i++) {
         // Измените ENEMY_SPEED на значение, которое соответствует вашим требованиям
-        float deltaX = game->enemies[i].facingLeft ? -ENEMY_SPEED * getStaleX() : ENEMY_SPEED * getStaleX(); 
+        float deltaX = game->enemies[i].facingLeft ? -ENEMY_SPEED * getScaleX() : ENEMY_SPEED * getScaleX(); 
 
         // Обновляем координаты врага
-        game->enemies[i].x += deltaX * getStaleX();
+        game->enemies[i].x += deltaX * getScaleX();
 
         // Устанавливаем состояние врага в зависимости от его движения
         if (deltaX != 0) {
@@ -59,12 +59,12 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
         float distanceToPlayer = fabs(game->man.x - game->enemies[i].x);
 
         // Проверим, находится ли игрок достаточно близко
-        if (distanceToPlayer < 400 * getStaleX() && game->enemies[i].attackTimer <= 0) {
+        if (distanceToPlayer < 400 * getScaleX() && game->enemies[i].attackTimer <= 0) {
             // Направление к игроку
             int directionToPlayer = (game->man.x < game->enemies[i].x) ? -1 : 1;
 
             // Изменяем координаты врага в сторону игрока
-            game->enemies[i].x += directionToPlayer * getStaleX();
+            game->enemies[i].x += directionToPlayer * getScaleX();
 
             // Устанавливаем facingLeft в зависимости от направления к игроку
             game->enemies[i].facingLeft = (directionToPlayer == -1);
@@ -92,7 +92,7 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
         float distance = sqrt(pow(game->man.x - game->enemies[i].x, 2) + pow(game->man.y - game->enemies[i].y, 2));
 
         // Изменяем координаты врага в зависимости от направления
-        if (distance < 400 * getStaleX() && abs(game->man.x - game->enemies[i].x) < 400 * getStaleX()) { // Проверяем и расстояние, и положение по X
+        if (distance < 400 * getScaleX() && abs(game->man.x - game->enemies[i].x) < 400 * getScaleX()) { // Проверяем и расстояние, и положение по X
             if (game->man.x < game->enemies[i].x) {
                 game->enemies[i].x -= 1 * getScaleX();
                 game->enemies[i].facingLeftTexture = 1;
@@ -158,12 +158,7 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
                 game->enemies[i].attackState = (game->enemies[i].attackState + 1) % 4;
             }
         }
-<<<<<<< HEAD
         SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getScaleX(), 140 * getScaleY()};
-=======
-
-        SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getStaleX(), 140 * getStaleY()};
->>>>>>> presentation-first
         SDL_RenderCopyEx(renderer, currentEnemyTexture, NULL, &enemyRect, 0, NULL, flip);
     }
 }
@@ -188,10 +183,10 @@ void updateBoss(GameState *game, SDL_Renderer *renderer) {
     // Расстояние до игрока
     float distanceToPlayer = fabs(game->man.x - game->boss.x);
 
-    if (distanceToPlayer * getStaleX() < BOSS_VISIBILITY_RANGE) {
+    if (distanceToPlayer * getScaleX() < BOSS_VISIBILITY_RANGE) {
         // Если игрок близко, босс атакует
         int bossDirectionToPlayer = (game->man.x < game->boss.x) ? -1 : 1;
-        game->boss.x += bossDirectionToPlayer * BOSS_SPEED * getStaleX();
+        game->boss.x += bossDirectionToPlayer * BOSS_SPEED * getScaleX();
 
         // Устанавливаем направление и текстуру босса в соответствии с направлением к игроку
         game->boss.facingLeft = (bossDirectionToPlayer == -1);
@@ -204,7 +199,7 @@ void updateBoss(GameState *game, SDL_Renderer *renderer) {
         game->boss.attackTimer = 300;  // Устанавливаем таймер в 300 кадров (60 кадров в секунду * 5 секунд)
     } else {
         // Если игрок далеко, босс двигается туда-сюда
-        float bossDeltaX = game->boss.facingLeft ? -BOSS_SPEED * getStaleX() : BOSS_SPEED * getStaleX();
+        float bossDeltaX = game->boss.facingLeft ? -BOSS_SPEED * getScaleX() : BOSS_SPEED * getScaleX();
         game->boss.x += bossDeltaX;
         game->boss.state = BOSS_STATE_MOVING;
     }
@@ -216,11 +211,11 @@ void updateBoss(GameState *game, SDL_Renderer *renderer) {
         // Выбор текстуры атаки в зависимости от состояния атаки
         if (game->boss.attackState == 0) {
             int bossDirectionToPlayer = (game->man.x < game->boss.x) ? -1 : 1;
-            game->boss.x += bossDirectionToPlayer * BOSS_SPEED * 1.5 * getStaleX();
+            game->boss.x += bossDirectionToPlayer * BOSS_SPEED * 1.5 * getScaleX();
             currentBossTexture = game->bossAttackedStart;
         } else if (game->boss.attackState == 1) {
             int bossDirectionToPlayer = (game->man.x < game->boss.x) ? -1 : 1;
-            game->boss.x += bossDirectionToPlayer * BOSS_SPEED * 1.2 * getStaleX();
+            game->boss.x += bossDirectionToPlayer * BOSS_SPEED * 1.2 * getScaleX();
             currentBossTexture = game->bossAttackedEnd;
         }
     } else {
@@ -229,7 +224,7 @@ void updateBoss(GameState *game, SDL_Renderer *renderer) {
     }
 
     // Отрисовка босса
-    SDL_Rect bossRect = {game->scrollX + game->boss.x, game->boss.y, BOSS_WIDTH * getStaleX(), BOSS_HEIGHT * getStaleY()};
+    SDL_Rect bossRect = {game->scrollX + game->boss.x, game->boss.y, BOSS_WIDTH * getScaleX(), BOSS_HEIGHT * getScaleY()};
     SDL_RendererFlip flip = game->boss.facingLeft ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
     SDL_RenderCopyEx(renderer, currentBossTexture, NULL, &bossRect, 0, NULL, flip);
 

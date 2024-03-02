@@ -188,7 +188,6 @@ typedef struct
 
     SDL_Texture *label;
     SDL_Texture *bossskeleton;
-    SDL_Texture *label;
     SDL_Texture *graveTexture;
     SDL_Texture *bossStand;
     SDL_Texture *bossAttackedStart;

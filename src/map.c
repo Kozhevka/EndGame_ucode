@@ -36,13 +36,13 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         game->colonas[i].w = (int)(64 * scaleX);
         game->colonas[i].h = (int)(270 * scaleY);
         game->colonas[i].x = (int)(i * 300 * scaleX + game->ledges[NUM_LADGES-1].x+247);
-        game->colonas[i].y = getHeight() - game->colonas[i].h * 3 + 160;
+        game->colonas[i].y = getScreenHeight() - game->colonas[i].h * 3 + 160;
         }
         else if (i == 1){
         game->colonas[i].w = (int)(64 * scaleX);
         game->colonas[i].h = (int)(600 * scaleY);
         game->colonas[i].x = (int)(i * 300 * scaleX + game->bossplatform[NUM_BOSSPLATFORM-1].x - 100);
-        game->colonas[i].y = getHeight() - game->colonas[i].h * 3 + 1000;
+        game->colonas[i].y = getScreenHeight() - game->colonas[i].h * 3 + 1000;
         }
     }
     
@@ -55,7 +55,7 @@ void initMap(GameState *game, float scaleX, float scaleY) {
     game->bossskeletons.w = (int)(128 * scaleX);
     game->bossskeletons.h = (int)(128 * scaleY);
     game->bossskeletons.x = (int)(game->bossplatform[3].x);
-    game->bossskeletons.y = getHeight() - game->ledges[1].h * 5 + 15;
+    game->bossskeletons.y = getScreenHeight() - game->ledges[1].h * 5 + 15;
 
 
     for (int i = 1; i < NUM_WINDOWS; i++) {
@@ -161,7 +161,7 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
 
     for (int i = 0; i < NUM_COLONAS; i++) {
         SDL_Rect colonaRect = {game->scrollX + game->colonas[i].x, game->colonas[i].y, game->colonas[i].w, game->colonas[i].h};
-        SDL_RenderCopy(renderer, game->brick, NULL, &colonaRect);
+        SDL_RenderCopy(renderer, game->locationTextures.brick, NULL, &colonaRect);
     }
 
 
@@ -209,17 +209,17 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
         SDL_Texture *currentEnemyTexture;
 
         if (game->enemies[i].state == ENEMY_STATE_IDLE) {
-            currentEnemyTexture = game->enemy;
+            currentEnemyTexture = game->enemyAnimations.idle;
         } else {
             // Чтобы чередовать между game->enemy и game->enemyGo, используйте game->enemies[i].animFrame
             if (game->enemies[i].animFrame == 0) {
-                currentEnemyTexture = game->enemy;
+                currentEnemyTexture = game->enemyAnimations.idle;
             } else {
-                currentEnemyTexture = game->enemyGo;
+                currentEnemyTexture = game->enemyAnimations.walk;
             }
         }
 
-      SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getStaleX(), 140 * getStaleY()};
+      SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getScaleX(), 140 * getScaleY()};
       SDL_RenderCopyEx(renderer, currentEnemyTexture, NULL, &enemyRect, 0, NULL, flip);
    }
 }
