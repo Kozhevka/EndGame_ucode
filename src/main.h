@@ -141,10 +141,10 @@ typedef struct
     Flag flags[NUM_FLAGS];
     Boss_platform bossplatform[NUM_BOSSPLATFORM];
 
-    LocationTextures *locationTextures;
-    ParticlesTextures *particlesTextures;
-    AnimationEnemyHolder *enemyAnimations;
-    AnimationMainHeroHolder *playerAnimations;
+    LocationTextures locationTextures;
+    ParticlesTextures particlesTextures;
+    AnimationEnemyHolder enemyAnimations;
+    AnimationMainHeroHolder playerAnimations;
 
     SDL_Texture *label;
     

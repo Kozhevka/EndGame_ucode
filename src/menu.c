@@ -13,8 +13,8 @@ int selectedButtonSettingsMenu;
 int currentMenuCategory;
 int currentResolutionInteger = 0;
 
-int currentScreenWidth;
-int currentScreenHeight;
+int currentScreenWidth = 800;
+int currentScreenHeight = 600;
 
 SDL_DisplayMode dm;
 

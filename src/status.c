@@ -33,7 +33,7 @@ void draw_status_lives(GameState *game)
     int characterY = centerY - (int)(60 * scaleY) * GetScreenSizeMultiplier();
     SDL_Rect rect = {characterX, characterY, (int)(80 * scaleX) * GetScreenSizeMultiplier(), (int)(120 * scaleY) * GetScreenSizeMultiplier()};
     
-    SDL_RenderCopyEx(renderer, game->playerAnimations->run[0], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
+    SDL_RenderCopyEx(renderer, game->playerAnimations.run[0], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
 
     // Рассчитываем координаты для текста
     int textX = centerX - game->labelW / 2 + 20; // координаты для текста
@@ -62,7 +62,7 @@ void init_game_over(GameState *game)
     int graveX = centerX - 20; // координаты для могилы
     int graveY = centerY + 10;
     SDL_Rect graveRect = {graveX, graveY, 80, 120};
-    SDL_RenderCopyEx(renderer, game->locationTextures->grave, NULL, &graveRect, 0, NULL, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(renderer, game->locationTextures.grave, NULL, &graveRect, 0, NULL, SDL_FLIP_NONE);
 
     // Отображение надписи "gameover"
     SDL_Color white = {255, 255, 255, 255};

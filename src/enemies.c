@@ -18,13 +18,13 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
         SDL_Texture *currentEnemyTexture;
 
         if (game->enemies[i].state == ENEMY_STATE_IDLE) {
-            currentEnemyTexture = game->enemyAnimations->idle;
+            currentEnemyTexture = game->enemyAnimations.idle;
         } else {
             // Чтобы чередовать между game->enemy и game->enemyGo, используйте game->enemies[i].animFrame
             if (game->enemies[i].animFrame == 0) {
-                currentEnemyTexture = game->enemyAnimations->idle;
+                currentEnemyTexture = game->enemyAnimations.idle;
             } else {
-                currentEnemyTexture = game->enemyAnimations->walk;
+                currentEnemyTexture = game->enemyAnimations.walk;
             }
         }
 
@@ -95,16 +95,16 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
 
             if (game->enemies[i].attackState == 0) {
                 // Начало атаки
-                currentEnemyTexture = game->enemyAnimations->attackStart;
+                currentEnemyTexture = game->enemyAnimations.attackStart;
             } else if (game->enemies[i].attackState == 1) {
                 // Атака
-                currentEnemyTexture = game->enemyAnimations->attackedContinue;
+                currentEnemyTexture = game->enemyAnimations.attackedContinue;
             } else if (game->enemies[i].attackState == 2) {
                 // Завершение атаки
-                currentEnemyTexture = game->enemyAnimations->attackedEnd;
+                currentEnemyTexture = game->enemyAnimations.attackedEnd;
             } else {
                 // Исходное положение
-                currentEnemyTexture = game->enemyAnimations->attackedEnd;
+                currentEnemyTexture = game->enemyAnimations.attackedEnd;
             }
 
             // Уменьшаем таймер атаки

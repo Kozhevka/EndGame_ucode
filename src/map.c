@@ -121,28 +121,28 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
 
     for (int i = 0; i < NUM_LADGES; i++) {
         SDL_Rect ledgeRect = {game->scrollX + game->ledges[i].x, game->ledges[i].y, game->ledges[i].w, game->ledges[i].h};
-        SDL_RenderCopy(renderer, game->locationTextures->brick, NULL, &ledgeRect);
+        SDL_RenderCopy(renderer, game->locationTextures.brick, NULL, &ledgeRect);
     }
 
     for (int i = 0; i < NUM_LADGES; i++) {
         SDL_Rect ceilingRect = {game->scrollX + game->ceilings[i].x, game->ceilings[i].y, game->ceilings[i].w, game->ceilings[i].h};
-        SDL_RenderCopy(renderer, game->locationTextures->brick, NULL, &ceilingRect);
+        SDL_RenderCopy(renderer, game->locationTextures.brick, NULL, &ceilingRect);
     }
 
     for (int i = 0; i < NUM_LADGES; i++) {
         SDL_Rect ceilingRect = {game->scrollX + game->ceilings[i].x, game->ceilings[i].y, game->ceilings[i].w, game->ceilings[i].h};
-        SDL_RenderCopy(renderer, game->locationTextures->chandelier, NULL, &ceilingRect);
+        SDL_RenderCopy(renderer, game->locationTextures.chandelier, NULL, &ceilingRect);
     }
 
     for (int i = 0; i < NUM_WALLS; i++) {
         SDL_Rect wallsRect = {game->scrollX + game->walls[i].x, game->walls[i].y, game->walls[i].w, game->walls[i].h};
-        SDL_RenderCopy(renderer, game->locationTextures->wall, NULL, &wallsRect);
+        SDL_RenderCopy(renderer, game->locationTextures.wall, NULL, &wallsRect);
     }
 
     for (int i = 1; i < NUM_WINDOWS; i++) {
         if (game->windows[i].random == 1) {
             SDL_Rect windowsRect = {game->scrollX + game->windows[i].x, game->windows[i].y, game->windows[i].w, game->windows[i].h};
-            SDL_RenderCopy(renderer, game->locationTextures->window, NULL, &windowsRect);
+            SDL_RenderCopy(renderer, game->locationTextures.window, NULL, &windowsRect);
         } else {
             i++;
         }
@@ -151,7 +151,7 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
     for (int i = 1; i < NUM_FLAGS; i++) {
         if (game->flags[i].random == 1) {
             SDL_Rect flagsRect = {game->scrollX + game->flags[i].x, game->flags[i].y, game->flags[i].w, game->flags[i].h};
-            SDL_RenderCopy(renderer, game->locationTextures->flag, NULL, &flagsRect);
+            SDL_RenderCopy(renderer, game->locationTextures.flag, NULL, &flagsRect);
         } else {
             i++;
         }
@@ -160,7 +160,7 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
     for (int i = 1; i < NUM_SCULLS; i++) {
         if (game->sculls[i].random == 1) {
             SDL_Rect scullsRect = {game->scrollX + game->sculls[i].x, game->sculls[i].y, game->sculls[i].w, game->sculls[i].h};
-            SDL_RenderCopy(renderer, game->locationTextures->scull, NULL, &scullsRect);
+            SDL_RenderCopy(renderer, game->locationTextures.scull, NULL, &scullsRect);
         } else {
             i++;
         }
@@ -168,25 +168,25 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
 
     for (int i = 0; i < NUM_CHANDELIERS; i++) {
         SDL_Rect chandelierRect = {game->scrollX + game->chandeliers[i].x, game->chandeliers[i].y, game->chandeliers[i].w, game->chandeliers[i].h};
-        SDL_RenderCopy(renderer, game->locationTextures->chandelier, NULL, &chandelierRect);
+        SDL_RenderCopy(renderer, game->locationTextures.chandelier, NULL, &chandelierRect);
     }
 
     updateEnemies(game, renderer);
     SDL_Rect doorRect = {game->scrollX + game->doors.x, game->doors.y, game->doors.w, game->doors.h};
-    SDL_RenderCopy(renderer, game->locationTextures->door, NULL, &doorRect);
+    SDL_RenderCopy(renderer, game->locationTextures.door, NULL, &doorRect);
 
     for (int i = 0; i < NUM_ENEMIES; i++) {
         SDL_RendererFlip flip = game->enemies[i].facingLeftTexture ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
         SDL_Texture *currentEnemyTexture;
 
         if (game->enemies[i].state == ENEMY_STATE_IDLE) {
-            currentEnemyTexture = game->enemyAnimations->idle;
+            currentEnemyTexture = game->enemyAnimations.idle;
         } else {
             // Чтобы чередовать между game->enemy и game->enemyGo, используйте game->enemies[i].animFrame
             if (game->enemies[i].animFrame == 0) {
-                currentEnemyTexture = game->enemyAnimations->idle;
+                currentEnemyTexture = game->enemyAnimations.idle;
             } else {
-                currentEnemyTexture = game->enemyAnimations->walk;
+                currentEnemyTexture = game->enemyAnimations.walk;
             }
         }
 
@@ -194,5 +194,5 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
         SDL_RenderCopyEx(renderer, currentEnemyTexture, NULL, &enemyRect, 0, NULL, flip);
     }
     //SDL_Rect doorRect = {game->scrollX + game->doors.x, game->doors.y, game->doors.w, game->doors.h};
-    SDL_RenderCopy(renderer, game->locationTextures->door, NULL, &doorRect);
+    SDL_RenderCopy(renderer, game->locationTextures.door, NULL, &doorRect);
 }

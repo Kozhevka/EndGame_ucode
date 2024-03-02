@@ -8,7 +8,7 @@ SRCS := $(wildcard $(SRC_DIR)/*.c)
 CC := gcc
 
 # Specify compiler flags
-CFLAGS := -I$(SRC_DIR)  -I/SDL2 -L/SDL2/lib -lSDL2 -lSDL2_image -lSDL2_ttf -lm
+CFLAGS := -I$(SRC_DIR)  -I/SDL2 -L/SDL2/lib -lSDL2 -lSDL2_image -lSDL2_ttf -lm -g
 
 # Specify target
 TARGET := mygame
@@ -16,6 +16,7 @@ TARGET := mygame
 # Compile target
 $(TARGET): $(SRCS)
 	$(CC) -o $@ $^ $(CFLAGS)
+
 
 # Clean
 clean:

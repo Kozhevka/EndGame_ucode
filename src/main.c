@@ -21,11 +21,110 @@ int addToJump = 1;
 
 int closeApplication = 0;
 
+float getScaleX();
+float getScaleY();
+void loadGame(GameState *game);
+void process(GameState *game);
+int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2);
+void colissionDetect(GameState *game);
+int processEvents(SDL_Window *window, GameState *game);
+void doRender(SDL_Renderer *renderer, GameState *game);
+void changeScene(CurrentScene *currentSceneData, int sceneInt);
+int setPhysics();
+
+int main(int argc, char *argv[])
+{
+    
+    const long interval_microseconds = 1000000 / 80;
+    
+    GameState gameState;
+    MenuResources menuResources;
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+
+    SDL_Init(SDL_INIT_VIDEO);
+    srandom((int)time(NULL));
+
+
+    window = SDL_CreateWindow(GetGameName(),
+                          0,
+                          0,
+                          getScreenWidht(),
+                          getScreenHeight(),
+                          0);
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    gameState.renderer = renderer;
+    menuResources.renderer = renderer;
+    menuResources.applicationWindow = window;
+
+    TTF_Init();
+
+    initResourceManagement(&menuResources, &gameState);
+
+    loadMenu(&menuResources);
+
+    int done = 0;
+    int gameLoaded = 0;
+    CurrentScene currentScene;
+    currentScene.sceneInteger = SCENE_MENU;
+    SetupSceneChanger(&currentScene);
+
+    init_menu(&menuResources);
+
+    while (!done) {
+        if (currentScene.sceneInteger == QUITGAME) done = 1;
+
+        if (currentScene.sceneInteger == SCENE_MENU) {
+            done = processInputInMenu(window, &currentScene);
+            renderMenu(renderer, &menuResources);
+        } else if(currentScene.sceneInteger == SCENE_GAME) {
+            if (gameLoaded == 0) {
+                setPhysics();
+                // Загрузка ресурсов для игры
+                loadGame(&gameState);
+                updateEnemies(&gameState, renderer);
+                initMap(&gameState, getScaleX(), getScaleY());
+                gameLoaded = 1;
+            }
+
+            // Обработка игровых событий
+            done = processEvents(window, &gameState);
+
+            // Обновление состояния игры
+            process(&gameState);
+
+            updateEnemies(&gameState, renderer);
+
+            // Детекция коллизий
+            colissionDetect(&gameState);
+
+            // Рендеринг игры
+            doRender(renderer, &gameState);
+        }
+        usleep(interval_microseconds);
+    }
+
+    // Очистка ресурсов
+    unloadMenuResources(&menuResources);
+    unloadGameResources(&gameState);
+
+
+
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
+
+    SDL_Quit();
+
+    return 0;
+}
 
 float getScaleX(){
     float scaleX = (float)getScreenWidht() / 1980;
     return scaleX;
 }
+
 float getScaleY(){
     float scaleY = (float)getScreenHeight() / 1080;
     return scaleY;
@@ -33,15 +132,15 @@ float getScaleY(){
 
 void loadGame(GameState *game)
 {
-    initializeMainHeroTextures(&(game->playerAnimations), game->renderer);
+    initializeMainHeroTextures(&game->playerAnimations, game->renderer);
 
     for (size_t i = 0; i < NUM_ENEMIES; i++)
     {
-        initializeEnemyTextures(&(game->enemyAnimations), game-> renderer);
+        initializeEnemyTextures(&game->enemyAnimations, game-> renderer);
     }
     
-    initializeLocationTextures(&(game->locationTextures), game-> renderer);
-    initializeParticleTextures(&(game->particlesTextures), game-> renderer);
+    initializeLocationTextures(&game->locationTextures, game-> renderer);
+    initializeParticleTextures(&game->particlesTextures, game-> renderer);
 
     game->font = TTF_OpenFont("assets/fonts/ARCADECLASSIC.TTF", 48);
     if (!game->font)
@@ -377,9 +476,8 @@ void doRender(SDL_Renderer *renderer, GameState *game)
     {
         draw_status_lives(game);
     }
-    else if(game->statusState == STATUS_STATE_GAME){
-
-
+    else if(game->statusState == STATUS_STATE_GAME)
+    {
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
@@ -391,12 +489,12 @@ void doRender(SDL_Renderer *renderer, GameState *game)
         renderHealth(game);
 
         SDL_Rect rect = {game->scrollX + game->man.x, game->man.y, 80 * getScaleX(), 120 * getScaleY()};
-        SDL_RenderCopyEx(renderer, game->playerAnimations->run[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
+        SDL_RenderCopyEx(renderer, game->playerAnimations.run[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
     
         if (game->man.isDead)
         {
             SDL_Rect rect = {game->scrollX + game->man.x - 24 * getScaleX() - 18 / 2, game->man.y - 24 * getScaleY() - 10 / 2, 140 * getScaleX(), 180 * getScaleY()};
-            SDL_RenderCopyEx(renderer, game->playerAnimations->dead, NULL, &rect, 0, NULL, (game->time % 20 == 10));
+            SDL_RenderCopyEx(renderer, game->playerAnimations.dead, NULL, &rect, 0, NULL, (game->time % 20 == 10));
         }
 
     }
@@ -442,93 +540,3 @@ int setPhysics(){
     }
 
 }
-
-
-int main(int argc, char *argv[])
-{
-    
-    const long interval_microseconds = 1000000 / 80;
-    
-    GameState gameState;
-    MenuResources menuResources;
-    SDL_Window *window;
-    SDL_Renderer *renderer;
-
-    SDL_Init(SDL_INIT_VIDEO);
-    srandom((int)time(NULL));
-
-
-    window = SDL_CreateWindow(GetGameName(),
-                          0,
-                          0,
-                          getScreenWidht(),
-                          getScreenHeight(),
-                          0);
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    gameState.renderer = renderer;
-    menuResources.renderer = renderer;
-    menuResources.applicationWindow = window;
-
-    TTF_Init();
-
-    initResourceManagement(&menuResources, &gameState);
-
-    loadMenu(&menuResources);
-
-    int done = 0;
-    int gameLoaded = 0;
-    CurrentScene currentScene;
-    currentScene.sceneInteger = SCENE_MENU;
-    SetupSceneChanger(&currentScene);
-
-    init_menu(&menuResources);
-
-    while (!done) {
-        if (currentScene.sceneInteger == QUITGAME) done = 1;
-
-        if (currentScene.sceneInteger == SCENE_MENU) {
-            done = processInputInMenu(window, &currentScene);
-            renderMenu(renderer, &menuResources);
-        } else if(currentScene.sceneInteger == SCENE_GAME) {
-            if (gameLoaded == 0) {
-                setPhysics();
-                // Загрузка ресурсов для игры
-                loadGame(&gameState);
-                updateEnemies(&gameState, renderer);
-                initMap(&gameState, getScaleX(), getScaleY());
-                gameLoaded = 1;
-            }
-
-            // Обработка игровых событий
-            done = processEvents(window, &gameState);
-
-            // Обновление состояния игры
-            process(&gameState);
-
-            updateEnemies(&gameState, renderer);
-
-            // Детекция коллизий
-            colissionDetect(&gameState);
-
-            // Рендеринг игры
-            doRender(renderer, &gameState);
-        }
-        usleep(interval_microseconds);
-    }
-
-    // Очистка ресурсов
-    unloadMenuResources(&menuResources);
-    unloadGameResources(&gameState);
-
-
-
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
-
-    SDL_Quit();
-
-    return 0;
-}
-
