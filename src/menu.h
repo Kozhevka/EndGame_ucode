@@ -13,7 +13,9 @@ void renderMenu(SDL_Renderer *renderer, MenuResources *resources);
 void drawText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement *textProperties);
 void drawFullscreenButtonText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement *textProperties);
 void drawResolutionButtonText(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement *textProperties);
+void drawRoflModeButton(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement *textProperties);
 char* GetTextForResolutionButton();
+char* GetTextForRoflMode();
 int GetRectYCoordinate(int yCoordinateGlobal);
 int GetRectWidth(int rectWidth);
 int GetRectHeight(int rectHeight);
@@ -33,7 +35,9 @@ void OnResolutionButtonPressed();
 void ChangeResolution();
 void OnMenuButtonPressed(MenuTextElement *menuButton);
 char* GetGameName();
+int isRoflMode();
 int getWidth();
 int getHeight();
+void ToggleRoflMode();
 
 #endif

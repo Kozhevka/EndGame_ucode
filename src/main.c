@@ -8,6 +8,7 @@
 #include "status.h"
 #include "menu.h"
 #include "map.h"
+#include "sounds.h"
 #include "enemies.h"
 #include "interface.h"
 
@@ -31,13 +32,28 @@ void loadGame(GameState *game)
 {
     SDL_Surface *surface = NULL;
 
-    surface = IMG_Load("assets/images/enemy.png");
-    if (surface == NULL)
+    if(isRoflMode())
     {
-        printf("cannot find enemy.png");
-        SDL_Quit();
-        exit(1);
+        surface = IMG_Load("assets/images/hero.png");
+        if (surface == NULL)
+        {
+            printf("cannot find enemy.png");
+            SDL_Quit();
+            exit(1);
+        }
     }
+    else
+    {
+        surface = IMG_Load("assets/images/enemy.png");
+        if (surface == NULL)
+        {
+            printf("cannot find enemy.png");
+            SDL_Quit();
+            exit(1);
+        }
+    }
+    
+
     game->enemy = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
@@ -88,6 +104,7 @@ void loadGame(GameState *game)
         SDL_Quit();
         exit(1);
     }
+
     game->manIdle = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
@@ -219,7 +236,8 @@ void process(GameState *game)
 
     if (game->man.health < 1)
     {
-        game->man.isDead = 1;
+        playSound(dieSound);
+        game->man.isDead = 1;      
     }
     if (game->time > 120)
     {
@@ -321,6 +339,7 @@ void colissionDetect(GameState *game)
     for (int i = 0; i < NUM_ENEMIES; i++) {
         if (collide2d(game->man.x, game->man.y, game->enemies[i].x, game->enemies[i].y, 48, 48, 64, 64)) {
             game->man.health -= 25;
+            playSound(damageSound);
             if (game->man.x < game->enemies[i].x) {
                 game->man.dx = -50;
                 game->man.x -= 25;
@@ -569,6 +588,7 @@ int processEvents(SDL_Window *window, GameState *game)
     if (game->man.onLedge) {
         game->man.dy -= 0.1f * getStaleY() * addToJump;
         game->man.onLedge = 0;  
+        playSound(jumpSound);
     }
 }
 
@@ -705,8 +725,10 @@ int main(int argc, char *argv[])
 
     initResourceManagement(&menuResources, &gameState);
 
-    loadMenu(&menuResources);
+    InitSounds();
 
+    loadMenu(&menuResources);
+    playMusic(menuMusic);
     int done = 0;
     int gameLoaded = 0;
     CurrentScene currentScene;
@@ -728,6 +750,12 @@ int main(int argc, char *argv[])
                 loadGame(&gameState);
                 updateEnemies(&gameState, renderer);
                 initMap(&gameState, getStaleX(), getStaleY());
+                if(isRoflMode()){
+                    playMusic(menuRoflMusic);
+                }
+                else{
+                    playMusic(gameNormalMusic);
+                }
                 gameLoaded = 1;
             }
 
@@ -751,7 +779,7 @@ int main(int argc, char *argv[])
     // Очистка ресурсов
     unloadMenuResources(&menuResources);
     unloadGameResources(&gameState);
-
+    close_sounds();
 
 
     SDL_DestroyWindow(window);
