@@ -95,6 +95,10 @@ void loadGame(GameState *game)
     game->brick = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
+    surface = IMG_Load("assets/images/ceiling.png");
+    game->ceiling = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
     surface = IMG_Load("assets/images/dead-effect.png");
     game->deadEffect = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
@@ -182,6 +186,8 @@ void loadGame(GameState *game)
     surface = IMG_Load("assets/images/boss_a_tam_skeleton.png");
     game->bossskeleton = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
+
+
 
     game->label = NULL;
 
@@ -299,14 +305,16 @@ void colissionDetect(GameState *game)
     if (collide2d(game->man.x, game->man.y, game->boss.x, game->boss.y, 80, 120, BOSS_WIDTH, BOSS_HEIGHT)) {
         game->man.health -= 25; // Уменьшаем здоровье при коллизии с боссом
         if (game->man.x < game->boss.x) {
-            game->man.dx = -5;
+            game->man.dx = -50;
+            game->man.x -= 25;
         } else {
-            game->man.dx = 5;
+            game->man.dx = 50;
+            game->man.x += 25;
         }
         if (game->man.y < game->boss.y) {
-            game->man.dy = -3;
+            game->man.dy = -6;
         } else {
-            game->man.dy = 3;
+            game->man.dy = 6;
         }
     }
 
@@ -314,14 +322,16 @@ void colissionDetect(GameState *game)
         if (collide2d(game->man.x, game->man.y, game->enemies[i].x, game->enemies[i].y, 48, 48, 64, 64)) {
             game->man.health -= 25;
             if (game->man.x < game->enemies[i].x) {
-                game->man.dx = -5;
+                game->man.dx = -50;
+                game->man.x -= 25;
             } else {
-                game->man.dx = 5;
+                game->man.dx = 50;
+                game->man.x += 25;
             }
             if (game->man.y < game->enemies[i].y) {
-                game->man.dy = -3;
+                game->man.dy = -6;
             } else {
-                game->man.dy = 3;
+                game->man.dy = 6;
             }
         }
     }
@@ -645,19 +655,19 @@ int setPhysics(){
         // gravity = 0.013f;
         koff = 70;
     } else if(width <= 1280){
-        speed = 0.8;
+        speed = 1.4;
         // gravity = 0.01f;
         koff = 50;
     } else if(width <= 1360){
-        speed = 0.9;
+        speed = 1.5;
         // gravity = 0.01f;
         koff = 50;
     }else if(width <= 1920){
-        speed = 2.3;
+        speed = 2.8;
         // gravity = 0.05f;
         koff = 30;
     }else if(width <= 2560 || width >= 2560){
-        speed = 3;
+        speed = 3.2;
         // gravity = 0.09f;
         koff = 20;
     }

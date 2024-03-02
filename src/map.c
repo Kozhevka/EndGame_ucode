@@ -1,4 +1,5 @@
 #include "map.h"
+#include "enemies.h"
 #include "menu.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -118,23 +119,30 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         game->chandeliers[i].y = getHeight() - game->chandeliers[i].h * 4 - 60;
     }
 
-     // Пример инициализации врагов
-    // for (int i = 0; i < NUM_ENEMIES; i++) {
-    //     int randomBlock;
-    //     game->enemies[i].speed = 0.2 * scaleX;
-    //     do {
-    //         // Выбираем случайный блок
-    //         randomBlock = rand() % 100;
-    //         // Проверяем, что блок не слишком близко к началу
-    //     } while (game->ledges[randomBlock].x < 500 * scaleX);
 
-    //     // Устанавливаем врага наверху выбранного блока
-    //     game->enemies[i].x = game->ledges[randomBlock].x + game->ledges[randomBlock].w / 2 - 80 * scaleX / 2;
-    //     game->enemies[i].y = game->ledges[randomBlock].y - 120 * scaleY;
-    //     game->enemies[i].animFrame = 0;
-    //     game->enemies[i].facingLeft = 1;
-    //     game->enemies[i].speed = 0.2 * scaleX;
-    // }
+    for (int i = 0; i < NUM_ENEMIES; i++) {
+        int randomBlock;
+        game->enemies[i].speed = 0.2 * scaleX;
+        do {
+            // Выбираем случайный блок
+            randomBlock = rand() % 100;
+            // Проверяем, что блок не слишком близко к началу
+        } while (game->ledges[randomBlock].x < 500 * scaleX);
+
+        // Устанавливаем врага наверху выбранного блока
+        game->enemies[i].x = game->ledges[randomBlock].x + game->ledges[randomBlock].w / 2 - 80 * scaleX / 2;
+        game->enemies[i].y = game->ledges[randomBlock].y - 120 * scaleY;
+        game->enemies[i].animFrame = 0;
+        game->enemies[i].facingLeft = 1;
+        game->enemies[i].speed = 0.2 * scaleX;
+    }
+
+    game->boss.texture = game->bossStand;  // Замените это на соответствующую текстуру
+    game->boss.x = game->bossplatform[4].x * scaleX;  // Установите начальные координаты босса
+    game->boss.y = 750 * scaleY;  // Установите начальные координаты босса
+    game->boss.speed = BOSS_SPEED * scaleX;  // Установите скорость босса
+
+
 }
 
 void renderMap(SDL_Renderer *renderer, GameState *game) {
@@ -199,25 +207,11 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
     SDL_Rect doorRect = {game->scrollX + game->doors.x, game->doors.y, game->doors.w, game->doors.h};
     SDL_RenderCopy(renderer, game->door, NULL, &doorRect);
 
+    updateEnemies(game, renderer);
+
+    updateBoss(game, renderer);
+
     SDL_Rect bossskeletonRect = {game->scrollX + game->bossskeletons.x, game->bossskeletons.y, game->bossskeletons.w, game->bossskeletons.h};
     SDL_RenderCopy(renderer, game->bossskeleton, NULL, &bossskeletonRect);
 
-    // for (int i = 0; i < NUM_ENEMIES; i++) {
-    //     SDL_RendererFlip flip = game->enemies[i].facingLeftTexture ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-    //     SDL_Texture *currentEnemyTexture;
-
-    //     if (game->enemies[i].state == ENEMY_STATE_IDLE) {
-    //         currentEnemyTexture = game->enemy;
-    //     } else {
-    //         // Чтобы чередовать между game->enemy и game->enemyGo, используйте game->enemies[i].animFrame
-    //         if (game->enemies[i].animFrame == 0) {
-    //             currentEnemyTexture = game->enemy;
-    //         } else {
-    //             currentEnemyTexture = game->enemyGo;
-    //         }
-    //     }
-
-        // SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getStaleX(), 140 * getStaleY()};
-        // SDL_RenderCopyEx(renderer, currentEnemyTexture, NULL, &enemyRect, 0, NULL, flip);
-   // }
 }
