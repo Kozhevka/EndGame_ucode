@@ -36,15 +36,27 @@ void loadGame(GameState *game)
 {
     SDL_Surface *surface = NULL;
 
-    surface = IMG_Load("assets/images/enemy.png");
-    if (surface == NULL)
+    if(isRoflMode())
     {
-        printf("cannot find enemy.png");
-        SDL_Quit();
-        exit(1);
+        surface = IMG_Load("assets/images/hero.png");
+        if (surface == NULL)
+        {
+            printf("cannot find enemy.png");
+            SDL_Quit();
+            exit(1);
+        }
     }
-
-    Mix_Volume(-1, MIX_MAX_VOLUME / 2);
+    else
+    {
+        surface = IMG_Load("assets/images/enemy.png");
+        if (surface == NULL)
+        {
+            printf("cannot find enemy.png");
+            SDL_Quit();
+            exit(1);
+        }
+    }
+    
 
     game->enemy = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
@@ -175,8 +187,8 @@ void process(GameState *game)
 
     if (game->man.health < 1)
     {
-        game->man.isDead = 1;
-        playSound("die.wav");
+        playSound(dieSound);
+        game->man.isDead = 1;      
     }
     if (game->time > 120)
     {
@@ -267,7 +279,7 @@ void colissionDetect(GameState *game)
         if(collide2d(game->man.x, game->man.y, game->enemies[i].x,game->enemies[i].y, 48, 48, 64, 64))
         {
             game->man.health -= 25;
-            playSound("damage.wav");
+            playSound(damageSound);
             if (game->man.x < game->enemies[i].x) {
                 game->man.dx  = -5;
             } else {
@@ -416,12 +428,11 @@ int processEvents(SDL_Window *window, GameState *game)
 
         if(state[SDL_SCANCODE_SPACE]){
             game->man.dy -= 0.03f * getStaleY() * addToJump;
-            playSound("jump.wav");
+            playSound(jumpSound);
         }
 
         if (state[SDL_SCANCODE_A]) {
         game->man.dx -= 0.1 * speed;
-        playSound("land.wav");
         if (game->man.dx < -3 * speed) {
             game->man.dx = -3 * speed;
         }
@@ -429,7 +440,6 @@ int processEvents(SDL_Window *window, GameState *game)
         game->man.slowingDown = 0;
         } else if (state[SDL_SCANCODE_D]) {
         game->man.dx += 0.1 * speed;
-        playSound("land.wav");
         if (game->man.dx > 3 * speed) {
             game->man.dx = 3 * speed;
         }
@@ -552,10 +562,11 @@ int main(int argc, char *argv[])
     TTF_Init();
 
     initResourceManagement(&menuResources, &gameState);
-    //playSound("menu.wav");
+
+    InitSounds();
 
     loadMenu(&menuResources);
-
+    playMusic(menuMusic);
     int done = 0;
     int gameLoaded = 0;
     CurrentScene currentScene;
@@ -577,6 +588,7 @@ int main(int argc, char *argv[])
                 loadGame(&gameState);
                 initMap(&gameState, getStaleX(), getStaleY());
                 updateEnemies(&gameState);
+                playMusic(gameNormalMusic);
                 gameLoaded = 1;
             }
 
@@ -599,7 +611,7 @@ int main(int argc, char *argv[])
     // Очистка ресурсов
     unloadMenuResources(&menuResources);
     unloadGameResources(&gameState);
-
+    close_sounds();
 
 
     SDL_DestroyWindow(window);

@@ -33,6 +33,7 @@ void OnResolutionButtonPressed();
 void ChangeResolution();
 void OnMenuButtonPressed(MenuTextElement *menuButton);
 char* GetGameName();
+int isRoflMode();
 int getWidth();
 int getHeight();
 

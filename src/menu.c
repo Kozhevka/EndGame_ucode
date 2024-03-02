@@ -16,6 +16,8 @@ int currentResolutionInteger = 0;
 int currentScreenWidth;
 int currentScreenHeight;
 
+int roflMode = 0;
+
 SDL_DisplayMode dm;
 
 char* gameName = "HANNAH   OWO     SIMULATOR";
@@ -51,12 +53,23 @@ void init_menu(MenuResources *resources) {
     // background texture load
     SDL_Surface *surface = NULL;
 
-    surface = IMG_Load("assets/images/menu_background.png");
-    if (surface == NULL) {
-        printf("Cannot find menu_background.png\n");
-        SDL_Quit();
-        exit(1);
+    if(isRoflMode()){
+        surface = IMG_Load("assets/images/heroi.png");
+        if (surface == NULL) {
+            printf("Cannot find menu_background.png\n");
+            SDL_Quit();
+            exit(1);
+        }
     }
+    else{
+        surface = IMG_Load("assets/images/menu_background.png");
+        if (surface == NULL) {
+            printf("Cannot find menu_background.png\n");
+            SDL_Quit();
+            exit(1);
+        }
+    }
+    
 
     resources->menuBackground = SDL_CreateTextureFromSurface(resources->renderer, surface);
     SDL_FreeSurface(surface);
@@ -499,20 +512,16 @@ int processInputInMenu(SDL_Window *window, CurrentScene *currentScene) {
                         done = 1;
                         break;
                     case SDLK_SPACE:
-                    playSound("click.wav");
                         currentScene->sceneInteger = SCENE_GAME;
                         break;
-                    case SDLK_UP:
-                    playSound("scroll.wav");
+                    case SDLK_UP:                  
                         ChangeSelectedButton(false);
                     break;
 
                     case SDLK_DOWN:
-                    playSound("scroll.wav");
                         ChangeSelectedButton(true);
                     break;
                     case SDLK_RETURN:
-                    playSound("click.wav");
                         OnMenuButtonPressed(selectedMenuButton.selectedButton);
                     break;
                 }
@@ -585,6 +594,7 @@ void ChangeSelectedButton(bool state)
                 break;
         }
     }
+    playSound(scrollSound);
 }
 
 void ClearMainMenuButtons()
@@ -638,6 +648,7 @@ void OnMenuButtonPressed(MenuTextElement *menuButton)
             ToggleFullscreen();
             break;
     }
+     playSound(clickSound);
 }
 
 //======================================================================
@@ -645,4 +656,9 @@ void OnMenuButtonPressed(MenuTextElement *menuButton)
 char* GetGameName()
 {
     return gameName;
+}
+
+int isRoflMode()
+{
+    return roflMode;
 }
