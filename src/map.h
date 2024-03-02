@@ -5,5 +5,7 @@
 
 void initMap(GameState *game, float scaleX, float scaleY);
 void renderMap(SDL_Renderer *renderer, GameState *game);
+void updateBoss(GameState *game);  // Добавлено объявление
+void renderBoss(SDL_Renderer *renderer, GameState *game);
 
 #endif

@@ -3,8 +3,10 @@
 #include "menu.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "enemies.h"
 
 void initMap(GameState *game, float scaleX, float scaleY) {
+    
     for (int i = 0; i < NUM_LADGES; i++) {
         game->ledges[i].w = (int)(256 * scaleX);
         game->ledges[i].h = (int)(64 * scaleY);
@@ -91,9 +93,11 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         game->enemies[i].facingLeft = 1;
         game->enemies[i].speed = 0.2 * scaleX;
     }
+    initBoss(game, scaleX, scaleY);
 }
 
 void renderMap(SDL_Renderer *renderer, GameState *game) {
+    
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     for (int i = 0; i < NUM_LADGES; i++) {
@@ -144,6 +148,8 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
     }
 
     updateEnemies(game, renderer);
+    updateBoss(game);
+    renderBoss(renderer, game);
 
     SDL_Rect doorRect = {game->scrollX + game->doors.x, game->doors.y, game->doors.w, game->doors.h};
     SDL_RenderCopy(renderer, game->door, NULL, &doorRect);

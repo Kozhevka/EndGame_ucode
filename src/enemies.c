@@ -1,5 +1,7 @@
 #include "main.h"
 #include "enemies.h"
+#include "menu.h"
+
 
 
 
@@ -93,22 +95,18 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
                 game->enemies[i].attackTimer = 300;  // Устанавливаем таймер в 300 кадров (60 кадров в секунду * 5 секунд)
             }
 
-            if (game->enemies[i].attackState == 0) {
+if (game->enemies[i].attackState == 0) {
                 // Начало атаки
                 currentEnemyTexture = game->enemyAttackStart;
-                printf("0\n");
             } else if (game->enemies[i].attackState == 1) {
                 // Атака
                 currentEnemyTexture = game->enemyAttacked;
-                printf("1\n");
             } else if (game->enemies[i].attackState == 2) {
                 // Завершение атаки
                 currentEnemyTexture = game->enemyAttackedEnd;
-                printf("2\n");
             } else {
                 // Исходное положение
                 currentEnemyTexture = game->enemyReturn;
-                printf("3\n");
             }
 
             // Уменьшаем таймер атаки
@@ -121,4 +119,93 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
         SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getStaleX(), 140 * getStaleY()};
         SDL_RenderCopyEx(renderer, currentEnemyTexture, NULL, &enemyRect, 0, NULL, flip);
     }
+}
+
+
+void initBoss(GameState *game, float scaleX, float scaleY) {
+    game->boss.x = 500;
+    game->boss.y = 800;
+    game->boss.animFrame = 0;
+    game->boss.facingLeft = 1;
+    game->boss.attackState = 0;
+    game->boss.attackTimer = 0;
+    game->boss.attackTarget = game->boss.x;
+    game->boss.speed = 1.0 * scaleX;
+
+    for (int i = 0; i < 3; i++) {
+        char texturePath[50];
+        sprintf(texturePath, "assets/images/boss-%d.png", i + 1);
+        SDL_Surface *surface = IMG_Load(texturePath);
+        if (surface == NULL) {
+            printf("Cannot find %s\n", texturePath);
+            SDL_Quit();
+            exit(1);
+        }
+        game->boss.textures[i] = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+    }
+}
+
+void updateBoss(GameState *game) {
+    float distance = sqrt(pow(game->man.x - game->boss.x, 2) + pow(game->man.y - game->boss.y, 2));
+
+    // Логика движения и атаки босса
+    if (distance < 400 && abs(game->man.x - game->boss.x) < 400) {
+        if (game->man.x < game->boss.x) {
+            game->boss.x -= 1 * getStaleX();
+            game->boss.facingLeft = 1;
+        } else {
+            game->boss.x += 2 * getStaleX();
+            game->boss.facingLeft = 0;
+        }
+    } else if (game->boss.facingLeft) {
+        game->boss.x -= 1 * getStaleX();
+    } else {
+        game->boss.x += 1.3 * getStaleX();
+    }
+
+    // Обновление анимации босса каждые 50 кадров
+    if (game->time % 50 == 0) {
+        game->boss.animFrame = (game->boss.animFrame + 1) % 3;
+    }
+
+    // Логика атаки босса
+    int attackRange = 300;
+    int stopRange = 50;
+    int direction = (game->man.x < game->boss.x) ? -1 : 1;
+
+    if (distance < attackRange) {
+        if (distance > stopRange) {
+            game->boss.x += direction * getStaleX();
+        }
+
+        if (game->boss.attackTimer <= 0) {
+            game->boss.attackState = 0;
+            game->boss.attackTimer = 300;
+        }
+
+        if (game->boss.attackState == 0) {
+            // Начало атаки
+            game->boss.attackState = 1;
+        } else if (game->boss.attackState == 1) {
+            // Атака
+            // Здесь вы можете добавить логику атаки босса
+            printf("Boss is attacking!\n");
+        }
+
+        game->boss.attackTimer -= 1;
+    }
+}
+
+void renderBoss(SDL_Renderer *renderer, GameState *game) {
+    SDL_RendererFlip flip = game->boss.facingLeft ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+    SDL_Rect bossRect = {game->scrollX + game->boss.x, game->boss.y, 160 * getStaleX(), 140 * getStaleY()};
+    SDL_Texture *currentBossTexture = game->boss.textures[game->boss.animFrame];
+    
+    if (game->boss.attackState == 1) {
+        // В состоянии атаки, используем текстуру атаки
+        currentBossTexture = game->boss.textures[1];
+    }
+
+    SDL_RenderCopyEx(renderer, currentBossTexture, NULL, &bossRect, 0, NULL, flip);
 }

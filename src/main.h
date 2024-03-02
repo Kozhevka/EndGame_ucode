@@ -66,6 +66,19 @@ enum {
 
 typedef struct
 {
+    float x, y;
+    int animFrame;   // Переменная для хранения текущего кадра анимации
+    int facingLeft;  // Флаг направления босса (0 - вправо, 1 - влево)
+    int attackState;  // Состояние атаки (0 - нет атаки, 1 - начало атаки, 2 - атака, 3 - конец атаки)
+    int attackTimer;  // Таймер для отслеживания времени атаки
+    float attackTarget; // Координата, куда босс направлен в процессе атаки
+    float speed;
+    SDL_Texture *textures[3]; // Массив текстур для каждой стадии атаки
+} Boss;
+
+
+typedef struct
+{
     int x, y, w, h;
 } Ledge;
 
@@ -140,6 +153,7 @@ typedef struct
     SDL_Texture *enemyAttacked;
     SDL_Texture *enemyAttackedEnd;
     SDL_Texture *enemyReturn;
+    Boss boss;
     
     int labelW, labelH;
 
