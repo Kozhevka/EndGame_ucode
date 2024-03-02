@@ -53,26 +53,27 @@ void init_menu(MenuResources *resources) {
     // background texture load
     SDL_Surface *surface = NULL;
 
-    if(isRoflMode()){
-        surface = IMG_Load("assets/images/heroi.png");
-        if (surface == NULL) {
-            printf("Cannot find menu_background.png\n");
-            SDL_Quit();
-            exit(1);
-        }
-    }
-    else{
-        surface = IMG_Load("assets/images/menu_background.png");
-        if (surface == NULL) {
-            printf("Cannot find menu_background.png\n");
-            SDL_Quit();
-            exit(1);
-        }
+    surface = IMG_Load("assets/images/menu_background.png");
+    if (surface == NULL) {
+        printf("Cannot find menu_background.png\n");
+        SDL_Quit();
+        exit(1);    
+        
     }
     
-
     resources->menuBackground = SDL_CreateTextureFromSurface(resources->renderer, surface);
     SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/heroi.png");
+    if (surface == NULL) {
+        printf("Cannot find menu_background.png\n");
+        SDL_Quit();
+        exit(1);
+    }
+
+    resources->menuRoflBackground = SDL_CreateTextureFromSurface(resources->renderer, surface);
+    SDL_FreeSurface(surface);
+
 
     // UI elements setting
 //===================================MAINMENU==================================
@@ -95,7 +96,9 @@ void init_menu(MenuResources *resources) {
     menuButtonReferences.resolutionButton = &resources->resolutionText;
     SetTextParameters(resources, &resources->fullscreenText, "Fullscreen", 0, 400, MENUBUTTONPURPOSE_TOGGLEFULLSCREEN);
     menuButtonReferences.fullscreenButton = &resources->fullscreenText;
-    SetTextParameters(resources, &resources->leaveSettingsText, "Leave", 0, 500, MENUBUTTONPURPOSE_CLOSESETTINGS);
+    SetTextParameters(resources, &resources->toggleRoflModeText, "Sad Hamster Mode", 0, 500, MENUBUTTONPURPOSE_TOGGLEROFLMODE);
+    menuButtonReferences.toggleRoflModeButton = &resources->toggleRoflModeText;
+    SetTextParameters(resources, &resources->leaveSettingsText, "Leave", 0, 600, MENUBUTTONPURPOSE_CLOSESETTINGS);
     menuButtonReferences.leaveSettingsButton = &resources->leaveSettingsText;
 
 //==============================================================================
@@ -152,7 +155,13 @@ void renderMenu(SDL_Renderer *renderer, MenuResources *resources)
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
-    SDL_RenderCopy(resources->renderer, resources->menuBackground, NULL, NULL);   
+    if(isRoflMode()){
+        SDL_RenderCopy(resources->renderer, resources->menuRoflBackground, NULL, NULL);   
+    }
+    else{
+        SDL_RenderCopy(resources->renderer, resources->menuBackground, NULL, NULL);   
+    }
+    
     
     if(currentMenuCategory == MENU_MAINMENU)
     {
@@ -167,6 +176,7 @@ void renderMenu(SDL_Renderer *renderer, MenuResources *resources)
         drawText(renderer, resources, &resources->settingsCaptionText);
         drawResolutionButtonText(renderer, resources, &resources->resolutionText);
         drawFullscreenButtonText(renderer, resources, &resources->fullscreenText);
+        drawRoflModeButton(renderer, resources, &resources->toggleRoflModeText);
         drawText(renderer, resources, &resources->leaveSettingsText);
     }
     else if(currentMenuCategory == MENU_DEVELOPERS)
@@ -313,6 +323,46 @@ void drawResolutionButtonText(SDL_Renderer *renderer, MenuResources *resources, 
     
 }
 
+void drawRoflModeButton(SDL_Renderer *renderer, MenuResources *resources, MenuTextElement *textProperties)
+{
+    SDL_Color colorToSet = {255, 255, 255, 255};
+    if(textProperties->isSelected == 1)
+    {
+        colorToSet.r = 255;
+        colorToSet.g = 255;
+        colorToSet.b = 0;
+    }
+    else
+    {
+        colorToSet.r = 255;
+        colorToSet.g = 255;
+        colorToSet.b = 255;
+    }
+    bool isFullscreen = SDL_GetWindowFlags(windowRef) & SDL_WINDOW_FULLSCREEN;
+    char* textToSet = GetTextForRoflMode();
+
+    SDL_Surface *tmp = TTF_RenderText_Blended(resources->font, textToSet, colorToSet);
+    SDL_Texture *label = SDL_CreateTextureFromSurface(renderer, tmp);
+    SDL_FreeSurface(tmp);
+
+    int centerX = currentScreenWidth;
+    int centerY = 1080 / 2;
+
+    int textX = textProperties->menuX;
+    int textY = textProperties->menuY;
+
+    int textW = textProperties->menuLabelW;
+    int textH = textProperties->menuLabelH;
+    SDL_QueryTexture(label, NULL, NULL, &textW, &textH);
+
+    SDL_Rect textRect = {(centerX - GetRectWidth(textW)) / 2, GetRectYCoordinate(textY), GetRectWidth(textW), GetRectHeight(textH)};
+    SDL_RenderCopy(renderer, label, NULL, &textRect);
+
+    SDL_DestroyTexture(label);
+
+    
+}
+
 char* GetTextForResolutionButton()
 {
     switch(currentResolutionInteger)
@@ -338,6 +388,18 @@ char* GetTextForResolutionButton()
         default:
             return "Resolution             Default";
             break;
+    }
+}
+
+char* GetTextForRoflMode()
+{
+    if(isRoflMode())
+    {
+        return "Sad Hamster Mode   ON";
+    }
+    else
+    {
+        return "Sad Hamster Mode   OFF";
     }
 }
 
@@ -578,8 +640,8 @@ void ChangeSelectedButton(bool state)
         {
             selectedButtonSettingsMenu--;
         }
-        if(selectedButtonSettingsMenu > 2) selectedButtonSettingsMenu = 0;
-        if(selectedButtonSettingsMenu < 0) selectedButtonSettingsMenu = 2;
+        if(selectedButtonSettingsMenu > 3) selectedButtonSettingsMenu = 0;
+        if(selectedButtonSettingsMenu < 0) selectedButtonSettingsMenu = 3;
 
         switch(selectedButtonSettingsMenu)
         {
@@ -590,6 +652,9 @@ void ChangeSelectedButton(bool state)
                 SetElementSelected(menuButtonReferences.fullscreenButton);
                 break;
             case 2:
+                SetElementSelected(menuButtonReferences.toggleRoflModeButton);
+                break;
+            case 3:
                 SetElementSelected(menuButtonReferences.leaveSettingsButton);
                 break;
         }
@@ -609,6 +674,7 @@ void ClearSettingsButtons()
 {
     menuButtonReferences.resolutionButton->isSelected = 0;
     menuButtonReferences.fullscreenButton->isSelected = 0;
+    menuButtonReferences.toggleRoflModeButton->isSelected = 0;
     menuButtonReferences.leaveSettingsButton->isSelected = 0;
 }
 
@@ -622,7 +688,7 @@ void OnMenuButtonPressed(MenuTextElement *menuButton)
             sceneChangerReference->sceneInteger = SCENE_GAME;
             break;
         case MENUBUTTONPURPOSE_SETTINGS:
-            selectedButtonSettingsMenu = 2;
+            selectedButtonSettingsMenu = 3;
             currentMenuCategory = MENU_SETTINGS;
             SetElementSelected(menuButtonReferences.leaveSettingsButton);
             break;
@@ -647,6 +713,9 @@ void OnMenuButtonPressed(MenuTextElement *menuButton)
         case MENUBUTTONPURPOSE_TOGGLEFULLSCREEN:
             ToggleFullscreen();
             break;
+        case MENUBUTTONPURPOSE_TOGGLEROFLMODE:
+            ToggleRoflMode();
+            break;
     }
      playSound(clickSound);
 }
@@ -656,6 +725,18 @@ void OnMenuButtonPressed(MenuTextElement *menuButton)
 char* GetGameName()
 {
     return gameName;
+}
+
+void ToggleRoflMode()
+{
+    if(roflMode == 1){
+        roflMode = 0;
+        playMusic(menuMusic);
+    }
+    else{
+        roflMode = 1;
+        playMusic(menuRoflMusic);
+    }
 }
 
 int isRoflMode()

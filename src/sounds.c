@@ -19,6 +19,7 @@ Mix_Chunk *clickSound = NULL;
 Mix_Chunk *scrollSound = NULL;
 Mix_Chunk *menuSound = NULL;
 Mix_Music *menuMusic = NULL;
+Mix_Music *menuRoflMusic = NULL;
 Mix_Music *gameNormalMusic = NULL;
 Mix_Music *gameBossMusic = NULL;
 Mix_Chunk *gameBgSound = NULL;
@@ -96,21 +97,16 @@ void InitSounds()
         exit(1);
     }
 
-    if(isRoflMode())
-    {
-        menuMusic = Mix_LoadMUS("resource/sounds/Twene4-My-heart-bleeds.wav");
-        if (menuMusic == NULL) {
-            printf("Failed to load menu music! SDL_mixer Error: %s\n", Mix_GetError());
-            exit(1);
-        }
+    menuRoflMusic = Mix_LoadMUS("resource/sounds/Twene4-My-heart-bleeds.wav");
+    if (menuRoflMusic == NULL) {
+        printf("Failed to load menu music! SDL_mixer Error: %s\n", Mix_GetError());
+        exit(1);
     }
-    else
-    {
-        menuMusic = Mix_LoadMUS("resource/sounds/menumusic.wav");
-        if (menuMusic == NULL) {
-            printf("Failed to load menu music! SDL_mixer Error: %s\n", Mix_GetError());
-            exit(1);
-        }
+    
+     menuMusic = Mix_LoadMUS("resource/sounds/menumusic.wav");
+    if (menuMusic == NULL) {
+        printf("Failed to load menu music! SDL_mixer Error: %s\n", Mix_GetError());
+        exit(1);
     }
 
     if(isRoflMode())

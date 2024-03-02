@@ -78,6 +78,7 @@ void loadGame(GameState *game)
         SDL_Quit();
         exit(1);
     }
+
     game->manFrames[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
@@ -588,7 +589,12 @@ int main(int argc, char *argv[])
                 loadGame(&gameState);
                 initMap(&gameState, getStaleX(), getStaleY());
                 updateEnemies(&gameState);
-                playMusic(gameNormalMusic);
+                if(isRoflMode()){
+                    playMusic(menuRoflMusic);
+                }
+                else{
+                    playMusic(gameNormalMusic);
+                }
                 gameLoaded = 1;
             }
 

@@ -8,6 +8,7 @@ extern Mix_Chunk *clickSound;
 extern Mix_Chunk *menuSound;
 extern Mix_Chunk *gameBgSound;
 extern Mix_Music *menuMusic;
+extern Mix_Music *menuRoflMusic;
 extern Mix_Music *gameNormalMusic;
 extern Mix_Music *gameBossMusic;
 extern Mix_Chunk *damageSound;

@@ -181,6 +181,7 @@ typedef struct
     MenuTextElement* resolutionButton;
     MenuTextElement* fullscreenButton;
     MenuTextElement* leaveSettingsButton;
+    MenuTextElement* toggleRoflModeButton;
 
     MenuTextElement* leaveDevelopersButton;
 
@@ -207,6 +208,7 @@ typedef struct
     MenuTextElement settingsCaptionText;
     MenuTextElement resolutionText;
     MenuTextElement fullscreenText;
+    MenuTextElement toggleRoflModeText;
     MenuTextElement leaveSettingsText;
 
 //==============================
@@ -231,6 +233,7 @@ typedef struct
     int menuX, menuY;
 
     SDL_Texture *menuBackground;
+    SDL_Texture *menuRoflBackground;
 
     SDL_Window *applicationWindow;
     SDL_Renderer *renderer;
@@ -260,6 +263,7 @@ enum {
     MENUBUTTONPURPOSE_CLOSESETTINGS,
     MENUBUTTONPURPOSE_TOGGLEFULLSCREEN,
     MENUBUTTONPURPOSE_TOGGLERESOLUTION,
+    MENUBUTTONPURPOSE_TOGGLEROFLMODE,
 };
 
 enum {
