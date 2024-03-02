@@ -125,8 +125,8 @@ void process(GameState *game)
 
         game->man.isDead = 0;
         game->man.health = 100;
-        game->man.x = 200 * getStaleX() - 40;
-        game->man.y = 800 * getStaleY() - 40;
+        game->man.x = 200 * getScaleX() - 40;
+        game->man.y = 800 * getScaleY() - 40;
         game->man.dx = 0;
         game->man.dy = 0;
         game->man.onLedge = 0;
@@ -264,7 +264,7 @@ void colissionDetect(GameState *game)
 
         for (int i = 0; i < 100; i++)
     {
-        float mw = 90 * getStaleX(), mh = 108 * getStaleY();
+        float mw = 90 * getScaleX(), mh = 108 * getScaleY();
         float mx = game->man.x, my = game->man.y;
         float bx = game->ceilings[i].x, by = game->ceilings[i].y, bw = game->ceilings[i].w, bh = game->ceilings[i].h;
 
@@ -392,8 +392,6 @@ void doRender(SDL_Renderer *renderer, GameState *game)
 
         SDL_Rect rect = {game->scrollX + game->man.x, game->man.y, 80 * getScaleX(), 120 * getScaleY()};
         SDL_RenderCopyEx(renderer, game->playerAnimations->run[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
-
-        SDL_RenderCopyEx(renderer, game->manFrames[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
     
         if (game->man.isDead)
         {
@@ -463,8 +461,8 @@ int main(int argc, char *argv[])
     window = SDL_CreateWindow(GetGameName(),
                           0,
                           0,
-                          getWidth(),
-                          getHeight(),
+                          getScreenWidht(),
+                          getScreenHeight(),
                           0);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
@@ -499,7 +497,7 @@ int main(int argc, char *argv[])
                 // Загрузка ресурсов для игры
                 loadGame(&gameState);
                 updateEnemies(&gameState, renderer);
-                initMap(&gameState, getStaleX(), getStaleY());
+                initMap(&gameState, getScaleX(), getScaleY());
                 gameLoaded = 1;
             }
 

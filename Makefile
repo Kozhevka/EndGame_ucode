@@ -8,7 +8,7 @@ SRCS := $(wildcard $(SRC_DIR)/*.c)
 CC := gcc
 
 # Specify compiler flags
-CFLAGS := -I$(SRC_DIR)  -I/SDL2 -L/SDL2/lib -lSDL2 -lSDL2_image -lSDL2_ttf
+CFLAGS := -I$(SRC_DIR)  -I/SDL2 -L/SDL2/lib -lSDL2 -lSDL2_image -lSDL2_ttf -lm
 
 # Specify target
 TARGET := mygame

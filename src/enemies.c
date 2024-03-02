@@ -18,13 +18,13 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
         SDL_Texture *currentEnemyTexture;
 
         if (game->enemies[i].state == ENEMY_STATE_IDLE) {
-            currentEnemyTexture = game->enemy;
+            currentEnemyTexture = game->enemyAnimations->idle;
         } else {
             // Чтобы чередовать между game->enemy и game->enemyGo, используйте game->enemies[i].animFrame
             if (game->enemies[i].animFrame == 0) {
-                currentEnemyTexture = game->enemy;
+                currentEnemyTexture = game->enemyAnimations->idle;
             } else {
-                currentEnemyTexture = game->enemyGo;
+                currentEnemyTexture = game->enemyAnimations->walk;
             }
         }
 
@@ -42,25 +42,25 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
         // Изменяем координаты врага в зависимости от направления
         if (distance < 400 && abs(game->man.x - game->enemies[i].x) < 400) { // Проверяем и расстояние, и положение по X
             if (game->man.x < game->enemies[i].x) {
-                game->enemies[i].x -= 1 * getStaleX();
+                game->enemies[i].x -= 1 * getScaleX();
                 game->enemies[i].facingLeftTexture = 1;
             } else {
-                game->enemies[i].x += 2 * getStaleX();
+                game->enemies[i].x += 2 * getScaleX();
                 game->enemies[i].facingLeftTexture = 0;
             }
         } else if (game->enemies[i].facingLeft) {
-            game->enemies[i].x -= 1 * getStaleX();
+            game->enemies[i].x -= 1 * getScaleX();
             // Устанавливаем facingLeft в 1, чтобы текстура была перевернута
             game->enemies[i].facingLeftTexture = 1;
         } else {
-            game->enemies[i].x += 1.3 * getStaleX();
+            game->enemies[i].x += 1.3 * getScaleX();
             // Устанавливаем facingLeft в 0, чтобы текстура не была перевернута
             game->enemies[i].facingLeftTexture = 0;
         }
 
         // Изменяем состояние врага в зависимости от его движения
-        if (game->enemies[i].x > game->enemies[i].initialX + 100 * getStaleX() ||
-            game->enemies[i].x < game->enemies[i].initialX - 100 * getStaleX()) {
+        if (game->enemies[i].x > game->enemies[i].initialX + 100 * getScaleX() ||
+            game->enemies[i].x < game->enemies[i].initialX - 100 * getScaleX()) {
             // Если враг двигается влево или вправо, считаем его идущим
             game->enemies[i].state = ENEMY_STATE_WALKING;
         } else {
@@ -82,7 +82,7 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
         if (distance < attackRange) {
             // Враг останавливается перед атакой
             if (distance > stopRange) {
-                game->enemies[i].x += direction * getStaleX();
+                game->enemies[i].x += direction * getScaleX();
             }
 
             // Обработка состояния атаки
@@ -95,16 +95,16 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
 
             if (game->enemies[i].attackState == 0) {
                 // Начало атаки
-                currentEnemyTexture = game->enemyAttackStart;
+                currentEnemyTexture = game->enemyAnimations->attackStart;
             } else if (game->enemies[i].attackState == 1) {
                 // Атака
-                currentEnemyTexture = game->enemyAttacked;
+                currentEnemyTexture = game->enemyAnimations->attackedContinue;
             } else if (game->enemies[i].attackState == 2) {
                 // Завершение атаки
-                currentEnemyTexture = game->enemyAttackedEnd;
+                currentEnemyTexture = game->enemyAnimations->attackedEnd;
             } else {
                 // Исходное положение
-                currentEnemyTexture = game->enemyReturn;
+                currentEnemyTexture = game->enemyAnimations->attackedEnd;
             }
 
             // Уменьшаем таймер атаки
@@ -114,7 +114,7 @@ void updateEnemies(GameState *game, SDL_Renderer *renderer) {
                 game->enemies[i].attackState = (game->enemies[i].attackState + 1) % 4;
             }
         }
-        SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getStaleX(), 140 * getStaleY()};
+        SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getScaleX(), 140 * getScaleY()};
         SDL_RenderCopyEx(renderer, currentEnemyTexture, NULL, &enemyRect, 0, NULL, flip);
     }
 }

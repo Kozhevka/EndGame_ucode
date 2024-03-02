@@ -22,7 +22,7 @@ void initMap(GameState *game, float scaleX, float scaleY) {
         game->bossplatform[i].w = (int)(256 * scaleX);
         game->bossplatform[i].h = (int)(64 * scaleY);
         game->bossplatform[i].x = (int)(i * 252 * scaleX + game->ledges[NUM_LADGES-1].x);
-        game->bossplatform[i].y = getHeight() - game->bossplatform[i].h * 3;
+        game->bossplatform[i].y = getScreenHeight() - game->bossplatform[i].h * 3;
     }
     
     for (int i = 0; i < NUM_WALLS; i++) {
@@ -131,7 +131,7 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
 
     for (int i = 0; i < NUM_LADGES; i++) {
         SDL_Rect ceilingRect = {game->scrollX + game->ceilings[i].x, game->ceilings[i].y, game->ceilings[i].w, game->ceilings[i].h};
-        SDL_RenderCopy(renderer, game->ceiling, NULL, &ceilingRect);
+        SDL_RenderCopy(renderer, game->locationTextures->chandelier, NULL, &ceilingRect);
     }
 
     for (int i = 0; i < NUM_WALLS; i++) {
@@ -173,7 +173,7 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
 
     updateEnemies(game, renderer);
     SDL_Rect doorRect = {game->scrollX + game->doors.x, game->doors.y, game->doors.w, game->doors.h};
-    SDL_RenderCopy(renderer, game->door, NULL, &doorRect);
+    SDL_RenderCopy(renderer, game->locationTextures->door, NULL, &doorRect);
 
     for (int i = 0; i < NUM_ENEMIES; i++) {
         SDL_RendererFlip flip = game->enemies[i].facingLeftTexture ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
@@ -193,6 +193,6 @@ void renderMap(SDL_Renderer *renderer, GameState *game) {
         SDL_Rect enemyRect = {game->scrollX + game->enemies[i].x, game->enemies[i].y, 160 * getScaleX(), 140 * getScaleY()};
         SDL_RenderCopyEx(renderer, currentEnemyTexture, NULL, &enemyRect, 0, NULL, flip);
     }
-    SDL_Rect doorRect = {game->scrollX + game->doors.x, game->doors.y, game->doors.w, game->doors.h};
+    //SDL_Rect doorRect = {game->scrollX + game->doors.x, game->doors.y, game->doors.w, game->doors.h};
     SDL_RenderCopy(renderer, game->locationTextures->door, NULL, &doorRect);
 }
