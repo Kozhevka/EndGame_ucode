@@ -14,11 +14,10 @@
 #include "design.h"
 #include "resourceTool.h"
 
-float gravity = 0.03f;
+float gravity = 0.07f;
 float speed = 1;
 int koff = 100;
 int addToJump = 1;
-
 
 int closeApplication = 0;
 
@@ -158,6 +157,28 @@ void loadGame(GameState *game)
     // Адаптация размеров персонажей и объектов под экран
     game->man.x = 200 * getScaleX() - 40;
     game->man.y = 800 * getScaleY() - 40;
+
+    surface = IMG_Load("assets/images/boss.png");
+    game->bossStand = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/boss-attacked-start.png");
+    game->bossAttackedStart = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/boss-attacked-end.png");
+    game->bossAttackedEnd = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("assets/images/boss_a_tam_skeleton.png");
+    game->bossskeleton = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    game->label = NULL;
+
+    // Адаптация размеров персонажей и объектов под экран
+    game->man.x = 300 * getStaleX() - 40;
+    game->man.y = 800 * getStaleY() - 40;
     game->man.dy = 0;
     game->man.onLedge = 0;
     game->man.animFrame = 0;
@@ -228,8 +249,8 @@ void process(GameState *game)
 
         game->man.isDead = 0;
         game->man.health = 100;
-        game->man.x = 200 * getScaleX() - 40;
-        game->man.y = 800 * getScaleY() - 40;
+        game->man.x = 200 - 40 * getScaleX(); 
+        game->man.y = 800 - 40 * getScaleY();
         game->man.dx = 0;
         game->man.dy = 0;
         game->man.onLedge = 0;
@@ -258,19 +279,31 @@ int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, floa
 
 void colissionDetect(GameState *game)
 {
-    for (int i = 0; i < NUM_ENEMIES; i++)
-    {
 
-        if(collide2d(game->man.x, game->man.y, game->enemies[i].x,game->enemies[i].y, 48, 48, 64, 64))
-        {
+    if (collide2d(game->man.x, game->man.y, game->boss.x, game->boss.y, 80, 120, BOSS_WIDTH, BOSS_HEIGHT)) {
+        game->man.health -= 25; // Уменьшаем здоровье при коллизии с боссом
+        if (game->man.x < game->boss.x) {
+            game->man.dx = -5;
+        } else {
+            game->man.dx = 5;
+        }
+        if (game->man.y < game->boss.y) {
+            game->man.dy = -3;
+        } else {
+            game->man.dy = 3;
+        }
+    }
+
+    for (int i = 0; i < NUM_ENEMIES; i++) {
+        if (collide2d(game->man.x, game->man.y, game->enemies[i].x, game->enemies[i].y, 48, 48, 64, 64)) {
             game->man.health -= 25;
             if (game->man.x < game->enemies[i].x) {
-                game->man.dx  = -5;
+                game->man.dx = -5;
             } else {
                 game->man.dx = 5;
             }
             if (game->man.y < game->enemies[i].y) {
-                game->man.dy  = -3;
+                game->man.dy = -3;
             } else {
                 game->man.dy = 3;
             }
@@ -321,7 +354,51 @@ void colissionDetect(GameState *game)
         }
     }
 
-        for (int i = 0; i < 100; i++)
+    for (int i = 0; i < NUM_LADGES + NUM_BOSSPLATFORM - 1; i++)
+    {
+        float mw = 90 * getStaleX(), mh = 108 * getStaleY();
+        float mx = game->man.x, my = game->man.y;
+        float bx = game->ceilings[i].x, by = game->ceilings[i].y, bw = game->ceilings[i].w, bh = game->ceilings[i].h;
+
+        if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw)
+        {
+            if (my < by + bh && my > by && game->man.dy < 0)
+            {
+                game->man.y = by + bh;
+                my = by + bh;
+                game->man.dy = 0;
+                game->man.onLedge = 1;
+            }
+        }
+        if (mx + mw > bx && mx < bx + bw)
+        {
+            if (my + mh > by && my < by && game->man.dy > 0)
+            {
+                game->man.y = by - mh;
+                my = by - mh;
+                game->man.dy = 0;
+                game->man.onLedge = 1;
+            }
+        }
+
+        if (my + mh > by && my < by + bh)
+        {
+            if (mx < bx + bw && mx + mw > bx + bw && game->man.dx < 0)
+            {
+                game->man.x = bx + bw;
+                mx = bx + bw;
+                game->man.dx = 0;
+            }
+            else if (mx + mw > bx && mx < bx && game->man.dx > 0)
+            {
+                game->man.x = bx - mw;
+                mx = bx - mw;
+                game->man.dx = 0;
+            }
+        }
+    }
+
+        for (int i = 0; i < NUM_BOSSPLATFORM; i++)
     {
         float mw = 90 * getScaleX(), mh = 108 * getScaleY();
         float mx = game->man.x, my = game->man.y;
@@ -365,49 +442,58 @@ void colissionDetect(GameState *game)
         }
     }
 
-        for (int i = 0; i < 100; i++)
+    for (int i = 0; i < NUM_COLONAS; i++)
     {
-        float mw = 90 * getScaleX(), mh = 108 * getScaleY();
-        float mx = game->man.x, my = game->man.y;
-        float bx = game->ceilings[i].x, by = game->ceilings[i].y, bw = game->ceilings[i].w, bh = game->ceilings[i].h;
+    float mw = 90 * getStaleX(), mh = 108 * getStaleY();
+    float mx = game->man.x, my = game->man.y;
+    float bx = game->colonas[i].x, by = game->colonas[i].y, bw = game->colonas[i].w, bh = game->colonas[i].h;
 
-        if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw)
+    // Вертикальное столкновение сверху
+    if (my + mh > by && my < by + bh)
+    {
+        if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw && game->man.dy < 0)
         {
-            if (my < by + bh && my > by && game->man.dy < 0)
-            {
-                game->man.y = by + bh;
-                my = by + bh;
-                game->man.dy = 0;
-                game->man.onLedge = 1;
-            }
-        }
-        if (mx + mw > bx && mx < bx + bw)
-        {
-            if (my + mh > by && my < by && game->man.dy > 0)
-            {
-                game->man.y = by - mh;
-                my = by - mh;
-                game->man.dy = 0;
-                game->man.onLedge = 1;
-            }
-        }
-
-        if (my + mh > by && my < by + bh)
-        {
-            if (mx < bx + bw && mx + mw > bx + bw && game->man.dx < 0)
-            {
-                game->man.x = bx + bw;
-                mx = bx + bw;
-                game->man.dx = 0;
-            }
-            else if (mx + mw > bx && mx < bx && game->man.dx > 0)
-            {
-                game->man.x = bx - mw;
-                mx = bx - mw;
-                game->man.dx = 0;
-            }
+            game->man.y = by + bh;
+            my = by + bh;
+            game->man.dy = 0;
+            game->man.onLedge = 1;
         }
     }
+
+    // Вертикальное столкновение снизу
+    if (my < by + bh && my + mh > by)
+    {
+        if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw && game->man.dy > 0)
+        {
+            game->man.y = by - mh;
+            my = by - mh;
+            game->man.dy = 0;
+            game->man.onLedge = 1;
+        }
+    }
+
+    // Горизонтальное столкновение справа
+    if (mx + mw > bx && mx < bx + bw)
+    {
+        if (my + mh > by && my < by + bh && game->man.dx > 0)
+        {
+            game->man.x = bx - mw;
+            mx = bx - mw;
+            game->man.dx = 0;
+        }
+    }
+
+    // Горизонтальное столкновение слева
+    if (mx < bx + bw && mx + mw > bx)
+    {
+        if (my + mh > by && my < by + bh && game->man.dx < 0)
+        {
+            game->man.x = bx + bw;
+            mx = bx + bw;
+            game->man.dx = 0;
+        }
+    }
+}
 }
 
 int processEvents(SDL_Window *window, GameState *game)
@@ -436,9 +522,8 @@ int processEvents(SDL_Window *window, GameState *game)
                 done = 1;
                 break;
             case SDLK_SPACE:
-                if (game->man.dy == game->man.dy)
-                {
-                    game->man.dy = -3 * getScaleY();
+                if (game->man.onLedge && game->man.dy == game->man.dy) {
+                    game->man.dy = -6 * getScaleY();
                     game->man.onLedge = 0;
                 }
                 break;
@@ -516,31 +601,31 @@ void changeScene(CurrentScene *currentSceneData, int sceneInt)
 
 int setPhysics(){
     int width = getScreenWidht();
+    gravity *= getStaleX();
     if(width <= 800){
     speed = 0.6;
-    gravity = 0.01f;
+    // gravity = 0.01f;
     koff = 100;
     } else if(width <= 1024){
         speed = 0.8;
-        gravity = 0.013f;
+        // gravity = 0.013f;
         koff = 70;
     } else if(width <= 1280){
         speed = 0.8;
-        gravity = 0.01f;
+        // gravity = 0.01f;
         koff = 50;
     } else if(width <= 1360){
         speed = 0.9;
-        gravity = 0.01f;
+        // gravity = 0.01f;
         koff = 50;
     }else if(width <= 1920){
-        speed = 2.5;
-        gravity = 0.02f;
+        speed = 2.3;
+        // gravity = 0.05f;
         koff = 30;
     }else if(width <= 2560 || width >= 2560){
-        speed = 10;
-        gravity = 0.03f;
+        speed = 3;
+        // gravity = 0.09f;
         koff = 20;
-        addToJump = 20;
     }
 
 }

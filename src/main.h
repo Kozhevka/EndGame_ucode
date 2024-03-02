@@ -5,7 +5,7 @@
 #define STATUS_STATE_GAME 1
 #define STATUS_STATE_GAMEOVER 2
 
-#define NUM_ENEMIES 30
+#define NUM_ENEMIES 3
 #define NUM_SCULLS 1000
 #define NUM_LADGES 100
 #define NUM_WINDOWS 500
@@ -13,12 +13,23 @@
 #define NUM_FLAGS 800
 #define NUM_WALLS 68
 #define NUM_BOSSPLATFORM 9
+#define NUM_COLONAS 2
 
+#define BOSS_ATTACK_RANGE 200
+#define BOSS_WIDTH 100
+#define BOSS_HEIGHT 150
+#define BOSS_SPEED 1
+
+#define BOSS_STATE_IDLE 0
+#define BOSS_STATE_MOVING 1
+#define BOSS_STATE_ATTACKING 2
+#define BOSS_VISIBILITY_RANGE 400.0f 
 
 // #define SCREEN_WIDTH 1920
 // #define SCREEN_HEIGHT 1080
 
 #define ENEMY_STATE_ATTACKING 2
+#define ENEMY_SPEED 1.0
 
 // 2560 1440
 // 1920 1080
@@ -63,11 +74,33 @@ typedef struct
     
 } Enemy;
 
+typedef struct
+{
+    float x, y;
+    float dy, dx;
+    short lives;
+    char *name;
+    int health;
+    int onLedge, isDead, isGrounded;
+    int animFrame, facingLeft, slowingDown;
 
+    // Добавленные поля для босса
+    int attackState;    // Состояние атаки (0 - нет атаки, 1 - начало атаки, 2 - атака, 3 - конец атаки)
+    int attackTimer;    // Таймер для отслеживания времени атаки
+    float attackTarget; // Координата, куда босс направлен в процессе атаки
+    int inAttackRange;  // Флаг, указывающий, находится ли игрок в зоне атаки
+    int facingLeftTexture; // Флаг направления текстуры (0 - вправо, 1 - влево)
+    int state;          // Состояние босса
+    float speed;
+    float initialX;
+    SDL_Texture *texture;
+
+} Boss;
 
 enum {
     ENEMY_STATE_IDLE,
     ENEMY_STATE_WALKING,
+
 };
 
 typedef struct
@@ -118,6 +151,11 @@ typedef struct
 typedef struct
 {
     int x, y, w, h;
+} Bossskeleton;
+
+typedef struct
+{
+    int x, y, w, h;
 } Colona;
 
 
@@ -132,7 +170,7 @@ typedef struct
     Enemy enemies[NUM_ENEMIES];
 
     Ledge ledges[NUM_LADGES];
-    Ceiling ceilings[NUM_LADGES];
+    Ceiling ceilings[NUM_LADGES + NUM_BOSSPLATFORM - 1];
     Wall walls[NUM_WALLS];
     Door doors;
     Window windows[NUM_WINDOWS];
@@ -140,6 +178,8 @@ typedef struct
     Chandelier chandeliers[NUM_CHANDELIERS];
     Flag flags[NUM_FLAGS];
     Boss_platform bossplatform[NUM_BOSSPLATFORM];
+    Colona colonas[NUM_COLONAS];
+    Bossskeleton bossskeletons;
 
     LocationTextures locationTextures;
     ParticlesTextures particlesTextures;
@@ -147,6 +187,12 @@ typedef struct
     AnimationMainHeroHolder playerAnimations;
 
     SDL_Texture *label;
+    SDL_Texture *bossskeleton;
+    SDL_Texture *label;
+    SDL_Texture *graveTexture;
+    SDL_Texture *bossStand;
+    SDL_Texture *bossAttackedStart;
+    SDL_Texture *bossAttackedEnd;
     
     int labelW, labelH;
 
@@ -155,6 +201,8 @@ typedef struct
     int time , deathCountdown;
     int statusState;
 
+
+    Boss boss;
 
     SDL_Renderer *renderer;
 }GameState;
@@ -292,3 +340,5 @@ void init_game_over(GameState *game);
 float getScaleX();
 float getScaleY();
 #endif
+
+
