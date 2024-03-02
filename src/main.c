@@ -34,7 +34,7 @@ void loadGame(GameState *game)
 
     if(isRoflMode())
     {
-        surface = IMG_Load("assets/images/hero.png");
+        surface = IMG_Load("assets/images/enemyOne.png");
         if (surface == NULL)
         {
             printf("cannot find enemy.png");
@@ -57,56 +57,112 @@ void loadGame(GameState *game)
     game->enemy = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/mainHero/gg_run0.png");
-    if (surface == NULL)
-    {
-        printf("cannot find gg-stand.png");
-        SDL_Quit();
-        exit(1);
-    }
-    game->manFrames[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+    if(isRoflMode()){
+        surface = IMG_Load("assets/images/hero.png");
+        if (surface == NULL)
+        {
+            printf("cannot find gg-stand.png");
+            SDL_Quit();
+            exit(1);
+        }
+        game->manFrames[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/mainHero/gg_run1.png");
-    if (surface == NULL)
-    {
-        printf("cannot find gg-stand.png");
-        SDL_Quit();
-        exit(1);
-    }
-    game->manFrames[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+        surface = IMG_Load("assets/images/hero.png");
+        if (surface == NULL)
+        {
+            printf("cannot find gg-stand.png");
+            SDL_Quit();
+            exit(1);
+        }
+        game->manFrames[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/mainHero/gg_run2.png");
-    if (surface == NULL)
-    {
-        printf("cannot find gg-stand.png");
-        SDL_Quit();
-        exit(1);
-    }
-    game->manFrames[2] = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+        surface = IMG_Load("assets/images/hero.png");
+        if (surface == NULL)
+        {
+            printf("cannot find gg-stand.png");
+            SDL_Quit();
+            exit(1);
+        }
+        game->manFrames[2] = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/mainHero/gg_run3.png");
-    if (surface == NULL)
-    {
-        printf("cannot find gg-stand.png");
-        SDL_Quit();
-        exit(1);
-    }
-    game->manFrames[3] = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+        surface = IMG_Load("assets/images/hero.png");
+        if (surface == NULL)
+        {
+            printf("cannot find gg-stand.png");
+            SDL_Quit();
+            exit(1);
+        }
+        game->manFrames[3] = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/mainHero/gg_idle.png");
-    if (surface == NULL)
-    {
-        printf("cannot find gg-run.png");
-        SDL_Quit();
-        exit(1);
+        surface = IMG_Load("assets/images/hero.png");
+        if (surface == NULL)
+        {
+            printf("cannot find gg-run.png");
+            SDL_Quit();
+            exit(1);
+        }
+
+        game->manIdle = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+    }
+    else{
+        surface = IMG_Load("assets/images/mainHero/gg_run0.png");
+        if (surface == NULL)
+        {
+            printf("cannot find gg-stand.png");
+            SDL_Quit();
+            exit(1);
+        }
+        game->manFrames[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+
+        surface = IMG_Load("assets/images/mainHero/gg_run1.png");
+        if (surface == NULL)
+        {
+            printf("cannot find gg-stand.png");
+            SDL_Quit();
+            exit(1);
+        }
+        game->manFrames[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+
+        surface = IMG_Load("assets/images/mainHero/gg_run2.png");
+        if (surface == NULL)
+        {
+            printf("cannot find gg-stand.png");
+            SDL_Quit();
+            exit(1);
+        }
+        game->manFrames[2] = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+
+        surface = IMG_Load("assets/images/mainHero/gg_run3.png");
+        if (surface == NULL)
+        {
+            printf("cannot find gg-stand.png");
+            SDL_Quit();
+            exit(1);
+        }
+        game->manFrames[3] = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+
+        surface = IMG_Load("assets/images/mainHero/gg_idle.png");
+        if (surface == NULL)
+        {
+            printf("cannot find gg-run.png");
+            SDL_Quit();
+            exit(1);
+        }
+
+        game->manIdle = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
     }
 
-    game->manIdle = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+    
 
     surface = IMG_Load("assets/images/brick.png");
     game->brick = SDL_CreateTextureFromSurface(game->renderer, surface);
@@ -138,43 +194,95 @@ void loadGame(GameState *game)
     game->graveTexture = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/enemy-go.png");
-    if (surface == NULL)
-    {
-        printf("cannot find enemy-go.png");
-        SDL_Quit();
-        exit(1);
+
+    if(isRoflMode()){
+        surface = IMG_Load("assets/images/enemyOne.png");
+        if (surface == NULL)
+        {
+            printf("cannot find enemy-go.png");
+            SDL_Quit();
+            exit(1);
+        }
+        game->enemyGo = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+
+        surface = IMG_Load("assets/images/enemyOne.png");
+        game->enemyAttackStart = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+
+        surface = IMG_Load("assets/images/enemyOne.png");
+        game->enemyAttacked = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+
+        surface = IMG_Load("assets/images/enemyOne.png");
+        game->enemyAttackedEnd = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+
     }
-    game->enemyGo = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+    else{
+        surface = IMG_Load("assets/images/enemy-go.png");
+        if (surface == NULL)
+        {
+            printf("cannot find enemy-go.png");
+            SDL_Quit();
+            exit(1);
+        }
+        game->enemyGo = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/enemy-attack-start.png");
-    game->enemyAttackStart = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+        surface = IMG_Load("assets/images/enemy-attack-start.png");
+        game->enemyAttackStart = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/enemy-attacked.png");
-    game->enemyAttacked = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+        surface = IMG_Load("assets/images/enemy-attacked.png");
+        game->enemyAttacked = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/enemy-attacked-end.png");
-    game->enemyAttackedEnd = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+        surface = IMG_Load("assets/images/enemy-attacked-end.png");
+        game->enemyAttackedEnd = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/boss.png");
-    game->bossStand = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+    }
 
-    surface = IMG_Load("assets/images/boss-attacked-start.png");
-    game->bossAttackedStart = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+    if(isRoflMode()){
+        surface = IMG_Load("assets/images/enemyTwo.png");
+        game->bossStand = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/boss-attacked-end.png");
-    game->bossAttackedEnd = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+        surface = IMG_Load("assets/images/enemyTwo.png");
+        game->bossAttackedStart = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
 
-    surface = IMG_Load("assets/images/enemy.png");
-    game->enemyReturn = SDL_CreateTextureFromSurface(game->renderer, surface);
-    SDL_FreeSurface(surface);
+        surface = IMG_Load("assets/images/enemyTwo.png");
+        game->bossAttackedEnd = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+    }
+    else{
+        surface = IMG_Load("assets/images/boss.png");
+        game->bossStand = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+
+        surface = IMG_Load("assets/images/boss-attacked-start.png");
+        game->bossAttackedStart = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+
+        surface = IMG_Load("assets/images/boss-attacked-end.png");
+        game->bossAttackedEnd = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+    }
+    
+    if(isRoflMode()){
+        surface = IMG_Load("assets/images/enemyOne.png");
+        game->enemyReturn = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+    }
+    else{
+         surface = IMG_Load("assets/images/enemy.png");
+        game->enemyReturn = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+    }
+
+   
 
     surface = IMG_Load("assets/images/wall.png");
     game->wall = SDL_CreateTextureFromSurface(game->renderer, surface);
@@ -323,11 +431,11 @@ void colissionDetect(GameState *game)
     if (collide2d(game->man.x, game->man.y, game->boss.x, game->boss.y, 80, 120, BOSS_WIDTH, BOSS_HEIGHT)) {
         game->man.health -= 25; // Уменьшаем здоровье при коллизии с боссом
         if (game->man.x < game->boss.x) {
-            game->man.dx = -50;
-            game->man.x -= 25;
+            game->man.dx = -10;
+            game->man.x -= 5;
         } else {
-            game->man.dx = 50;
-            game->man.x += 25;
+            game->man.dx = 10;
+            game->man.x += 5;
         }
         if (game->man.y < game->boss.y) {
             game->man.dy = -6;
@@ -341,11 +449,11 @@ void colissionDetect(GameState *game)
             game->man.health -= 25;
             playSound(damageSound);
             if (game->man.x < game->enemies[i].x) {
-                game->man.dx = -50;
-                game->man.x -= 25;
+                game->man.dx = -10;
+                game->man.x -= 5;
             } else {
-                game->man.dx = 50;
-                game->man.x += 25;
+                game->man.dx = 10;
+                game->man.x += 5;
             }
             if (game->man.y < game->enemies[i].y) {
                 game->man.dy = -6;
@@ -570,6 +678,7 @@ int processEvents(SDL_Window *window, GameState *game)
                 if (game->man.onLedge && game->man.dy == game->man.dy) {
                     game->man.dy = -6 * getStaleY();
                     game->man.onLedge = 0;
+                    playSound(jumpSound);
                 }
                 break;
             }
@@ -640,7 +749,16 @@ void doRender(SDL_Renderer *renderer, GameState *game)
         
         renderHealth(game);
 
-        SDL_Rect rect = {game->scrollX + game->man.x, game->man.y, 80 * getStaleX(), 120 * getStaleY()};
+        float heroScale = 80;
+
+        if(isRoflMode()){
+            heroScale = 120;
+        }
+        else{
+            heroScale = 80;
+        }
+        
+        SDL_Rect rect = {game->scrollX + game->man.x, game->man.y, heroScale * getStaleX(), 120 * getStaleY()};
 
         SDL_RenderCopyEx(renderer, game->manFrames[game->man.animFrame], NULL, &rect, 0, NULL, (game->man.facingLeft == 0));
     
